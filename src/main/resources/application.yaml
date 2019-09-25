@@ -4,10 +4,12 @@ spring:
     username: postgres
     password: postgres
   liquibase:
-    change-log: classpath:db/changelog/changelog-master.xml
+    change-log: classpath:db/changelog/changelog-master.yaml
   jpa:
     properties:
       hibernate:
         temp:
           use_jdbc_metadata_defaults: false
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none
