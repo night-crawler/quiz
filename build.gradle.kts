@@ -90,40 +90,9 @@ ext {
     )
 }
 
-
 liquibase {
-    activities.register("main") {
-        this.arguments = mapOf(
-                "driver" to "org.postgresql.Driver",
-                "url" to "jdbc:postgresql://localhost:5432/quiz",
-                "username" to "postgres",
-                "password" to "postgres",
-                "changeLogFile" to "src/main/resources/db/changelog/db.changelog-master.xml",
-                "referenceUrl" to "hibernate:spring:fm.force.quiz?" +
-                        "dialect=org.hibernate.dialect.PostgreSQL95Dialect&" +
-                        "hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&" +
-                        "hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy",
-                "defaultSchemaName" to "",
-                "logLevel" to "debug",
-                "classpath" to "$buildDir/classes/kotlin/main"
-        )
-    }
-    activities.register("diffLog") {
-        this.arguments = mapOf(
-                "driver" to "org.postgresql.Driver",
-                "url" to "jdbc:postgresql://localhost:5432/quiz",
-                "username" to "postgres",
-                "password" to "postgres",
-                "changeLogFile" to project.ext.get("diffChangelogFile"),
-                "referenceUrl" to "hibernate:spring:fm.force.quiz?" +
-                        "dialect=org.hibernate.dialect.PostgreSQL95Dialect&" +
-                        "hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&" +
-                        "hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy",
-                "defaultSchemaName" to "",
-                "logLevel" to "debug",
-                "classpath" to "$buildDir/classes/kotlin/main"
-        )
-    }
+    activities.register("main") {}
+    runList = "main"
 }
 
 tasks.withType<KotlinCompile> {
