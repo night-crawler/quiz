@@ -17,5 +17,7 @@ data class Answer(
         @ManyToOne(cascade = [(CascadeType.ALL)], fetch = FetchType.LAZY)
         val question: Question,
 
+//        val trash: String,
+
         val createAt: Instant = Instant.now()
 )

@@ -81,24 +81,56 @@ dependencies {
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
 }
 
-ext {
-    set(
-            "diffChangelogFile",
-            "src/main/resources/db/changelog/" +
-                    LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")) +
-                    "_changelog.xml"
-    )
+if (!project.hasProperty("runList")) {
+    project.ext.set("runList", "main")
 }
 
+project.ext.set(
+        "diffChangelogFile",
+        "src/main/resources/db/changelog/" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")) + "_changelog.xml"
+)
+
 liquibase {
-    activities.register("main") {}
-    runList = "main"
+    activities.register("main") {
+        this.arguments = mapOf(
+                "driver" to "org.postgresql.Driver",
+                "url" to "jdbc:postgresql://localhost:5432/quiz",
+                "username" to "postgres",
+                "password" to "postgres",
+                "changeLogFile" to "src/main/resources/db/changelog/db.changelog-master.xml",
+                "referenceUrl" to "hibernate:spring:fm.force.quiz?" +
+                        "dialect=org.hibernate.dialect.PostgreSQL95Dialect&" +
+                        "hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&" +
+                        "hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy",
+                "defaultSchemaName" to "",
+                "logLevel" to "debug",
+                "classpath" to "src/main/resources/"
+        )
+    }
+    activities.register("diffLog") {
+        this.arguments = mapOf(
+                "driver" to "org.postgresql.Driver",
+                "url" to "jdbc:postgresql://localhost:5432/quiz",
+                "username" to "postgres",
+                "password" to "postgres",
+                "changeLogFile" to project.ext.get("diffChangelogFile"),
+                "referenceUrl" to "hibernate:spring:fm.force.quiz?" +
+                        "dialect=org.hibernate.dialect.PostgreSQL95Dialect&" +
+                        "hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&" +
+                        "hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy",
+                "defaultSchemaName" to "",
+                "logLevel" to "debug",
+                "classpath" to "$buildDir/classes/kotlin/main"
+        )
+    }
+
+    runList = project.ext.get("runList")
 }
 
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
 }
 
