@@ -3,17 +3,18 @@
                    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
-    <changeSet author="igorkalishevsky (generated)" id="1569876124527-1">
+    <changeSet author="igorkalishevsky (generated)" id="1569962231840-1">
         <createTable tableName="answers">
             <column name="id" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="answersPK"/>
             </column>
             <column name="create_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
             <column name="text" type="VARCHAR(255)"/>
+            <column name="trash" type="VARCHAR(255)"/>
             <column name="question_id" type="BIGINT"/>
         </createTable>
     </changeSet>
-    <changeSet author="igorkalishevsky (generated)" id="1569876124527-2">
+    <changeSet author="igorkalishevsky (generated)" id="1569962231840-2">
         <createTable tableName="questions">
             <column name="id" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="questionsPK"/>
@@ -23,7 +24,7 @@
             <column name="text" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet author="igorkalishevsky (generated)" id="1569876124527-3">
+    <changeSet author="igorkalishevsky (generated)" id="1569962231840-3">
         <addForeignKeyConstraint baseColumnNames="question_id" baseTableName="answers"
                                  constraintName="FK3erw1a3t0r78st8ty27x6v3g1" deferrable="false"
                                  initiallyDeferred="false" referencedColumnNames="id" referencedTableName="questions"

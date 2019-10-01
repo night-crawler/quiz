@@ -81,14 +81,14 @@ dependencies {
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
 }
 
-if (!project.hasProperty("runList")) {
-    project.ext.set("runList", "main")
-}
 
-project.ext.set(
-        "diffChangelogFile",
-        "src/main/resources/db/changelog/" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")) + "_changelog.xml"
-)
+
+if (!project.hasProperty("runList")) {
+    project.ext["runList"] = "main"
+}
+val changeLogTs = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))!!
+
+project.ext["diffChangelogFile"] = "src/main/resources/db/changelog/changes/change-${changeLogTs}.xml"
 
 liquibase {
     activities.register("main") {
@@ -97,7 +97,7 @@ liquibase {
                 "url" to "jdbc:postgresql://localhost:5432/quiz",
                 "username" to "postgres",
                 "password" to "postgres",
-                "changeLogFile" to "src/main/resources/db/changelog/db.changelog-master.xml",
+                "changeLogFile" to "src/main/resources/db/changelog/changelog-master.xml",
                 "referenceUrl" to "hibernate:spring:fm.force.quiz?" +
                         "dialect=org.hibernate.dialect.PostgreSQL95Dialect&" +
                         "hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&" +
