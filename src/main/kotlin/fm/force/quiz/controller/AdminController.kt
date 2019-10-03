@@ -17,4 +17,9 @@ class AdminController(
         questionRepository.save(Question(text="123"))
         return questionRepository.findAll()
     }
+
+    @GetMapping("dummy")
+    fun dummy(): String {
+        return "That's all"
+    }
 }

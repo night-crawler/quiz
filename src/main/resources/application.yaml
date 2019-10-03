@@ -13,3 +13,6 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: none
+logging:
+  level:
+    fm.force: debug
