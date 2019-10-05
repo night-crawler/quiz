@@ -5,17 +5,21 @@ import java.time.Instant
 import javax.persistence.*
 
 @Entity
-@Table(name = "answers")
-data class Answer(
+@Table(name = "users")
+data class User(
         @Id
         @GeneratedValue(generator = "increment")
         @GenericGenerator(name = "increment", strategy = "increment")
         val id: Long? = null,
 
-        val text: String,
+        val username: String? = null,
+        val firstName: String? = null,
+        val lastName: String? = null,
+        val email: String,
 
-        @ManyToOne(cascade = [(CascadeType.ALL)], fetch = FetchType.LAZY)
-        val question: Question,
+        val password: String? = null,
+
+        val isActive: Boolean = false,
 
         val createdAt: Instant = Instant.now()
 )

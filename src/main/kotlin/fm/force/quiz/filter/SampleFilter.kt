@@ -1,5 +1,7 @@
 package fm.force.quiz.filter
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import javax.servlet.Filter
 import javax.servlet.FilterChain
@@ -9,9 +11,10 @@ import javax.servlet.ServletResponse
 
 @Component
 class SampleFilter : Filter {
-    override fun doFilter(request: ServletRequest?, response: ServletResponse?, chain: FilterChain?) {
-        println("sample")
+    val logger: Logger = LoggerFactory.getLogger(SampleFilter::class.java)
 
+    override fun doFilter(request: ServletRequest?, response: ServletResponse?, chain: FilterChain?) {
+        logger.debug("Hello, I am a filter and my filtering precedes any interceptor")
         chain?.doFilter(request, response)
     }
 }
