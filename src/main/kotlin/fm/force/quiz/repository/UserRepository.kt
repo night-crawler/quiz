@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository
 import org.springframework.transaction.support.TransactionTemplate
 
 
-// JpaRepository наследуется уже от PagingAndSortingRepository
 @Repository
 interface JpaUserRepository : JpaRepository<User, Long>
 
