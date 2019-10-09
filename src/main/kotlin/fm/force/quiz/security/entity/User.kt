@@ -1,4 +1,4 @@
-package fm.force.quiz.entity
+package fm.force.quiz.security.entity
 
 import org.hibernate.annotations.GenericGenerator
 import java.time.Instant
@@ -12,14 +12,13 @@ data class User(
         @GenericGenerator(name = "increment", strategy = "increment")
         val id: Long? = null,
 
-        val username: String? = null,
-        val firstName: String? = null,
-        val lastName: String? = null,
+        val username: String = "",
+        val firstName: String = "",
+        val lastName: String = "",
         val email: String,
 
-        val password: String? = null,
+        val password: String = "",
 
         val isActive: Boolean = false,
-
         val createdAt: Instant = Instant.now()
 )

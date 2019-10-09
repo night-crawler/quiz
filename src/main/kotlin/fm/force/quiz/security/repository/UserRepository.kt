@@ -1,6 +1,6 @@
-package fm.force.quiz.repository
+package fm.force.quiz.security.repository
 
-import fm.force.quiz.entity.User
+import fm.force.quiz.security.entity.User
 
 import org.springframework.data.jpa.repository.JpaRepository
 

@@ -74,6 +74,9 @@ dependencies {
     liquibaseRuntime("org.springframework.boot:spring-boot:2.1.8.RELEASE")
     liquibaseRuntime("org.liquibase:liquibase-groovy-dsl:2.1.0")
 
+    api("io.jsonwebtoken:jjwt-api:0.10.7")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.10.7")
+    runtimeOnly("io.jsonwebtoken:jjwt-orgjson:0.10.7")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     implementation("com.vladmihalcea:hibernate-types-52:2.5.0")
