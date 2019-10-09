@@ -82,6 +82,8 @@ dependencies {
     implementation("com.vladmihalcea:hibernate-types-52:2.5.0")
     runtimeOnly("org.postgresql:postgresql")
 
+    testImplementation("io.kotlintest:kotlintest-runner-junit5:3.4.2")
+    testCompile("io.kotlintest:kotlintest-extensions-spring:3.4.2")
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
@@ -142,6 +144,7 @@ tasks.withType<KotlinCompile> {
 
 tasks.test {
     outputs.dir(snippetsDir)
+    useJUnitPlatform()
 }
 
 tasks.asciidoctor {

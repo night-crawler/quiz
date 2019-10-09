@@ -22,3 +22,5 @@ logging:
       %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}
   level:
     fm.force: debug
+jwt:
+  secret: IAmVeryRobustSecret
