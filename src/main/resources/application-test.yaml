@@ -3,4 +3,6 @@ spring:
     url: jdbc:postgresql://localhost:5432/quizTest
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: none
+  liquibase:
+    drop-first: true

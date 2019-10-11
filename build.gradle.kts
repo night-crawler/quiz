@@ -9,7 +9,7 @@ plugins {
     idea
     java
     kotlin("jvm") version kotlinVersion
-    kotlin("kapt") version kotlinVersion
+//    kotlin("kapt") version kotlinVersion
     kotlin("plugin.allopen") version kotlinVersion
     kotlin("plugin.noarg") version kotlinVersion
     kotlin("plugin.spring") version kotlinVersion
@@ -72,7 +72,7 @@ dependencies {
     liquibaseRuntime(sourceSets.getByName("main").output)
     liquibaseRuntime("org.postgresql:postgresql")
     liquibaseRuntime("org.springframework.boot:spring-boot:2.1.8.RELEASE")
-    liquibaseRuntime("org.liquibase:liquibase-groovy-dsl:2.1.0")
+//    liquibaseRuntime("org.liquibase:liquibase-groovy-dsl:2.1.0")
 
     api("io.jsonwebtoken:jjwt-api:0.10.7")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.10.7")
