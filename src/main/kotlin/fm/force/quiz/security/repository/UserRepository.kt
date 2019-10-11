@@ -16,5 +16,6 @@ class UserRepository(
         private val userRepository: JpaUserRepository,
         private val transactionTemplate: TransactionTemplate
 ) {
-
+    fun createRandomUser() {
+    }
 }

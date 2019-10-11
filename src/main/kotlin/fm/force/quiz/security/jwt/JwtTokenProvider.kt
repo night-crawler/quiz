@@ -1,14 +1,18 @@
 package fm.force.quiz.security.jwt
 
+import io.jsonwebtoken.Jwts
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 @Component
 class JwtTokenProvider {
     @Value("\${jwt.secret}")
-    private var secret: String = ""
+    private lateinit var secret: String
 
     fun sayStuff() {
+//        val a = with(Jwts.builder()) {
+//            setPayload()
+//        }
         println("!!!!!!!!!!!! $secret")
     }
 }

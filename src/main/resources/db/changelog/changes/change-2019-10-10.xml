@@ -1,0 +1,42 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="igorkalishevsky (generated)" id="1570737516004-1">
+        <createTable tableName="roles">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="rolesPK"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="name" type="VARCHAR(16)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1570737516004-2">
+        <createTable tableName="users_roles">
+            <column name="users_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="roles_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1570737516004-3">
+        <addColumn tableName="users">
+            <column name="updated_at" type="timestamp"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1570737516004-4">
+        <addForeignKeyConstraint baseColumnNames="roles_id" baseTableName="users_roles"
+                                 constraintName="FKa62j07k5mhgifpp955h37ponj" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="roles"
+                                 validate="true"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1570737516004-5">
+        <addForeignKeyConstraint baseColumnNames="users_id" baseTableName="users_roles"
+                                 constraintName="FKml90kef4w2jy7oxyqv742tsfc" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="users"
+                                 validate="true"/>
+    </changeSet>
+</databaseChangeLog>
