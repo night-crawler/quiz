@@ -5,8 +5,10 @@ import fm.force.quiz.security.repository.UserRepository
 import io.kotlintest.specs.*
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.test.context.ActiveProfiles
 
 
+@ActiveProfiles("test")
 @SpringBootTest
 class UserTest : WordSpec() {
 
