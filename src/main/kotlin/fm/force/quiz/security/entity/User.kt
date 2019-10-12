@@ -21,9 +21,5 @@ data class User(
         val roles: List<Role> = listOf()
 
 ) : BaseEntity() {
-    override fun toString(): String {
-            println(this.javaClass.declaredFields.map { it.name })
-            println(fieldNames)
-        return "LOL"
-    }
+    override fun toString() = super.toString()
 }

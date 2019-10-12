@@ -22,7 +22,7 @@ class UserTest : WordSpec() {
         "UserRepository" should {
             "know how to create users" {
                 val result = jpaUserRepository.save(User(email = "vasya@force.fm"))
-                println("QQQ $result")
+                println("String representation: $result")
             }
         }
     }
