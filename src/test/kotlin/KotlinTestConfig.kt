@@ -14,7 +14,7 @@ object ProjectConfig : AbstractProjectConfig() {
 
     override fun afterAll() {
         val time = System.currentTimeMillis() - started
-        println("overall time [ms]: " + time)
+        println("overall time [ms]: $time")
     }
 
     override fun parallelism(): Int = 1

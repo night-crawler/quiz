@@ -1,7 +1,6 @@
-package fm.force.quiz.security.entity
+package fm.force.quiz.security.repository
 
-import fm.force.quiz.security.repository.JpaUserRepository
-import fm.force.quiz.security.repository.UserRepository
+import fm.force.quiz.security.entity.User
 import io.kotlintest.specs.*
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.beans.factory.annotation.Autowired
@@ -10,7 +9,7 @@ import org.springframework.test.context.ActiveProfiles
 
 @ActiveProfiles("test")
 @SpringBootTest
-class UserTest : WordSpec() {
+class UserRepositoryTest : WordSpec() {
 
     @Autowired
     lateinit var userRepository: UserRepository
