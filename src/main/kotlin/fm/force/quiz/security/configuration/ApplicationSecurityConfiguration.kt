@@ -40,8 +40,5 @@ class ApplicationSecurityConfiguration : WebSecurityConfigurerAdapter(true) {
                 .anyRequest().authenticated()
                 .and()
                 .apply(JwtConfigurer())
-                .and()
-                .formLogin()
-        println("?")
     }
 }

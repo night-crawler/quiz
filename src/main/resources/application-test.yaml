@@ -6,3 +6,5 @@ spring:
       ddl-auto: none
   liquibase:
     drop-first: true
+jwt:
+  secret: qwe

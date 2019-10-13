@@ -15,15 +15,15 @@ class SampleInterceptor : HandlerInterceptor {
     val logger: Logger = LoggerFactory.getLogger(SampleInterceptor::class.java)
 
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
-        logger.debug("Received a request to intercept: $request")
+        logger.debug("[ø] Received a request to intercept: $request")
         return true
     }
 
     override fun postHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any, modelAndView: ModelAndView?) {
-        logger.debug("Handled a request $request, $response")
+        logger.debug("[ø] Handled a request $request, $response")
     }
 
     override fun afterCompletion(request: HttpServletRequest, response: HttpServletResponse, handler: Any, ex: Exception?) {
-        logger.debug("Completed handling requests")
+        logger.debug("[ø] Completed handling requests")
     }
 }

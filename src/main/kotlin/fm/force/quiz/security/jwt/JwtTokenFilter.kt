@@ -1,5 +1,8 @@
 package fm.force.quiz.security.jwt
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler
 import org.springframework.web.filter.GenericFilterBean
 import javax.servlet.FilterChain
@@ -13,14 +16,23 @@ class JwtTokenFilter : GenericFilterBean() {
     private val failureHandler = SimpleUrlAuthenticationFailureHandler()
 
     override fun doFilter(request: ServletRequest?, response: ServletResponse?, chain: FilterChain?) {
-        failureHandler.onAuthenticationFailure(request as HttpServletRequest?, response as HttpServletResponse?, JwtAuthenticationException("LOL!"))
+        if (false) {
+            // TODO: this method gets called twice for some reason with different arguments
+            failureHandler.onAuthenticationFailure(
+                    request as HttpServletRequest?,
+                    response as HttpServletResponse?,
+                    JwtAuthenticationException("LOL!")
+            )
+            return
+        }
 
-//        SecurityContextHolder.getContext().authentication = UsernamePasswordAuthenticationToken(
-//                JwtUserDetails(email = "vasya@example.com"),
-//                "",
-//                listOf<GrantedAuthority>()
-//        )
+        SecurityContextHolder.getContext().authentication = UsernamePasswordAuthenticationToken(
+                JwtUserDetails(email = "vasya@example.com"),
+                "",
+                listOf<GrantedAuthority>()
+        )
         chain?.doFilter(request, response)
     }
+
 
 }

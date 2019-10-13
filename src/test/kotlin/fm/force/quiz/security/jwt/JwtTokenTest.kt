@@ -1,20 +1,20 @@
 package fm.force.quiz.security.jwt
 
+import io.kotlintest.provided.fm.force.quiz.security.jwt.JwtConfiguration
 import io.kotlintest.specs.*
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.test.context.ContextConfiguration
 
 
-@SpringBootTest
-class SampleSpec : WordSpec() {
+@ContextConfiguration(classes = [JwtConfiguration::class])
+class JwtTokenTest : WordSpec() {
 
     @Autowired
     lateinit var jwtTokenProvider: JwtTokenProvider
 
     init {
-        "bla bla" should {
-            "qwe qwe" {
-                println(jwtTokenProvider.sayStuff())
+        "JwtTokenTest" should {
+            "do something useful" {
             }
         }
     }
