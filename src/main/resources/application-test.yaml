@@ -1,10 +1,13 @@
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/quizTest
+    username: postgres
+    password: postgres
+  liquibase:
+    change-log: classpath:db/changelog/changelog-master.xml
+    drop-first: true
   jpa:
     hibernate:
       ddl-auto: none
-  liquibase:
-    drop-first: true
 jwt:
   secret: qwe
