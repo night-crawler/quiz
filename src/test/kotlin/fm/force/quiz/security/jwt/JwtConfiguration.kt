@@ -12,10 +12,10 @@ import org.springframework.test.context.ContextConfiguration
 
 
 @TestConfiguration
+@PropertySource("classpath:application-test.yaml", factory = YamlPropertyLoaderFactory::class)
 @ComponentScan("fm.force.quiz")
 @ContextConfiguration(initializers=[ConfigFileApplicationContextInitializer::class])
-@PropertySource("classpath:application-test.yaml", factory = YamlPropertyLoaderFactory::class)
-class JwtConfiguration {
+open class JwtConfiguration {
     @Bean
     fun jwtTokenProvide() : JwtTokenProvider {
         return JwtTokenProvider()

@@ -66,13 +66,10 @@ dependencies {
 
     liquibaseRuntime("org.liquibase:liquibase-core")
     liquibaseRuntime("org.liquibase.ext:liquibase-hibernate5:3.8")
-    liquibaseRuntime("ch.qos.logback:logback-core")
-    liquibaseRuntime("ch.qos.logback:logback-classic")
     liquibaseRuntime(sourceSets.getByName("main").compileClasspath)
     liquibaseRuntime(sourceSets.getByName("main").output)
     liquibaseRuntime("org.postgresql:postgresql")
     liquibaseRuntime("org.springframework.boot:spring-boot:2.1.8.RELEASE")
-//    liquibaseRuntime("org.liquibase:liquibase-groovy-dsl:2.1.0")
 
     api("io.jsonwebtoken:jjwt-api:0.10.7")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.10.7")

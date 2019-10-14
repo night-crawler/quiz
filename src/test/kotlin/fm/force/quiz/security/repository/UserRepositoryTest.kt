@@ -8,7 +8,7 @@ import org.springframework.test.context.ContextConfiguration
 
 
 @ContextConfiguration(classes=[JwtConfiguration::class])
-class UserRepositoryTest : WordSpec() {
+open class UserRepositoryTest : WordSpec() {
 
     @Autowired
     lateinit var userRepository: UserRepository
