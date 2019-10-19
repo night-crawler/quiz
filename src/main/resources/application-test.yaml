@@ -10,4 +10,6 @@ spring:
     hibernate:
       ddl-auto: none
 jwt:
-  secret: qwe
+  secret: "[B@6da120e5456tyujnbvfdrt5dfghjkl"
+  expire: 10000
+  issuer: quizTest

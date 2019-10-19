@@ -20,7 +20,7 @@ class ApplicationSecurityConfiguration : WebSecurityConfigurerAdapter(true) {
     private final val AUTH_ENDPOINT_PREFIX = "/auth/**"
     private final val ADMIN_ENDPOINT_PREFIX = "/admin/**"
 
-    private final val logger: Logger = LoggerFactory.getLogger(ApplicationSecurityConfiguration::class.java)
+    private final val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     @Autowired
     fun initialize(builder: AuthenticationManagerBuilder, userRepository: JpaUserRepository) {

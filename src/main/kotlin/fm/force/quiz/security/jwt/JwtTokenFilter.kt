@@ -1,5 +1,6 @@
 package fm.force.quiz.security.jwt
 
+import fm.force.quiz.security.entity.User
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
@@ -26,11 +27,11 @@ class JwtTokenFilter : GenericFilterBean() {
             return
         }
 
-        SecurityContextHolder.getContext().authentication = UsernamePasswordAuthenticationToken(
-                JwtUserDetails(email = "vasya@example.com"),
-                "",
-                listOf<GrantedAuthority>()
-        )
+//        SecurityContextHolder.getContext().authentication = UsernamePasswordAuthenticationToken(
+//                JwtUserDetails(),
+//                "",
+//                listOf<GrantedAuthority>()
+//        )
         chain?.doFilter(request, response)
     }
 

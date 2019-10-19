@@ -11,7 +11,7 @@ import javax.servlet.ServletResponse
 
 @Component
 class SampleFilter : Filter {
-    val logger: Logger = LoggerFactory.getLogger(SampleFilter::class.java)
+    val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     override fun doFilter(request: ServletRequest?, response: ServletResponse?, chain: FilterChain?) {
         logger.debug("Hello, I am a filter and my filtering precedes any interceptor")

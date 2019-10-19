@@ -9,8 +9,16 @@ data class Role(
         val name: String,
 
         @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
-        val users: List<User>
+        val users: List<User> = listOf()
 ) : BaseEntity() {
+    enum class PredefinedRoles {
+        ADMIN, STUDENT, TEACHER
+    }
+
+    companion object {
+        val predefinedRoleNames get() = PredefinedRoles.values().map { it.name }
+    }
+
     override fun toString(): String {
         return "<Role $id $name>"
     }

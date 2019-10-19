@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse
 
 @Component
 class SampleInterceptor : HandlerInterceptor {
-    val logger: Logger = LoggerFactory.getLogger(SampleInterceptor::class.java)
+    val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
         logger.debug("[ø] Received a request to intercept: $request")
