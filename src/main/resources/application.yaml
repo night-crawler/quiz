@@ -14,4 +14,6 @@ spring:
     hibernate:
       ddl-auto: none
 jwt:
-  secret: IAmVeryRobustSecret
+  secret: IAmVeryRobustAndUniqueSecret!!!one
+  expire: 10000
+  issuer: quiz

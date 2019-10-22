@@ -81,6 +81,7 @@ dependencies {
 
     compileOnly("org.projectlombok:lombok:1.18.10")
     annotationProcessor("org.projectlombok:lombok:1.18.10")
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     testImplementation("io.kotlintest:kotlintest-runner-junit5:3.4.2")
     testCompile("io.kotlintest:kotlintest-extensions-spring:3.4.2")

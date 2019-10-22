@@ -12,7 +12,7 @@ import java.util.*
 
 
 @Component
-class JwtTokenProvider {
+class JwtProvider {
     val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     private lateinit var key: Key
@@ -32,7 +32,7 @@ class JwtTokenProvider {
         logger.debug("Issuing a token for {}", jwtUserDetails)
 
         val claims = Jwts.claims().apply {
-            issuer = this@JwtTokenProvider.issuer
+            issuer = this@JwtProvider.issuer
             subject = jwtUserDetails.username
             issuedAt = now
             expiration = Date(now.time + expireTimeoutMs)

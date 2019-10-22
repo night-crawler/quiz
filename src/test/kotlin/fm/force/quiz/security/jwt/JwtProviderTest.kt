@@ -13,45 +13,43 @@ import java.util.*
 
 
 @ContextConfiguration(classes = [JwtConfiguration::class])
-open class JwtTokenTest(
-        private val jwtTokenProvider: JwtTokenProvider,
-        private val jwtDetailsFactory: IJwtUserDetailsFactory
+open class JwtProviderTest(
+        private val jwtProvider: JwtProvider
 ) : WordSpec() {
-
+    private val jwtUserDetailsFactory = JwtUserDetailsFactoryImpl()
+    private val randomUserDetails: JwtUserDetails get() = jwtUserDetailsFactory.createUserDetails(randomUser)
     private val randomUser
         get() = User(
-                username = "username-${getRandomString()}".also { println("ø $it") },
+                username = "username-${getRandomString()}",
                 email = "email-${getRandomString()}@example.com",
                 roles = listOf(Role(Role.predefinedRoleNames.random()))
         )
 
-    private val randomUserDetails: JwtUserDetails get() = jwtDetailsFactory.createUserDetails(randomUser)
-
     init {
         "JwtTokenProvider" should {
             "issue jwt tokens with empty roles" {
-                val userDetails = jwtDetailsFactory.createUserDetails().apply {
+                val userDetails = jwtUserDetailsFactory.createUserDetails().apply {
                     username = "sample@example.com"
                     password = "password"
                 }
 
-                val token = jwtTokenProvider.issue(userDetails)
+                val token = jwtProvider.issue(userDetails)
                 token.shouldNotBeBlank()
             }
 
             "serialize tokens for valid User entities" {
-                val token = jwtTokenProvider.issue(randomUserDetails)
+                val token = jwtProvider.issue(randomUserDetails)
                 token.shouldNotBeBlank()
             }
 
             "validate tokens" {
-                var token = jwtTokenProvider.issue(randomUserDetails)
-                jwtTokenProvider.validate(token).shouldBeTrue()
+                var token = jwtProvider.issue(randomUserDetails)
+                jwtProvider.validate(token).shouldBeTrue()
 
-                token = jwtTokenProvider.issue(randomUserDetails, now = Date(Date().time - 100000000))
-                jwtTokenProvider.validate(token).shouldBeFalse()
+                token = jwtProvider.issue(randomUserDetails, now = Date(Date().time - 100000000))
+                jwtProvider.validate(token).shouldBeFalse()
 
-                jwtTokenProvider.validate("").shouldBeFalse()
+                jwtProvider.validate("").shouldBeFalse()
             }
         }
     }

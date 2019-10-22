@@ -1,0 +1,19 @@
+{
+  "properties": [
+    {
+      "name": "jwt.secret",
+      "type": "java.lang.String",
+      "description": "JWT signing secret."
+    },
+    {
+      "name": "jwt.expire",
+      "type": "java.lang.String",
+      "description": "Expire timeout in ms."
+    },
+    {
+      "name": "jwt.issuer",
+      "type": "java.lang.String",
+      "description": "JWT issuer."
+    }
+  ]
+}
