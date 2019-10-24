@@ -6,6 +6,7 @@ import io.jsonwebtoken.security.Keys
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.security.core.GrantedAuthority
 import org.springframework.stereotype.Component
 import java.security.Key
 import java.util.*
@@ -46,14 +47,31 @@ class JwtProvider {
                 .also { logger.debug("Issued a token for {}: {}", jwtUserDetails, it) }
     }
 
-    fun validate(token: String): Boolean {
-        try {
-            Jwts.parser().setSigningKey(key).parseClaimsJws(token)
-        } catch (exc: JwtException) {
-            return false
-        } catch (exc: IllegalArgumentException) {
-            return false
-        }
-        return true
+    // TODO: validate is a bad name here
+    fun validate(token: String): JwtUserDetails? = try {
+        val claims = Jwts.parser().setSigningKey(key).parseClaimsJws(token)
+        JwtUserDetails(
+                authorities = safeExtractAuthoritiesFromRoles(claims.body["roles"]),
+                enabled = true,
+                username = claims.body.subject,
+                credentialsNonExpired = true,
+                password = "",
+                accountNonExpired = true,
+                accountNonLocked = true
+        )
+    } catch (exc: JwtException) {
+        logger.warn("Failed to parse token {}, {}", token, exc)
+        null
+    } catch (exc: IllegalArgumentException) {
+        logger.warn("Illegal token {}, {}", token, exc)
+        null
+    }
+
+    // TODO: obviously, there's a need to implement custom serializer & deserializer
+    //  for particular JwtUserDetails fields, or for a whole class.
+    //  But Jackson serializer with a custom ObjectMapper seems to be not that easy to implement.
+    fun safeExtractAuthoritiesFromRoles(mayBeRoles: Any?): List<GrantedAuthority> {
+        val roles = mayBeRoles as? Collection<*>
+        return roles?.map { GrantedAuthority { it.toString() } } ?: listOf()
     }
 }

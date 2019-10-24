@@ -6,25 +6,25 @@ import org.springframework.security.core.userdetails.UserDetails
 
 class JwtUserDetails(
         @get:JvmName("getAuthorities_")
-        var authorities:  MutableCollection<out GrantedAuthority>,
+        var authorities:  Collection<GrantedAuthority> = listOf(),
 
         @get:JvmName("getEnabled_")
-        var enabled: Boolean,
+        var enabled: Boolean = false,
 
         @get:JvmName("getUsername_")
         var username: String,
 
         @get:JvmName("isCredentialsNonExpired_")
-        var credentialsNonExpired: Boolean,
+        var credentialsNonExpired: Boolean = false,
 
         @get:JvmName("getPassword_")
-        var password: String,
+        var password: String = "",
 
         @get:JvmName("isAccountNonExpired_")
-        var accountNonExpired: Boolean,
+        var accountNonExpired: Boolean = false,
 
         @get:JvmName("isAccountNonLocked_")
-        var accountNonLocked: Boolean) : UserDetails {
+        var accountNonLocked: Boolean = false) : UserDetails {
     /**
      * Returns the authorities granted to the user. Cannot return `null`.
      *
@@ -79,6 +79,8 @@ class JwtUserDetails(
      * @return `true` if the user is not locked, `false` otherwise
      */
     override fun isAccountNonLocked() = accountNonLocked
+
+    fun isUsable() = isAccountNonExpired && isAccountNonLocked && isCredentialsNonExpired && isEnabled
 
     override fun toString(): String {
         return "${this::class.java.simpleName}(username=$username)"

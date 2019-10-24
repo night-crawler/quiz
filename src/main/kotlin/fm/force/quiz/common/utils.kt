@@ -7,4 +7,4 @@ fun getRandomString(len: Int = 8) =
         (1..len)
                 .map { kotlin.random.Random.nextInt(0, ALPHABET.size) }
                 .map(ALPHABET::get)
-                .joinToString("");
+                .joinToString("")

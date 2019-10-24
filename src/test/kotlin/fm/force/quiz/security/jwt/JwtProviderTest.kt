@@ -3,9 +3,10 @@ package fm.force.quiz.security.jwt
 import fm.force.quiz.common.getRandomString
 import fm.force.quiz.security.entity.Role
 import fm.force.quiz.security.entity.User
-import io.kotlintest.matchers.boolean.shouldBeFalse
 import io.kotlintest.matchers.boolean.shouldBeTrue
 import io.kotlintest.matchers.string.shouldNotBeBlank
+import io.kotlintest.matchers.types.shouldBeNull
+import io.kotlintest.matchers.types.shouldNotBeNull
 import io.kotlintest.provided.fm.force.quiz.security.jwt.JwtConfiguration
 import io.kotlintest.specs.WordSpec
 import org.springframework.test.context.ContextConfiguration
@@ -44,12 +45,13 @@ open class JwtProviderTest(
 
             "validate tokens" {
                 var token = jwtProvider.issue(randomUserDetails)
-                jwtProvider.validate(token).shouldBeTrue()
+                var details = jwtProvider.validate(token)
+                details.shouldNotBeNull()
+                details.username.shouldNotBeBlank()
+                details.isUsable().shouldBeTrue()
 
                 token = jwtProvider.issue(randomUserDetails, now = Date(Date().time - 100000000))
-                jwtProvider.validate(token).shouldBeFalse()
-
-                jwtProvider.validate("").shouldBeFalse()
+                jwtProvider.validate(token).shouldBeNull()
             }
         }
     }

@@ -1,9 +1,11 @@
 package fm.force.quiz.controller
 
-import fm.force.quiz.dto.GetQuestionsDTO
 import fm.force.quiz.entity.Question
 import fm.force.quiz.repository.JpaQuestionRepository
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("admin")
