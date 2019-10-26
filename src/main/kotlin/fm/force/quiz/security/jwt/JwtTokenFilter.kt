@@ -2,37 +2,37 @@ package fm.force.quiz.security.jwt
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler
+import org.springframework.security.core.AuthenticationException
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.filter.GenericFilterBean
 import javax.servlet.FilterChain
 import javax.servlet.ServletRequest
 import javax.servlet.ServletResponse
 import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
-import org.springframework.security.core.AuthenticationException
-import org.springframework.security.core.context.SecurityContextHolder
+
 
 class JwtTokenFilter(
         private val jwtAuthProviderService: JwtAuthProviderService
 ) : GenericFilterBean() {
-    // TODO: Why would they ever define their shitty logger?
     private val niceLogger: Logger = LoggerFactory.getLogger(this::class.java)
-    private val failureHandler = SimpleUrlAuthenticationFailureHandler()
+    /* private val failureHandler = SimpleUrlAuthenticationFailureHandler()
+    *  it seems this handler can terminate any request instantly:
+    *     failureHandler.onAuthenticationFailure(httpRequest, httpResponse, exc)
+    */
 
-    // TODO: this method gets called twice for some reason with different arguments
-    // TODO: I wonder if request / response can really be null
+
+    /* sometimes spring calls doFilter twice after an auth failure:
+     * first time for the original request, and the second one for an `/error` url
+    */
     override fun doFilter(request: ServletRequest?, response: ServletResponse?, chain: FilterChain?) {
         val httpRequest = request as HttpServletRequest?
-        val httpResponse = response as HttpServletResponse?
+        val path = httpRequest?.requestURI
 
         try {
             SecurityContextHolder.getContext().authentication = jwtAuthProviderService.authorizeRequest(httpRequest)
-            niceLogger.trace("Request was authenticated by JWT token")
+            niceLogger.debug("Request `{}` was authenticated by JWT token", path)
         } catch (exc: AuthenticationException) {
-            // TODO: take a look at BasicAuthenticationFilter for options when it's OK to process the chain
-            failureHandler.onAuthenticationFailure(httpRequest, httpResponse, exc)
-            niceLogger.debug("Authentication failed: {}", exc.localizedMessage)
-            return
+            niceLogger.debug("Request `{}` authentication failed: `{}`", path, exc.localizedMessage)
         }
         chain?.doFilter(request, response)
     }

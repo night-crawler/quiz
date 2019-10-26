@@ -12,6 +12,7 @@ import org.springframework.transaction.support.TransactionTemplate
 @Repository
 interface JpaUserRepository : JpaRepository<User, Long> {
     fun findByEmail(email: String): User?
+    fun findByEmailOrUsername(email: String, username: String): User?
     fun findByEmailAndPassword(email: String, password: String): User?
     fun findUsersByRolesName(roles_name: String) : List<User>
     fun findUsersByRolesNameIn(roles_names: Collection<String>): List<User>
