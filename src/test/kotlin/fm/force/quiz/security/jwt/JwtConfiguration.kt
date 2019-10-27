@@ -16,15 +16,9 @@ import org.springframework.test.context.ContextConfiguration
 @ContextConfiguration(initializers=[ConfigFileApplicationContextInitializer::class])
 class JwtConfiguration {
     companion object {
-        // this stuff has to be static, otherwise it can be initialized not in time
-//        @Bean
-//        fun jwtTokenProvide() : JwtProvider {
-//            return JwtProvider()
-//        }
-    }
-
-    @Bean
-    fun propertiesResolver(): PropertySourcesPlaceholderConfigurer {
-        return PropertySourcesPlaceholderConfigurer()
+        @Bean
+        fun propertiesResolver(): PropertySourcesPlaceholderConfigurer {
+            return PropertySourcesPlaceholderConfigurer()
+        }
     }
 }

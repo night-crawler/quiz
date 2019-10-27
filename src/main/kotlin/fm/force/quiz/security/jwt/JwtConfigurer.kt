@@ -1,5 +1,6 @@
 package fm.force.quiz.security.jwt
 
+import fm.force.quiz.security.service.JwtAuthProviderService
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.web.DefaultSecurityFilterChain

@@ -6,6 +6,8 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
+
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
@@ -19,7 +21,7 @@ class RegisterControllerTest(
                 mockMvc.perform(
                         post("/auth/register")
                                 .contentType(MediaType.APPLICATION_JSON)
-                )
+                ).andDo(print())
             }
         }
     }

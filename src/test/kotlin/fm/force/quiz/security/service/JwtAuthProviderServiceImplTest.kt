@@ -1,5 +1,8 @@
-package fm.force.quiz.security.jwt
+package io.kotlintest.provided.fm.force.quiz.security.service
 
+import fm.force.quiz.security.service.JwtAuthProviderService
+import fm.force.quiz.security.service.JwtProviderService
+import fm.force.quiz.security.service.JwtUserDetailsFactoryServiceImpl
 import io.kotlintest.provided.fm.force.quiz.security.jwt.JwtConfiguration
 import io.kotlintest.specs.WordSpec
 import org.springframework.mock.web.MockHttpServletRequest
@@ -8,9 +11,9 @@ import org.springframework.test.context.ContextConfiguration
 @ContextConfiguration(classes = [JwtConfiguration::class])
 open class JwtAuthProviderServiceImplTest(
         private val jwtAuthProviderService: JwtAuthProviderService,
-        private val jwtProvider: JwtProvider
+        private val jwtProviderService: JwtProviderService
 ) : WordSpec() {
-    private val jwtUserDetailsFactory = JwtUserDetailsFactoryImpl()
+    private val jwtUserDetailsFactory = JwtUserDetailsFactoryServiceImpl()
 
     init {
         "JwtAuthProviderService" should {
@@ -18,7 +21,7 @@ open class JwtAuthProviderServiceImplTest(
                 val details = jwtUserDetailsFactory.createUserDetails().apply {
                     username = "example"
                 }
-                val token = jwtProvider.issue(details)
+                val token = jwtProviderService.issue(details)
 
                 val request = MockHttpServletRequest()
                 request.addHeader("Authorization", "Bearer $token")
@@ -28,4 +31,3 @@ open class JwtAuthProviderServiceImplTest(
         }
     }
 }
-

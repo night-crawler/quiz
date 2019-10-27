@@ -76,6 +76,8 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-orgjson:0.10.7")
     compile("io.jsonwebtoken:jjwt-jackson:0.10.7")
 
+    compile("de.mkammerer:argon2-jvm:2.6")
+
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     implementation("com.vladmihalcea:hibernate-types-52:2.5.0")
     runtimeOnly("org.postgresql:postgresql")

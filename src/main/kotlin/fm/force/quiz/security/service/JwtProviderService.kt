@@ -1,5 +1,6 @@
-package fm.force.quiz.security.jwt
+package fm.force.quiz.security.service
 
+import fm.force.quiz.security.jwt.JwtUserDetails
 import io.jsonwebtoken.JwtException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
@@ -13,7 +14,7 @@ import java.util.*
 
 
 @Component
-class JwtProvider {
+class JwtProviderService {
     val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     private lateinit var key: Key
@@ -33,7 +34,7 @@ class JwtProvider {
         logger.debug("Issuing a token for {}", jwtUserDetails)
 
         val claims = Jwts.claims().apply {
-            issuer = this@JwtProvider.issuer
+            issuer = this@JwtProviderService.issuer
             subject = jwtUserDetails.username
             issuedAt = now
             expiration = Date(now.time + expireTimeoutMs)

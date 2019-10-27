@@ -17,3 +17,13 @@ jwt:
   secret: IAmVeryRobustAndUniqueSecret!!!one
   expire: 10000
   issuer: quiz
+
+force:
+  security:
+    jwt:
+      secret: IAmVeryRobustAndUniqueSecret!!!one
+      expire: 10000
+      issuer: quiz
+    password:
+      iterations: 4
+      minLength: 8

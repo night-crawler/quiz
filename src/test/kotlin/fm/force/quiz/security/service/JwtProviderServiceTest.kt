@@ -1,8 +1,11 @@
-package fm.force.quiz.security.jwt
+package io.kotlintest.provided.fm.force.quiz.security.service
 
 import fm.force.quiz.common.getRandomString
 import fm.force.quiz.security.entity.Role
 import fm.force.quiz.security.entity.User
+import fm.force.quiz.security.jwt.JwtUserDetails
+import fm.force.quiz.security.service.JwtProviderService
+import fm.force.quiz.security.service.JwtUserDetailsFactoryServiceImpl
 import io.kotlintest.matchers.boolean.shouldBeTrue
 import io.kotlintest.matchers.string.shouldNotBeBlank
 import io.kotlintest.matchers.types.shouldBeNull
@@ -14,10 +17,10 @@ import java.util.*
 
 
 @ContextConfiguration(classes = [JwtConfiguration::class])
-open class JwtProviderTest(
-        private val jwtProvider: JwtProvider
+open class JwtProviderServiceTest(
+        private val jwtProviderService: JwtProviderService
 ) : WordSpec() {
-    private val jwtUserDetailsFactory = JwtUserDetailsFactoryImpl()
+    private val jwtUserDetailsFactory = JwtUserDetailsFactoryServiceImpl()
     private val randomUserDetails: JwtUserDetails get() = jwtUserDetailsFactory.createUserDetails(randomUser)
     private val randomUser
         get() = User(
@@ -34,24 +37,24 @@ open class JwtProviderTest(
                     password = "password"
                 }
 
-                val token = jwtProvider.issue(userDetails)
+                val token = jwtProviderService.issue(userDetails)
                 token.shouldNotBeBlank()
             }
 
             "serialize tokens for valid User entities" {
-                val token = jwtProvider.issue(randomUserDetails)
+                val token = jwtProviderService.issue(randomUserDetails)
                 token.shouldNotBeBlank()
             }
 
             "validate tokens" {
-                var token = jwtProvider.issue(randomUserDetails)
-                var details = jwtProvider.validate(token)
+                var token = jwtProviderService.issue(randomUserDetails)
+                var details = jwtProviderService.validate(token)
                 details.shouldNotBeNull()
                 details.username.shouldNotBeBlank()
                 details.isUsable().shouldBeTrue()
 
-                token = jwtProvider.issue(randomUserDetails, now = Date(Date().time - 100000000))
-                jwtProvider.validate(token).shouldBeNull()
+                token = jwtProviderService.issue(randomUserDetails, now = Date(Date().time - 100000000))
+                jwtProviderService.validate(token).shouldBeNull()
             }
         }
     }

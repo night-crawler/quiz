@@ -13,3 +13,13 @@ jwt:
   secret: "[B@6da120e5456tyujnbvfdrt5dfghjkl"
   expire: 10000
   issuer: quizTest
+
+force:
+  security:
+    jwt:
+      secret: "[B@6da120e5456tyujnbvfdrt5dfghjkl"
+      expire: 10000
+      issuer: quizTest
+    password:
+      iterations: 4
+      minLength: 8

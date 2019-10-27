@@ -1,8 +1,9 @@
-package fm.force.quiz.security.jwt
+package fm.force.quiz.security.service
 
 import fm.force.quiz.security.entity.User
+import fm.force.quiz.security.jwt.JwtUserDetails
 
-interface JwtUserDetailsFactory {
+interface JwtUserDetailsFactoryService {
     fun createUserDetails(user: User): JwtUserDetails
     fun createUserDetails(): JwtUserDetails
 }

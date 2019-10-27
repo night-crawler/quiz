@@ -1,4 +1,4 @@
-package fm.force.quiz.security.jwt
+package fm.force.quiz.security.service
 
 import fm.force.quiz.security.repository.JpaUserRepository
 import org.springframework.security.core.userdetails.UserDetails
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service
 @Service
 class JwtUserDetailsService(
         val jpaUserRepository: JpaUserRepository,
-        val jpaUserDetailsFactory: JwtUserDetailsFactory
+        val jpaUserDetailsFactoryService: JwtUserDetailsFactoryService
 ) : UserDetailsService {
     /**
      * Locates the user based on the username. In the actual implementation, the search
@@ -29,7 +29,7 @@ class JwtUserDetailsService(
         username ?: throw UsernameNotFoundException("Null usernames are not supported")
         return jpaUserRepository
                 .findByEmailOrUsername(username, username)
-                ?.let { jpaUserDetailsFactory.createUserDetails(it) }
+                ?.let { jpaUserDetailsFactoryService.createUserDetails(it) }
                 ?: throw UsernameNotFoundException("Username $username was not found")
     }
 }

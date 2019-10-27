@@ -1,4 +1,4 @@
-package fm.force.quiz.security.jwt
+package fm.force.quiz.security.service
 
 import fm.force.quiz.security.repository.JpaUserRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest
 
 abstract class JwtAuthProviderService {
     @Autowired
-    private lateinit var jwtProvider: JwtProvider
+    private lateinit var jwtProviderService: JwtProviderService
 
     @Autowired
     private lateinit var jpaUserRepository: JpaUserRepository

@@ -1,12 +1,13 @@
-package fm.force.quiz.security.jwt
+package fm.force.quiz.security.service
 
 import fm.force.quiz.security.entity.User
+import fm.force.quiz.security.jwt.JwtUserDetails
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.stereotype.Component
 
 
 @Component
-class JwtUserDetailsFactoryImpl : JwtUserDetailsFactory {
+class JwtUserDetailsFactoryServiceImpl : JwtUserDetailsFactoryService {
     override fun createUserDetails(): JwtUserDetails {
         return JwtUserDetails(
                 authorities = mutableListOf(),
