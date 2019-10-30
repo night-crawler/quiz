@@ -75,6 +75,8 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.10.7")
     runtimeOnly("io.jsonwebtoken:jjwt-orgjson:0.10.7")
     compile("io.jsonwebtoken:jjwt-jackson:0.10.7")
+    compile("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.+")
+
 
     compile("de.mkammerer:argon2-jvm:2.6")
 
