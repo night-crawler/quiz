@@ -1,43 +1,33 @@
 package fm.force.quiz.security.service
 
+import fm.force.quiz.security.configuration.JwtConfigurationProperties
 import fm.force.quiz.security.jwt.JwtUserDetails
 import io.jsonwebtoken.JwtException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.core.GrantedAuthority
-import org.springframework.stereotype.Component
+import org.springframework.stereotype.Service
 import java.security.Key
 import java.util.*
 
 
-@Component
-class JwtProviderService {
+@Service
+class JwtProviderService(
+        private val config: JwtConfigurationProperties
+) {
     val logger: Logger = LoggerFactory.getLogger(this::class.java)
-
-    private lateinit var key: Key
-
-    @Value("\${jwt.secret}")
-    fun prepareSecretKey(secret: String) {
-        key = Keys.hmacShaKeyFor(secret.toByteArray())
-    }
-
-    @Value("\${jwt.expire}")
-    private val expireTimeoutMs: Long = 0
-
-    @Value("\${jwt.issuer}")
-    private lateinit var issuer: String
+    private val key: Key = Keys.hmacShaKeyFor(config.secret.toByteArray())
 
     fun issue(jwtUserDetails: JwtUserDetails, now: Date = Date()): String {
         logger.debug("Issuing a token for {}", jwtUserDetails)
 
         val claims = Jwts.claims().apply {
-            issuer = this@JwtProviderService.issuer
+            issuer = this@JwtProviderService.config.issuer
             subject = jwtUserDetails.username
             issuedAt = now
-            expiration = Date(now.time + expireTimeoutMs)
+            expiration = Date(now.time + config.expire.toMillis())
         }
         claims["roles"] = jwtUserDetails.authorities.map { it.authority }
 

@@ -13,13 +13,17 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: none
-jwt:
-  secret: IAmVeryRobustAndUniqueSecret!!!one
-  expire: 10000
-  issuer: quiz
 
 force:
   security:
+    auth:
+      access:
+        - pattern: /admin/**
+          authority: ADMIN
+          anonymous: false
+        - pattern: /auth/**
+          authority: null
+          anonymous: true
     jwt:
       secret: IAmVeryRobustAndUniqueSecret!!!one
       expire: 10000

@@ -15,7 +15,7 @@ class Argon2PasswordEncoder(
         private final val config: Argon2PasswordConfigurationProperties
 ) : PasswordEncoder {
     private val argon2: Argon2 = Argon2Factory.create()
-    private var iterations = 0
+    private var iterations = config.iterations
     init {
         if (iterations == 0) {
             iterations = Argon2Helper.findIterations(argon2, config.maxMillisecs, config.memory, config.parallelism)
