@@ -1,3 +1,46 @@
 {
-
+  "groups": [
+    {
+      "name": "force.security.auth",
+      "type": "fm.force.quiz.security.configuration.AuthConfigurationProperties",
+      "sourceType": "fm.force.quiz.security.configuration.AuthConfigurationProperties"
+    },
+    {
+      "name": "force.security.jwt",
+      "type": "fm.force.quiz.security.configuration.JwtConfigurationProperties",
+      "sourceType": "fm.force.quiz.security.configuration.JwtConfigurationProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "force.security.auth.access",
+      "type": "java.util.ArrayList",
+      "description": "Description for force.security.auth.access."
+    },
+    {
+      "name": "force.security.jwt.secret",
+      "type": "java.lang.String",
+      "description": "Description for force.security.jwt.secret."
+    },
+    {
+      "name": "force.security.jwt.expire",
+      "type": "java.lang.Integer",
+      "description": "Description for force.security.jwt.expire."
+    },
+    {
+      "name": "force.security.jwt.issuer",
+      "type": "java.lang.String",
+      "description": "Description for force.security.jwt.issuer."
+    },
+    {
+      "name": "force.security.password.iterations",
+      "type": "java.lang.Integer",
+      "description": "Description for force.security.password.iterations."
+    },
+    {
+      "name": "force.security.password.minLength",
+      "type": "java.lang.Integer",
+      "description": "Description for force.security.password.minLength."
+    }
+  ]
 }
