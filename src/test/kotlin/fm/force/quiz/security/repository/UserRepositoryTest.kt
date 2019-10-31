@@ -5,13 +5,13 @@ import fm.force.quiz.security.entity.User
 import io.kotlintest.Spec
 import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.matchers.types.shouldNotBeNull
-import io.kotlintest.provided.fm.force.quiz.security.jwt.JwtConfiguration
+import io.kotlintest.provided.fm.force.quiz.security.SecurityTestConfiguration
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
 import org.springframework.test.context.ContextConfiguration
 
 
-@ContextConfiguration(classes = [JwtConfiguration::class])
+@ContextConfiguration(classes = [SecurityTestConfiguration::class])
 open class UserRepositoryTest(
         private val userRepository: UserRepository,
         private val jpaUserRepository: JpaUserRepository,

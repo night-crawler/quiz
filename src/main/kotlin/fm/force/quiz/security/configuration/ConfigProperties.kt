@@ -44,9 +44,9 @@ class AuthConfigurationProperties {
 @Configuration
 @ConfigurationProperties(prefix = "force.security.password")
 class PasswordConfigurationProperties {
-    lateinit var secret: String
-    var iterations = 5
-    var minLength = 8
+    var minEmailLength = 5
+    var maxEmailLength = 255
+    var minPasswordLength = 8
 }
 
 @Configuration

@@ -28,8 +28,8 @@ class RegisterControllerTest(
                 mockMvc.perform(
                         post("/auth/register")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(res))
-                        .andExpect(status().isOk)
+                                .content("""{"email": "", "password": ""}"""))
+//                        .andExpect(status().isOk)
                         .andDo(print())
             }
         }
