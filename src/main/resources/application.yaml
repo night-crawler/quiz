@@ -1,3 +1,4 @@
+
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/quiz
@@ -31,3 +32,6 @@ force:
     password:
       iterations: 4
       minLength: 8
+server:
+  port: 8181
+

@@ -2,9 +2,11 @@ package fm.force.quiz.security.controller
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import fm.force.quiz.security.dto.RegisterUserRequestDTO
+import io.kotlintest.provided.fm.force.quiz.security.YamlPropertyLoaderFactory
 import io.kotlintest.specs.WordSpec
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.context.annotation.PropertySource
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
@@ -12,24 +14,38 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 
+@PropertySource("classpath:application-test.yaml", factory = YamlPropertyLoaderFactory::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
 class RegisterControllerTest(
         private val mockMvc: MockMvc
 ) : WordSpec() {
+    val mapper by lazy { jacksonObjectMapper() }
+    fun performPost(uri: String, content: String) =
+            mockMvc.perform(
+                    post(uri)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(content)
+            )
+
+    fun performPost(uri: String, dto: Any) = this.performPost(uri, mapper.writeValueAsString(dto))
 
     init {
-        "POST /register" should {
+        "POST /auth/register" should {
             "register a new user" {
-                val req = RegisterUserRequestDTO("user@example.com", "sample")
-                val mapper = jacksonObjectMapper()
-                val res = mapper.writeValueAsString(req)
+                val data = RegisterUserRequestDTO("user-sample001@example.com", "samplesample")
+                performPost("/auth/register", data)
+                        .andExpect(status().isCreated)
+                        .andDo(print())
 
-                mockMvc.perform(
-                        post("/auth/register")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content("""{"email": "", "password": ""}"""))
-//                        .andExpect(status().isOk)
+                performPost("/auth/register", data)
+                        .andExpect(status().isConflict)
+                        .andDo(print())
+            }
+
+            "ensure validation is working" {
+                performPost("/auth/register", """{"email": "", "password": ""}""")
+                        .andExpect(status().isBadRequest)
                         .andDo(print())
             }
         }

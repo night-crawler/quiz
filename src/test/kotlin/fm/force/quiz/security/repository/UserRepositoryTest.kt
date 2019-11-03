@@ -3,17 +3,22 @@ package fm.force.quiz.security.repository
 import fm.force.quiz.security.entity.Role
 import fm.force.quiz.security.entity.User
 import io.kotlintest.Spec
+import io.kotlintest.matchers.collections.contain
+import io.kotlintest.matchers.collections.shouldContain
 import io.kotlintest.matchers.collections.shouldHaveSize
+import io.kotlintest.matchers.numerics.shouldBeGreaterThan
 import io.kotlintest.matchers.types.shouldNotBeNull
 import io.kotlintest.provided.fm.force.quiz.security.SecurityTestConfiguration
+import io.kotlintest.provided.fm.force.quiz.security.YamlPropertyLoaderFactory
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
+import org.springframework.context.annotation.PropertySource
 import org.springframework.test.context.ContextConfiguration
 
 
+@PropertySource("classpath:application-test.yaml", factory = YamlPropertyLoaderFactory::class)
 @ContextConfiguration(classes = [SecurityTestConfiguration::class])
 open class UserRepositoryTest(
-        private val userRepository: UserRepository,
         private val jpaUserRepository: JpaUserRepository,
         private val jpaRoleRepository: JpaRoleRepository
 ) : WordSpec() {
@@ -75,10 +80,11 @@ open class UserRepositoryTest(
                 val actualUserRoleNames = users.map { it.roles }.flatten().map { it.name }.toSet()
                 actualUserRoleNames.shouldBe(expectedUserRoleNames)
 
-                // also we need to have an ability to find users with no roles at all
+                // also, we need to have an ability to find users with no roles at all
                 val weirdos = jpaUserRepository.findUserByRolesIsEmpty()
-                weirdos.shouldHaveSize(1)
-                weirdos[0].username.shouldBe("vasya")
+                // it's probable we are running after some other tests
+                weirdos.size shouldBeGreaterThan 1
+                weirdos.map { it.username }.toSet() shouldContain("vasya")
             }
         }
     }

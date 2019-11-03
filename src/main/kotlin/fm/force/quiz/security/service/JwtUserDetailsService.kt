@@ -1,5 +1,8 @@
 package fm.force.quiz.security.service
 
+import fm.force.quiz.security.dto.RegisterUserRequestDTO
+import fm.force.quiz.security.dto.RegisterUserResponseDTO
+import fm.force.quiz.security.entity.User
 import fm.force.quiz.security.repository.JpaUserRepository
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
@@ -9,7 +12,8 @@ import org.springframework.stereotype.Service
 @Service
 class JwtUserDetailsService(
         val jpaUserRepository: JpaUserRepository,
-        val jpaUserDetailsFactoryService: JwtUserDetailsFactoryService
+        val jpaUserDetailsFactoryService: JwtUserDetailsFactoryService,
+        val hashGeneratorService: PasswordHashGeneratorService
 ) : UserDetailsService {
     /**
      * Locates the user based on the username. In the actual implementation, the search
@@ -31,5 +35,15 @@ class JwtUserDetailsService(
                 .findByEmailOrUsername(username, username)
                 ?.let { jpaUserDetailsFactoryService.createUserDetails(it) }
                 ?: throw UsernameNotFoundException("Username $username was not found")
+    }
+
+    fun register(registerUserRequestDTO: RegisterUserRequestDTO): RegisterUserResponseDTO {
+        val user = User(
+                username = registerUserRequestDTO.email,
+                email = registerUserRequestDTO.email,
+                password = hashGeneratorService.encode(registerUserRequestDTO.password)
+        )
+        val createdUser = jpaUserRepository.save(user)
+        return RegisterUserResponseDTO(createdUser.id!!, createdUser.username)
     }
 }

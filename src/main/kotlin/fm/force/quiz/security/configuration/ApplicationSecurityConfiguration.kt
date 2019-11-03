@@ -24,7 +24,8 @@ class ApplicationSecurityConfiguration(
                 .httpBasic().disable()
                 .csrf().disable()
                 .sessionManagement().disable()
-                .anonymous()
+                .headers()
+                .and().anonymous()
                 .and().exceptionHandling()
                 .and().authorizeRequests()
                 .apply {
