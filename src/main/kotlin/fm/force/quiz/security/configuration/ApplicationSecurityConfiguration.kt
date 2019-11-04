@@ -1,6 +1,6 @@
 package fm.force.quiz.security.configuration
 
-import fm.force.quiz.security.service.JwtAuthProviderService
+import fm.force.quiz.security.service.JwtRequestAuthProviderService
 import fm.force.quiz.security.jwt.JwtConfigurer
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -13,7 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @Configuration
 @EnableWebSecurity
 class ApplicationSecurityConfiguration(
-        private val jwtAuthProviderService: JwtAuthProviderService,
+        private val jwtRequestAuthProviderService: JwtRequestAuthProviderService,
         private val config: AuthConfigurationProperties
 ) : WebSecurityConfigurerAdapter(true) {
     val logger: Logger = LoggerFactory.getLogger(ApplicationSecurityConfiguration::class.java)
@@ -38,6 +38,6 @@ class ApplicationSecurityConfiguration(
                     }
                 }
                 .anyRequest().authenticated()
-                .and().apply(JwtConfigurer(jwtAuthProviderService))
+                .and().apply(JwtConfigurer(jwtRequestAuthProviderService))
     }
 }

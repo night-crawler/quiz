@@ -59,11 +59,8 @@ class JwtProviderService(
     }
 
     // TODO: obviously, there's a need to implement custom serializer & deserializer
-    //  for particular JwtUserDetails fields, or for a whole class.
-    //  But Jackson serializer with a custom ObjectMapper seems to be not that easy to implement.
     fun safeExtractAuthoritiesFromRoles(mayBeRoles: Any?): List<GrantedAuthority> {
         val roles = mayBeRoles as? Collection<*>
-        logger.debug("!! $roles")
         return roles?.map { GrantedAuthority { it.toString() } } ?: listOf()
     }
 }

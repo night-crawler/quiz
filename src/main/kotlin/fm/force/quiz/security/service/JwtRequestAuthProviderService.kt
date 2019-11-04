@@ -6,7 +6,7 @@ import org.springframework.security.core.Authentication
 import javax.servlet.http.HttpServletRequest
 
 
-abstract class JwtAuthProviderService {
+abstract class JwtRequestAuthProviderService {
     @Autowired
     private lateinit var jwtProviderService: JwtProviderService
 
@@ -15,4 +15,3 @@ abstract class JwtAuthProviderService {
 
     abstract fun authorizeRequest(request: HttpServletRequest?) : Authentication
 }
-

@@ -1,9 +1,13 @@
 package fm.force.quiz.security.service
 
-import fm.force.quiz.security.dto.RegisterUserRequestDTO
-import fm.force.quiz.security.dto.RegisterUserResponseDTO
+import fm.force.quiz.security.dto.JwtResponseDTO
+import fm.force.quiz.security.dto.LoginRequestDTO
+import fm.force.quiz.security.dto.RegisterRequestDTO
+import fm.force.quiz.security.dto.RegisterResponseDTO
 import fm.force.quiz.security.entity.User
+import fm.force.quiz.security.jwt.JwtUserDetails
 import fm.force.quiz.security.repository.JpaUserRepository
+import org.springframework.security.authentication.*
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
@@ -12,8 +16,9 @@ import org.springframework.stereotype.Service
 @Service
 class JwtUserDetailsService(
         val jpaUserRepository: JpaUserRepository,
-        val jpaUserDetailsFactoryService: JwtUserDetailsFactoryService,
-        val hashGeneratorService: PasswordHashGeneratorService
+        val jwtUserDetailsFactoryService: JwtUserDetailsFactoryService,
+        val hashGeneratorService: PasswordHashGeneratorService,
+        val jwtProviderService: JwtProviderService
 ) : UserDetailsService {
     /**
      * Locates the user based on the username. In the actual implementation, the search
@@ -30,20 +35,40 @@ class JwtUserDetailsService(
      * GrantedAuthority
      */
     override fun loadUserByUsername(username: String?): UserDetails {
-        username ?: throw UsernameNotFoundException("Null usernames are not supported")
+        username ?: throw UsernameNotFoundException("Null user names are not supported")
         return jpaUserRepository
                 .findByEmailOrUsername(username, username)
-                ?.let { jpaUserDetailsFactoryService.createUserDetails(it) }
+                ?.let { jwtUserDetailsFactoryService.createUserDetails(it) }
                 ?: throw UsernameNotFoundException("Username $username was not found")
     }
 
-    fun register(registerUserRequestDTO: RegisterUserRequestDTO): RegisterUserResponseDTO {
+    fun register(request: RegisterRequestDTO): RegisterResponseDTO {
         val user = User(
-                username = registerUserRequestDTO.email,
-                email = registerUserRequestDTO.email,
-                password = hashGeneratorService.encode(registerUserRequestDTO.password)
+                username = request.email,
+                email = request.email,
+                password = hashGeneratorService.encode(request.password)
         )
         val createdUser = jpaUserRepository.save(user)
-        return RegisterUserResponseDTO(createdUser.id!!, createdUser.username)
+        return RegisterResponseDTO(createdUser.id!!, createdUser.username)
+    }
+
+    fun login(request: LoginRequestDTO): JwtResponseDTO {
+        val userDetails = loadUserByUsername(request.email) as JwtUserDetails
+        when {
+            !userDetails.isEnabled ->
+                throw DisabledException("Account is disabled")
+            !userDetails.isAccountNonLocked ->
+                throw LockedException("Account was locked")
+            !userDetails.isAccountNonExpired ->
+                throw AccountExpiredException("Account was expired")
+            !userDetails.isCredentialsNonExpired ->
+                throw CredentialsExpiredException("Credentials were expired")
+
+            !hashGeneratorService.matches(request.password, userDetails.password) ->
+                throw BadCredentialsException("User password is incorrect")
+        }
+
+        val token = jwtProviderService.issue(userDetails)
+        return JwtResponseDTO(userDetails.username, token)
     }
 }

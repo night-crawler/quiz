@@ -21,10 +21,10 @@ class ConfigPropertyValidator : ConstraintValidator<CheckPropertyField, Any> {
 
     override fun isValid(value: Any, context: ConstraintValidatorContext?): Boolean {
         println(value::class.java.declaredFields)
-        println(env.get("force.validation.RegisterUserRequestDTO.email"))
+        println(env.get("force.validation.RegisterRequestDTO.email"))
         println(env.get("force.security.jwt.secret"))
         println(env.getProperty("force.security.jwt.secret"))
-        println(env.getProperty("force.validation.RegisterUserRequestDTO.email"))
+        println(env.getProperty("force.validation.RegisterRequestDTO.email"))
         return false
     }
 }

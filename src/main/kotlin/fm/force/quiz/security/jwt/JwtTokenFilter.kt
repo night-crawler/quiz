@@ -1,6 +1,6 @@
 package fm.force.quiz.security.jwt
 
-import fm.force.quiz.security.service.JwtAuthProviderService
+import fm.force.quiz.security.service.JwtRequestAuthProviderService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.security.core.AuthenticationException
@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest
 
 
 class JwtTokenFilter(
-        private val jwtAuthProviderService: JwtAuthProviderService
+        private val jwtRequestAuthProviderService: JwtRequestAuthProviderService
 ) : GenericFilterBean() {
     private val niceLogger: Logger = LoggerFactory.getLogger(this::class.java)
     /* private val failureHandler = SimpleUrlAuthenticationFailureHandler()
@@ -30,7 +30,7 @@ class JwtTokenFilter(
         val path = httpRequest?.requestURI
 
         try {
-            SecurityContextHolder.getContext().authentication = jwtAuthProviderService.authorizeRequest(httpRequest)
+            SecurityContextHolder.getContext().authentication = jwtRequestAuthProviderService.authorizeRequest(httpRequest)
             niceLogger.debug("Request `{}` was authenticated by JWT token", path)
         } catch (exc: AuthenticationException) {
             niceLogger.debug("Request `{}` authentication failed: `{}`", path, exc.localizedMessage)

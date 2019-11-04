@@ -1,7 +1,7 @@
 package fm.force.quiz.security.controller
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import fm.force.quiz.security.dto.RegisterRequestDTO
+import fm.force.quiz.security.dto.LoginRequestDTO
 import io.kotlintest.provided.fm.force.quiz.security.YamlPropertyLoaderFactory
 import io.kotlintest.specs.WordSpec
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -19,7 +19,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 @PropertySource("classpath:application-test.yaml", factory = YamlPropertyLoaderFactory::class)
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-class RegisterControllerTest(
+class LoginControllerTest(
         private val mockMvc: MockMvc
 ) : WordSpec() {
     val mapper by lazy { jacksonObjectMapper() }
@@ -33,21 +33,15 @@ class RegisterControllerTest(
     fun performPost(uri: String, dto: Any) = this.performPost(uri, mapper.writeValueAsString(dto))
 
     init {
-        "POST /auth/register" should {
-            "register a new user" {
-                val data = RegisterRequestDTO("user-sample001@example.com", "samplesample")
-                performPost("/auth/register", data)
+        "POST /auth/login" should {
+            val loginRequest = LoginRequestDTO("user-sample001@example.com", "samplesample")
+            "fail because profile was not activated by default" {
+                performPost("/auth/register", loginRequest)
                         .andExpect(status().isCreated)
                         .andDo(print())
 
-                performPost("/auth/register", data)
-                        .andExpect(status().isConflict)
-                        .andDo(print())
-            }
-
-            "ensure validation is working" {
-                performPost("/auth/register", """{"email": "", "password": ""}""")
-                        .andExpect(status().isBadRequest)
+                performPost("/auth/login", loginRequest)
+                        .andExpect(status().isForbidden)
                         .andDo(print())
             }
         }
