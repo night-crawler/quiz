@@ -6,7 +6,6 @@ import fm.force.quiz.security.entity.User
 import org.springframework.data.jpa.repository.JpaRepository
 
 import org.springframework.stereotype.Repository
-import org.springframework.transaction.support.TransactionTemplate
 
 
 @Repository
@@ -18,13 +17,4 @@ interface JpaUserRepository : JpaRepository<User, Long> {
     fun findUsersByRolesNameIn(roles_names: Collection<String>): List<User>
     fun findUsersByRolesEquals(roles: Collection<Role>): List<User>
     fun findUserByRolesIsEmpty(): List<User>
-}
-
-@Repository
-class UserRepository(
-        private val userRepository: JpaUserRepository,
-        private val transactionTemplate: TransactionTemplate
-) {
-    fun createRandomUser() {
-    }
 }

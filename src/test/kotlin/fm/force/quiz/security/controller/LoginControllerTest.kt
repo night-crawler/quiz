@@ -1,6 +1,7 @@
 package fm.force.quiz.security.controller
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import fm.force.quiz.security.configuration.PasswordConfigurationProperties
 import fm.force.quiz.security.dto.LoginRequestDTO
 import io.kotlintest.provided.fm.force.quiz.security.YamlPropertyLoaderFactory
 import io.kotlintest.specs.WordSpec
@@ -20,7 +21,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 class LoginControllerTest(
-        private val mockMvc: MockMvc
+        private val mockMvc: MockMvc,
+        private val passwordConfigurationProperties: PasswordConfigurationProperties
 ) : WordSpec() {
     val mapper by lazy { jacksonObjectMapper() }
     fun performPost(uri: String, content: String) =
@@ -34,14 +36,26 @@ class LoginControllerTest(
 
     init {
         "POST /auth/login" should {
-            val loginRequest = LoginRequestDTO("user-sample001@example.com", "samplesample")
             "fail because profile was not activated by default" {
-                performPost("/auth/register", loginRequest)
+                val failCreds = LoginRequestDTO("user-fail@example.com", "samplesample")
+                performPost("/auth/register", failCreds)
                         .andExpect(status().isCreated)
                         .andDo(print())
 
-                performPost("/auth/login", loginRequest)
+                performPost("/auth/login", failCreds)
                         .andExpect(status().isForbidden)
+                        .andDo(print())
+            }
+
+            "successfully login" {
+                val successCreds = LoginRequestDTO("user-success@example.com", "samplesample")
+                // FIXME: it's a cheat to test it like this
+                passwordConfigurationProperties.userIsEnabledAfterCreation = true
+                performPost("/auth/register", successCreds)
+                        .andExpect(status().isCreated)
+
+                performPost("/auth/login", successCreds)
+                        .andExpect(status().isOk)
                         .andDo(print())
             }
         }

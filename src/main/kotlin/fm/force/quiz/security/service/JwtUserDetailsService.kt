@@ -1,5 +1,6 @@
 package fm.force.quiz.security.service
 
+import fm.force.quiz.security.configuration.PasswordConfigurationProperties
 import fm.force.quiz.security.dto.JwtResponseDTO
 import fm.force.quiz.security.dto.LoginRequestDTO
 import fm.force.quiz.security.dto.RegisterRequestDTO
@@ -18,7 +19,8 @@ class JwtUserDetailsService(
         val jpaUserRepository: JpaUserRepository,
         val jwtUserDetailsFactoryService: JwtUserDetailsFactoryService,
         val hashGeneratorService: PasswordHashGeneratorService,
-        val jwtProviderService: JwtProviderService
+        val jwtProviderService: JwtProviderService,
+        val passwordConfigurationProperties: PasswordConfigurationProperties
 ) : UserDetailsService {
     /**
      * Locates the user based on the username. In the actual implementation, the search
@@ -46,7 +48,8 @@ class JwtUserDetailsService(
         val user = User(
                 username = request.email,
                 email = request.email,
-                password = hashGeneratorService.encode(request.password)
+                password = hashGeneratorService.encode(request.password),
+                isActive = passwordConfigurationProperties.userIsEnabledAfterCreation
         )
         val createdUser = jpaUserRepository.save(user)
         return RegisterResponseDTO(createdUser.id!!, createdUser.username)
