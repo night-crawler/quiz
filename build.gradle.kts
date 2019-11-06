@@ -24,7 +24,17 @@ group = "fm.force"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_11
 
-val developmentOnly by configurations.creating
+val mainResourcesSrcDirs: MutableSet<File> by lazy { project.sourceSets.getByName("main").resources.srcDirs }
+val mainResourcesDir by lazy {
+    if (mainResourcesSrcDirs.size != 1) {
+        throw Exception("Protecting my future self from misbehaviour")
+    }
+    mainResourcesSrcDirs.elementAt(0)
+}
+
+val developmentOnly: Configuration by configurations.creating
+
+
 configurations {
     runtimeClasspath {
         extendsFrom(developmentOnly)
@@ -92,45 +102,40 @@ dependencies {
 }
 
 
+tasks["build"].dependsOn("createDirs")
+
+
 if (!project.hasProperty("runList")) {
     project.ext["runList"] = "main"
 }
-val changeLogTs = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))!!
 
-project.ext["diffChangelogFile"] = "src/main/resources/db/changelog/changes/change-${changeLogTs}.xml"
 
 liquibase {
+    val changeLogDir = "$mainResourcesDir/db/changelog"
+    val changesDir = "$changeLogDir/changes"
+    val masterChangeLogFile = "$changeLogDir/changelog-master.xml"
+    val changeLogTs = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))!!
+    val diffChangeLogFile = "$changesDir/change-${changeLogTs}.xml"
+
+    val liquibaseDefaultArguments = mapOf(
+            "driver" to "org.postgresql.Driver",
+            "url" to "jdbc:postgresql://localhost:5432/quiz",
+            "username" to "postgres",
+            "password" to "postgres",
+            "referenceUrl" to "hibernate:spring:fm.force.quiz?" +
+                    "dialect=org.hibernate.dialect.PostgreSQL95Dialect&" +
+                    "hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&" +
+                    "hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy",
+            "defaultSchemaName" to "",
+            "logLevel" to "debug",
+            "classpath" to "$buildDir/classes/kotlin/main"
+    )
+
     activities.register("main") {
-        this.arguments = mapOf(
-                "driver" to "org.postgresql.Driver",
-                "url" to "jdbc:postgresql://localhost:5432/quiz",
-                "username" to "postgres",
-                "password" to "postgres",
-                "changeLogFile" to "src/main/resources/db/changelog/changelog-master.xml",
-                "referenceUrl" to "hibernate:spring:fm.force.quiz?" +
-                        "dialect=org.hibernate.dialect.PostgreSQL95Dialect&" +
-                        "hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&" +
-                        "hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy",
-                "defaultSchemaName" to "",
-                "logLevel" to "debug",
-                "classpath" to "src/main/resources/"
-        )
+        arguments = liquibaseDefaultArguments + mapOf("changeLogFile" to masterChangeLogFile)
     }
     activities.register("diffLog") {
-        this.arguments = mapOf(
-                "driver" to "org.postgresql.Driver",
-                "url" to "jdbc:postgresql://localhost:5432/quiz",
-                "username" to "postgres",
-                "password" to "postgres",
-                "changeLogFile" to project.ext.get("diffChangelogFile"),
-                "referenceUrl" to "hibernate:spring:fm.force.quiz?" +
-                        "dialect=org.hibernate.dialect.PostgreSQL95Dialect&" +
-                        "hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&" +
-                        "hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy",
-                "defaultSchemaName" to "",
-                "logLevel" to "debug",
-                "classpath" to "$buildDir/classes/kotlin/main"
-        )
+        arguments = liquibaseDefaultArguments + mapOf("changeLogFile" to diffChangeLogFile)
     }
 
     runList = project.ext.get("runList")
