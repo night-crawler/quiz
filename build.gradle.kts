@@ -2,7 +2,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-
 plugins {
     val kotlinVersion = "1.3.50"
 
@@ -21,10 +20,9 @@ plugins {
     id("org.asciidoctor.convert") version "1.5.8"
 }
 
-
 group = "fm.force"
 version = "0.0.1-SNAPSHOT"
-java.sourceCompatibility = JavaVersion.VERSION_1_8
+java.sourceCompatibility = JavaVersion.VERSION_11
 
 val developmentOnly by configurations.creating
 configurations {
@@ -37,8 +35,6 @@ repositories {
     mavenCentral()
 }
 
-val snippetsDir by extra { file("build/generated-snippets") }
-
 allOpen {
     annotation("javax.persistence.Entity")
     annotation("javax.persistence.Table")
@@ -46,7 +42,7 @@ allOpen {
     annotation("javax.persistence.Embeddable")
 }
 
-extra["snippetsDir"] = file("build/generated-snippets")
+val snippetsDir = file("build/generated-snippets")
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
