@@ -1,4 +1,4 @@
-package fm.force.quiz.entity
+package fm.force.quiz.core.entity
 
 import com.vladmihalcea.hibernate.type.array.IntArrayType
 import org.hibernate.annotations.GenericGenerator

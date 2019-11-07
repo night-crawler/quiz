@@ -1,6 +1,6 @@
 package fm.force.quiz.repository
 
-import fm.force.quiz.entity.Question
+import fm.force.quiz.core.entity.Question
 
 import org.springframework.data.jpa.repository.JpaRepository
 

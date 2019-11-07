@@ -1,4 +1,4 @@
-package fm.force.quiz.entity
+package fm.force.quiz.core.entity
 
 import org.hibernate.annotations.GenericGenerator
 import java.time.Instant

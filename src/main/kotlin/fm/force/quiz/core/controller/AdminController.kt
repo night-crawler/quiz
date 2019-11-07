@@ -1,6 +1,6 @@
-package fm.force.quiz.controller
+package fm.force.quiz.core.controller
 
-import fm.force.quiz.entity.Question
+import fm.force.quiz.core.entity.Question
 import fm.force.quiz.repository.JpaQuestionRepository
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping

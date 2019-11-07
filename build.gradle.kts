@@ -102,9 +102,6 @@ dependencies {
 }
 
 
-tasks["build"].dependsOn("createDirs")
-
-
 if (!project.hasProperty("runList")) {
     project.ext["runList"] = "main"
 }
