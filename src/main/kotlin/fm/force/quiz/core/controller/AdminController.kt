@@ -1,7 +1,7 @@
 package fm.force.quiz.core.controller
 
 import fm.force.quiz.core.entity.Question
-import fm.force.quiz.repository.JpaQuestionRepository
+import fm.force.quiz.core.repository.JpaQuestionRepository
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam

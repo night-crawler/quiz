@@ -1,4 +1,4 @@
-package fm.force.quiz.repository
+package fm.force.quiz.core.repository
 
 import fm.force.quiz.core.entity.Question
 
@@ -8,9 +8,10 @@ import org.springframework.stereotype.Repository
 import org.springframework.transaction.support.TransactionTemplate
 
 
-// JpaRepository наследуется уже от PagingAndSortingRepository
 @Repository
-interface JpaQuestionRepository : JpaRepository<Question, Long>
+interface JpaQuestionRepository : JpaRepository<Question, Long> {
+
+}
 
 @Repository
 class QuestionRepository(

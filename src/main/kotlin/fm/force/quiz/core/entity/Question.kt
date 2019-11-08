@@ -6,6 +6,10 @@ import java.time.Instant
 import javax.persistence.*
 import org.hibernate.annotations.Type
 import org.hibernate.annotations.TypeDef
+import javax.persistence.JoinColumn
+import javax.persistence.JoinTable
+import javax.persistence.ManyToMany
+
 
 
 @Entity
@@ -22,12 +26,21 @@ data class Question(
 
         val text: String,
 
-        @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
+        @ManyToMany(targetEntity = Answer::class, fetch = FetchType.LAZY)
+        @JoinTable(
+                name = "questions__rel_answers__answers",
+                joinColumns = [JoinColumn(name = "question_id")],
+                inverseJoinColumns = [JoinColumn(name = "answer_id")]
+        )
         val answers: Set<Answer> = setOf(),
 
-        @Type(type = "int-array")
-        @Column(name = "correct_answers", columnDefinition = "integer[]")
-        var correctAnswers: Array<Number> = arrayOf(),
+        @ManyToMany(targetEntity = Answer::class, fetch = FetchType.LAZY)
+        @JoinTable(
+                name = "questions__rel_correct_answers__answers",
+                joinColumns = [JoinColumn(name = "question_id")],
+                inverseJoinColumns = [JoinColumn(name = "answer_id")]
+        )
+        var correctAnswers: Set<Answer> = setOf(),
 
         @Column(name = "created_at")
         val createdAt: Instant = Instant.now()

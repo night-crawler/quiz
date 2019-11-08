@@ -1,4 +1,4 @@
-package io.kotlintest.provided.fm.force.quiz.security
+package io.kotlintest.provided.fm.force.quiz
 
 import org.springframework.boot.env.YamlPropertySourceLoader
 import org.springframework.core.env.PropertySource

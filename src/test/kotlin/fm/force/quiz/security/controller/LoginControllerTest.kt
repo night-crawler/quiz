@@ -3,7 +3,7 @@ package fm.force.quiz.security.controller
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import fm.force.quiz.security.configuration.PasswordConfigurationProperties
 import fm.force.quiz.security.dto.LoginRequestDTO
-import io.kotlintest.provided.fm.force.quiz.security.YamlPropertyLoaderFactory
+import io.kotlintest.provided.fm.force.quiz.YamlPropertyLoaderFactory
 import io.kotlintest.specs.WordSpec
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest

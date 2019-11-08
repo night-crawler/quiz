@@ -1,33 +1,124 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
-    <changeSet author="igorkalishevsky (generated)" id="1569962231840-1">
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet author="igorkalishevsky (generated)" id="1573246819661-1">
         <createTable tableName="answers">
             <column name="id" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="answersPK"/>
             </column>
-            <column name="create_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
-            <column name="text" type="VARCHAR(255)"/>
-            <column name="trash" type="VARCHAR(255)"/>
-            <column name="question_id" type="BIGINT"/>
-        </createTable>
-    </changeSet>
-    <changeSet author="igorkalishevsky (generated)" id="1569962231840-2">
-        <createTable tableName="questions">
-            <column name="id" type="BIGINT">
-                <constraints primaryKey="true" primaryKeyName="questionsPK"/>
-            </column>
-            <column name="correct_answers" type="INTEGER[]"/>
             <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
             <column name="text" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet author="igorkalishevsky (generated)" id="1569962231840-3">
-        <addForeignKeyConstraint baseColumnNames="question_id" baseTableName="answers"
-                                 constraintName="FK3erw1a3t0r78st8ty27x6v3g1" deferrable="false"
+    <changeSet author="igorkalishevsky (generated)" id="1573246819661-2">
+        <createTable tableName="questions">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="questionsPK"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="text" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1573246819661-3">
+        <createTable tableName="questions__rel_answers__answers">
+            <column name="question_id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="answer_id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1573246819661-4">
+        <createTable tableName="questions__rel_correct_answers__answers">
+            <column name="question_id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="answer_id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1573246819661-5">
+        <createTable tableName="roles">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="rolesPK"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="name" type="VARCHAR(16)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1573246819661-6">
+        <createTable tableName="users">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="usersPK"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="email" type="VARCHAR(255)"/>
+            <column name="first_name" type="VARCHAR(255)"/>
+            <column name="is_active" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="VARCHAR(255)"/>
+            <column name="password" type="VARCHAR(255)"/>
+            <column name="username" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1573246819661-7">
+        <createTable tableName="users_roles">
+            <column name="users_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="roles_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1573246819661-8">
+        <addUniqueConstraint columnNames="email" constraintName="UC_USERSEMAIL_COL" tableName="users"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1573246819661-9">
+        <addUniqueConstraint columnNames="username" constraintName="UC_USERSUSERNAME_COL" tableName="users"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1573246819661-10">
+        <addForeignKeyConstraint baseColumnNames="question_id" baseTableName="questions__rel_answers__answers"
+                                 constraintName="FK2whg0wjo1jwhakojgoe5swf4m" deferrable="false"
                                  initiallyDeferred="false" referencedColumnNames="id" referencedTableName="questions"
                                  validate="true"/>
     </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1573246819661-11">
+        <addForeignKeyConstraint baseColumnNames="roles_id" baseTableName="users_roles"
+                                 constraintName="FKa62j07k5mhgifpp955h37ponj" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="roles"
+                                 validate="true"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1573246819661-12">
+        <addForeignKeyConstraint baseColumnNames="question_id" baseTableName="questions__rel_correct_answers__answers"
+                                 constraintName="FKfacfwbxpnd6xqrn960ljwqq7e" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="questions"
+                                 validate="true"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1573246819661-13">
+        <addForeignKeyConstraint baseColumnNames="answer_id" baseTableName="questions__rel_answers__answers"
+                                 constraintName="FKha6950p4efeiy3fic9tblrxwd" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="answers"
+                                 validate="true"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1573246819661-14">
+        <addForeignKeyConstraint baseColumnNames="answer_id" baseTableName="questions__rel_correct_answers__answers"
+                                 constraintName="FKhmhf09cfxonn16niyiovmgico" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="answers"
+                                 validate="true"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1573246819661-15">
+        <addForeignKeyConstraint baseColumnNames="users_id" baseTableName="users_roles"
+                                 constraintName="FKml90kef4w2jy7oxyqv742tsfc" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="users"
+                                 validate="true"/>
+    </changeSet>
+
 </databaseChangeLog>

@@ -4,7 +4,7 @@ import fm.force.quiz.security.dto.RegisterRequestDTO
 import fm.force.quiz.security.service.JwtUserDetailsService
 import io.kotlintest.matchers.haveSize
 import io.kotlintest.matchers.numerics.shouldBeGreaterThan
-import io.kotlintest.provided.fm.force.quiz.security.SecurityTestConfiguration
+import io.kotlintest.provided.fm.force.quiz.TestConfiguration
 import io.kotlintest.should
 import io.kotlintest.shouldNotBe
 import io.kotlintest.shouldThrow
@@ -14,7 +14,7 @@ import org.springframework.test.context.ContextConfiguration
 import javax.validation.Validator
 
 
-@ContextConfiguration(classes = [SecurityTestConfiguration::class])
+@ContextConfiguration(classes = [TestConfiguration::class])
 open class JwtUserDetailsServiceTest(
         private val service: JwtUserDetailsService,
         private val validator: Validator

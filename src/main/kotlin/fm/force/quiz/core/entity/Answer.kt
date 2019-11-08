@@ -14,8 +14,11 @@ data class Answer(
 
         val text: String,
 
-        @ManyToOne(cascade = [(CascadeType.ALL)], fetch = FetchType.LAZY)
-        val question: Question,
+        @ManyToMany(mappedBy = "answers", fetch = FetchType.LAZY)
+        val questions: Set<Question> = setOf(),
+
+        @ManyToMany(mappedBy = "correctAnswers", fetch = FetchType.LAZY)
+        val correctInQuestions: Set<Question> = setOf(),
 
         val createdAt: Instant = Instant.now()
 )

@@ -3,13 +3,12 @@ package fm.force.quiz.security.repository
 import fm.force.quiz.security.entity.Role
 import fm.force.quiz.security.entity.User
 import io.kotlintest.Spec
-import io.kotlintest.matchers.collections.contain
 import io.kotlintest.matchers.collections.shouldContain
 import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.matchers.numerics.shouldBeGreaterThan
 import io.kotlintest.matchers.types.shouldNotBeNull
-import io.kotlintest.provided.fm.force.quiz.security.SecurityTestConfiguration
-import io.kotlintest.provided.fm.force.quiz.security.YamlPropertyLoaderFactory
+import io.kotlintest.provided.fm.force.quiz.TestConfiguration
+import io.kotlintest.provided.fm.force.quiz.YamlPropertyLoaderFactory
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
 import org.springframework.context.annotation.PropertySource
@@ -17,7 +16,7 @@ import org.springframework.test.context.ContextConfiguration
 
 
 @PropertySource("classpath:application-test.yaml", factory = YamlPropertyLoaderFactory::class)
-@ContextConfiguration(classes = [SecurityTestConfiguration::class])
+@ContextConfiguration(classes = [TestConfiguration::class])
 open class UserRepositoryTest(
         private val jpaUserRepository: JpaUserRepository,
         private val jpaRoleRepository: JpaRoleRepository

@@ -10,13 +10,13 @@ import io.kotlintest.matchers.boolean.shouldBeTrue
 import io.kotlintest.matchers.string.shouldNotBeBlank
 import io.kotlintest.matchers.types.shouldBeNull
 import io.kotlintest.matchers.types.shouldNotBeNull
-import io.kotlintest.provided.fm.force.quiz.security.SecurityTestConfiguration
+import io.kotlintest.provided.fm.force.quiz.TestConfiguration
 import io.kotlintest.specs.WordSpec
 import org.springframework.test.context.ContextConfiguration
 import java.util.*
 
 
-@ContextConfiguration(classes = [SecurityTestConfiguration::class])
+@ContextConfiguration(classes = [TestConfiguration::class])
 open class JwtProviderServiceTest(
         private val jwtProviderService: JwtProviderService
 ) : WordSpec() {
