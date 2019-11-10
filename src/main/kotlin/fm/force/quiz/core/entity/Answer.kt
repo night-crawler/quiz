@@ -1,17 +1,12 @@
 package fm.force.quiz.core.entity
 
-import org.hibernate.annotations.GenericGenerator
-import java.time.Instant
+import fm.force.quiz.security.entity.User
 import javax.persistence.*
 
 @Entity
 @Table(name = "answers")
 data class Answer(
-        @Id
-        @GeneratedValue(generator = "increment")
-        @GenericGenerator(name = "increment", strategy = "increment")
-        val id: Long? = null,
-
+        @Column(columnDefinition = "TEXT")
         val text: String,
 
         @ManyToMany(mappedBy = "answers", fetch = FetchType.LAZY)
@@ -20,5 +15,6 @@ data class Answer(
         @ManyToMany(mappedBy = "correctAnswers", fetch = FetchType.LAZY)
         val correctInQuestions: Set<Question> = setOf(),
 
-        val createdAt: Instant = Instant.now()
-)
+        @ManyToOne
+        val owner: User
+) : BaseQuizEntity()

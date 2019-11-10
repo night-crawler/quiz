@@ -1,29 +1,18 @@
 package fm.force.quiz.core.entity
 
-import com.vladmihalcea.hibernate.type.array.IntArrayType
-import org.hibernate.annotations.GenericGenerator
-import java.time.Instant
+import fm.force.quiz.security.entity.User
 import javax.persistence.*
-import org.hibernate.annotations.Type
-import org.hibernate.annotations.TypeDef
 import javax.persistence.JoinColumn
 import javax.persistence.JoinTable
 import javax.persistence.ManyToMany
 
 
-
 @Entity
 @Table(name = "questions")
-@TypeDef(
-        name = "int-array",
-        typeClass = IntArrayType::class
-)
 data class Question(
-        @Id
-        @GeneratedValue(generator = "increment")
-        @GenericGenerator(name = "increment", strategy = "increment")
-        val id: Long? = null,
+        @ManyToOne val owner: User,
 
+        @Column(columnDefinition = "TEXT")
         val text: String,
 
         @ManyToMany(targetEntity = Answer::class, fetch = FetchType.LAZY)
@@ -42,10 +31,25 @@ data class Question(
         )
         var correctAnswers: Set<Answer> = setOf(),
 
-        @Column(name = "created_at")
-        val createdAt: Instant = Instant.now()
-) {
-    override fun toString(): String {
-        return "Question(id=$id text=$text createdAt=$createdAt)"
-    }
-}
+        @ManyToMany(targetEntity = Tag::class, fetch = FetchType.LAZY)
+        @JoinTable(
+                name = "questions__tags",
+                joinColumns = [JoinColumn(name = "question_id")],
+                inverseJoinColumns = [JoinColumn(name = "tag_id")]
+        )
+        var tags: Set<Tag> = setOf(),
+
+        @ManyToMany(targetEntity = Topic::class, fetch = FetchType.LAZY)
+        @JoinTable(
+                name = "questions__topics",
+                joinColumns = [JoinColumn(name = "question_id")],
+                inverseJoinColumns = [JoinColumn(name = "topic_id")]
+        )
+        var topics: Set<Topic> = setOf(),
+
+        /**
+         * Normalized difficulty in range []0;1e6)
+         */
+        var difficulty: Int = 0
+
+) : BaseQuizEntity()
