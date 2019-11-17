@@ -5,7 +5,7 @@ import fm.force.quiz.security.entity.Role
 import fm.force.quiz.security.entity.User
 import fm.force.quiz.security.jwt.JwtUserDetails
 import fm.force.quiz.security.service.JwtProviderService
-import fm.force.quiz.security.service.JwtUserDetailsFactoryServiceImpl
+import fm.force.quiz.security.service.JwtUserDetailsFactoryService
 import io.kotlintest.matchers.boolean.shouldBeTrue
 import io.kotlintest.matchers.string.shouldNotBeBlank
 import io.kotlintest.matchers.types.shouldBeNull
@@ -20,7 +20,7 @@ import java.util.*
 open class JwtProviderServiceTest(
         private val jwtProviderService: JwtProviderService
 ) : WordSpec() {
-    private val jwtUserDetailsFactory = JwtUserDetailsFactoryServiceImpl()
+    private val jwtUserDetailsFactory = JwtUserDetailsFactoryService()
     private val randomUserDetails: JwtUserDetails get() = jwtUserDetailsFactory.createUserDetails(randomUser)
     private val randomUser
         get() = User(
