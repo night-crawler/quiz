@@ -23,6 +23,7 @@ class JwtUserDetailsFactoryService {
 
     fun createUserDetails(user: User): JwtUserDetails {
         return JwtUserDetails(
+                id = user.id,
                 authorities = user.roles.map { GrantedAuthority { it.name } }.toMutableSet(),
                 enabled = user.isActive,
                 username = user.email,

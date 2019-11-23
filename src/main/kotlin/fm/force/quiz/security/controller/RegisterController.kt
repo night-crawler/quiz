@@ -14,10 +14,9 @@ import org.springframework.dao.DataIntegrityViolationException
 class RegisterController(
         private val jwtUserDetailsService: JwtUserDetailsService
 ) {
-    @ResponseStatus(value = HttpStatus.CONFLICT, reason = "User exists")
     @ExceptionHandler(DataIntegrityViolationException::class)
-    fun userExists() {
-    }
+    @ResponseStatus(HttpStatus.CONFLICT)
+    fun handleUserExists(ex: DataIntegrityViolationException) {}
 
     @PostMapping("register")
     @ResponseStatus(value= HttpStatus.CREATED)

@@ -43,6 +43,7 @@ configurations {
 
 repositories {
     mavenCentral()
+    maven(url = "https://dl.bintray.com/konform-kt/konform")
 }
 
 allOpen {
@@ -83,7 +84,7 @@ dependencies {
     compile("io.jsonwebtoken:jjwt-jackson:0.10.7")
     compile("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.+")
 
-
+    compile("am.ik.yavi:yavi:0.2.5")
     compile("de.mkammerer:argon2-jvm:2.6")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")

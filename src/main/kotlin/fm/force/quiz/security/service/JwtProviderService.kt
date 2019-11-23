@@ -31,6 +31,10 @@ class JwtProviderService(
         }
         claims["roles"] = jwtUserDetails.authorities.map { it.authority }
 
+        // 2^54 trouble:
+        // 9223372036854776000 == 9223372036854775807
+        claims["userId"] = "${jwtUserDetails.id}"
+
         return Jwts.builder()
                 .setClaims(claims)
                 .signWith(key)
@@ -42,6 +46,7 @@ class JwtProviderService(
     fun validate(token: String): JwtUserDetails? = try {
         val claims = Jwts.parser().setSigningKey(key).parseClaimsJws(token)
         JwtUserDetails(
+                id = safeExtractUserId(claims.body["userId"]),
                 authorities = safeExtractAuthoritiesFromRoles(claims.body["roles"]),
                 enabled = true,
                 username = claims.body.subject,
@@ -62,5 +67,12 @@ class JwtProviderService(
     fun safeExtractAuthoritiesFromRoles(mayBeRoles: Any?): List<GrantedAuthority> {
         val roles = mayBeRoles as? Collection<*>
         return roles?.map { GrantedAuthority { it.toString() } } ?: listOf()
+    }
+
+    fun safeExtractUserId(mayBeUserId: Any?) = try {
+        mayBeUserId.toString().toLong()
+    } catch (exc: NumberFormatException) {
+        // really we don't need null here
+        null
     }
 }

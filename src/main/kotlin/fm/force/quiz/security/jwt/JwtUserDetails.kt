@@ -24,7 +24,9 @@ class JwtUserDetails(
         var accountNonExpired: Boolean = false,
 
         @get:JvmName("isAccountNonLocked_")
-        var accountNonLocked: Boolean = false) : UserDetails {
+        var accountNonLocked: Boolean = false,
+
+        var id: Long? = null) : UserDetails {
     /**
      * Returns the authorities granted to the user. Cannot return `null`.
      *
