@@ -12,5 +12,5 @@ interface JpaAnswerRepository : JpaRepository<Answer, Long> {
     fun findOwnedIds(
             @Param("ids") ids: Collection<Long>,
             @Param("ownerId") ownerId: Long
-    ) : Set<Answer>
+    ) : Collection<Answer>
 }

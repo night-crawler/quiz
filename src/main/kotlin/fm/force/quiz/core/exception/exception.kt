@@ -7,7 +7,7 @@ import kotlin.reflect.KClass
 
 
 @ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "Not found")
-open class NotFoundException(id: Any, klass: KClass<out Any>) : RuntimeException("${klass.simpleName} with id $id not found")
+open class NotFoundException(val id: Any, klass: KClass<out Any>) : RuntimeException("${klass.simpleName} with id $id not found")
 
 @ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "Not found")
 class QuestionNotFound(id: Long) : NotFoundException(id, Question::class)

@@ -84,6 +84,7 @@ dependencies {
     compile("io.jsonwebtoken:jjwt-jackson:0.10.7")
     compile("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.+")
 
+    implementation("com.github.slugify:slugify:2.4")
     compile("am.ik.yavi:yavi:0.2.5")
     compile("de.mkammerer:argon2-jvm:2.6")
 

@@ -21,5 +21,5 @@ data class User(
         val roles: List<Role> = listOf()
 
 ) : BaseEntity() {
-    override fun toString() = super.toString()
+    override fun toString() = "User(id=$id username=$email)"
 }

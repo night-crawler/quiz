@@ -13,5 +13,5 @@ interface JpaTopicRepository : JpaRepository<Topic, Long> {
     fun findOwnedIds(
             @Param("ids") ids: Collection<Long>,
             @Param("ownerId") ownerId: Long
-    ) : Set<Long>
+    ) : Collection<Long>
 }

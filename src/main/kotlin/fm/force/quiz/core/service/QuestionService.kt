@@ -2,11 +2,8 @@ package fm.force.quiz.core.service
 
 import am.ik.yavi.builder.ValidatorBuilder
 import am.ik.yavi.builder.konstraint
-import am.ik.yavi.core.ConstraintViolation
-import am.ik.yavi.core.ConstraintViolations
 import fm.force.quiz.core.dto.CreateQuestionDTO
-import fm.force.quiz.core.dto.ErrorResponse
-import fm.force.quiz.core.dto.FieldError
+import fm.force.quiz.core.entity.Question
 import fm.force.quiz.core.exception.ValidationError
 import fm.force.quiz.core.repository.JpaAnswerRepository
 import fm.force.quiz.core.repository.JpaQuestionRepository
@@ -15,10 +12,11 @@ import fm.force.quiz.core.repository.JpaTopicRepository
 import fm.force.quiz.core.validator.fkValidator
 import fm.force.quiz.security.service.AuthenticationFacade
 import org.springframework.stereotype.Service
+import javax.transaction.Transactional
 
 
 @Service
-class QuestionValidationService(
+class QuestionService(
         val jpaQuestionRepository: JpaQuestionRepository,
         val jpaAnswerRepository: JpaAnswerRepository,
         val jpaTagRepository: JpaTagRepository,
@@ -74,21 +72,38 @@ class QuestionValidationService(
                 isTrue.message("Provided topics seem not to belong to you or do not exist")
             }
             .konstraint(CreateQuestionDTOWrapper::tags) {
-                isTrue.message("Provided tags seem not to belong to you or do not exist")
+                isTrue.message("Provided tags do not belong to you or do not exist")
             }
             .build()
 
-    fun validate(question: CreateQuestionDTO): String {
-        var violations = questionDTOValidator.validate(question)
-        if (!violations.isValid) {
-            throw ValidationError(violations)
-        }
+    fun validate(question: CreateQuestionDTO) {
+        questionDTOValidator
+                .validate(question)
+                .throwIfInvalid { ValidationError(it) }
 
-        violations = questionDTOMiscValidator.validate(CreateQuestionDTOWrapper(question))
-        if (!violations.isValid) {
-            throw ValidationError(violations)
-        }
+        questionDTOMiscValidator
+                .validate(CreateQuestionDTOWrapper(question))
+                .throwIfInvalid { ValidationError(it) }
+    }
 
-        return "Good. Construct an object"
+    @Transactional
+    fun create(createQuestionDTO: CreateQuestionDTO): Question {
+        validate(createQuestionDTO)
+
+        val answersMap = jpaAnswerRepository
+                .findAllById(createQuestionDTO.answers)
+                .map { it.id to it }.toMap()
+
+        val question = Question(
+                owner = authenticationFacade.user,
+                text = createQuestionDTO.text,
+                answers = createQuestionDTO.answers.map { answersMap[it]!! }.toSet(),
+                correctAnswers = createQuestionDTO.correctAnswers.map { answersMap[it]!! }.toSet(),
+                tags = jpaTagRepository.findAllById(createQuestionDTO.tags).toSet(),
+                topics = jpaTopicRepository.findAllById(createQuestionDTO.topics).toSet(),
+                difficulty = createQuestionDTO.difficulty
+        )
+
+        return jpaQuestionRepository.save(question)
     }
 }

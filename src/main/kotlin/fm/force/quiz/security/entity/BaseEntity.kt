@@ -21,26 +21,4 @@ class BaseEntity(
 
         @LastModifiedDate
         val updatedAt: Instant = Instant.now()
-) {
-
-    private fun getAllFields(klass: Class<*>): Set<Field> {
-        val currentClassFields = klass.declaredFields.toSet()
-        return klass.superclass?.let { this.getAllFields(it).union(currentClassFields) } ?: currentClassFields
-    }
-
-    fun toMap(): Map<String, Any> = getAllFields(javaClass)
-            .filter { it.trySetAccessible() }
-            .map { it.name to it.get(this@BaseEntity) }
-            .toMap()
-
-    val fieldNames get() = getAllFields(this.javaClass).map { it.name }
-
-    override fun toString(): String {
-            val falsy = setOf(false, null, "")
-        val serializedMap = toMap()
-                .entries
-                .filter { it.value !in falsy }
-                .joinToString { (key, value) -> "$key=$value" }
-        return "${javaClass.simpleName}($serializedMap)"
-    }
-}
+)

@@ -19,7 +19,7 @@ class RegisterController(
     fun handleUserExists(ex: DataIntegrityViolationException) {}
 
     @PostMapping("register")
-    @ResponseStatus(value= HttpStatus.CREATED)
+    @ResponseStatus(value = HttpStatus.CREATED)
     fun register(@Valid @RequestBody request: RegisterRequestDTO): RegisterResponseDTO {
        return jwtUserDetailsService.register(request)
     }

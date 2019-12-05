@@ -12,5 +12,5 @@ interface JpaTagRepository : JpaRepository<Tag, Long> {
     fun findOwnedIds(
             @Param("ids") ids: Collection<Long>,
             @Param("ownerId") ownerId: Long
-    ) : Set<Long>
+    ) : Collection<Long>
 }
