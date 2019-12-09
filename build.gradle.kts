@@ -8,7 +8,7 @@ plugins {
     idea
     java
     kotlin("jvm") version kotlinVersion
-//    kotlin("kapt") version kotlinVersion
+    kotlin("kapt") version kotlinVersion
     kotlin("plugin.allopen") version kotlinVersion
     kotlin("plugin.noarg") version kotlinVersion
     kotlin("plugin.spring") version kotlinVersion
@@ -95,6 +95,7 @@ dependencies {
     compileOnly("org.projectlombok:lombok:1.18.10")
     annotationProcessor("org.projectlombok:lombok:1.18.10")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    kapt("org.hibernate:hibernate-jpamodelgen:5.3.8.Final")
 
     testImplementation("io.kotlintest:kotlintest-runner-junit5:3.4.2")
     testCompile("io.kotlintest:kotlintest-extensions-spring:3.4.2")

@@ -2,6 +2,7 @@ package fm.force.quiz.core.service
 
 import am.ik.yavi.builder.ValidatorBuilder
 import am.ik.yavi.builder.konstraint
+import fm.force.quiz.configuration.properties.QuestionValidationProperties
 import fm.force.quiz.core.dto.CreateQuestionDTO
 import fm.force.quiz.core.entity.Question
 import fm.force.quiz.core.exception.ValidationError
@@ -21,7 +22,8 @@ class QuestionService(
         val jpaAnswerRepository: JpaAnswerRepository,
         val jpaTagRepository: JpaTagRepository,
         val jpaTopicRepository: JpaTopicRepository,
-        val authenticationFacade: AuthenticationFacade
+        val authenticationFacade: AuthenticationFacade,
+        val validationProps: QuestionValidationProperties
 ) {
     // all field names must remain same in order to be able to be merged
     inner class CreateQuestionDTOWrapper(private val instance: CreateQuestionDTO) {
@@ -34,23 +36,23 @@ class QuestionService(
 
     val questionDTOValidator = ValidatorBuilder.of<CreateQuestionDTO>()
             .konstraint(CreateQuestionDTO::text) {
-                greaterThan(5).message("Must be at least 5 characters long")
+                greaterThan(validationProps.minTextLength).message("Must be at least ${validationProps.minTextLength} characters long")
             }
 
             .konstraint(CreateQuestionDTO::answers) {
-                lessThan(10).message("Only 10 answers are allowed")
+                lessThan(validationProps.maxAnswers).message("Only ${validationProps.maxAnswers} answers are allowed")
                 greaterThan(0).message("Provide at least one answer")
             }
             .forEach(CreateQuestionDTO::answers, "answers", fkValidator)
 
             .konstraint(CreateQuestionDTO::correctAnswers) {
-                lessThan(10).message("Only 10 correct answers are allowed")
+                lessThan(validationProps.maxAnswers).message("Only ${validationProps.maxAnswers} correct answers are allowed")
                 greaterThan(0).message("Provide at least one correct answer")
             }
             .forEach(CreateQuestionDTO::correctAnswers, "correctAnswers", fkValidator)
 
             .konstraint(CreateQuestionDTO::tags) {
-                lessThan(20).message("Only 20 tags are allowed")
+                lessThan(validationProps.maxTags).message("Only ${validationProps.maxTags} tags are allowed")
             }
             .forEach(CreateQuestionDTO::tags, "tags", fkValidator)
 

@@ -4,6 +4,7 @@ import fm.force.quiz.core.dto.ErrorResponse
 import fm.force.quiz.core.exception.NotFoundException
 import fm.force.quiz.core.exception.ValidationError
 import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.data.mapping.PropertyReferenceException
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -22,6 +23,10 @@ class ExceptionHandler : ResponseEntityExceptionHandler() {
 //        return BaseExceptionDTO(ex.message ?: "")
 //    }
 //
+    @ExceptionHandler(PropertyReferenceException::class)
+    fun handlePropertyReferenceException(ex: PropertyReferenceException) =
+        ResponseEntity(ErrorResponse.of(ex), HttpStatus.BAD_REQUEST)
+
     @ExceptionHandler(NotFoundException::class)
     fun handle404(ex: NotFoundException) =
         ResponseEntity(ErrorResponse.of(ex), HttpStatus.NOT_FOUND)

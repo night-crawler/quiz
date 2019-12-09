@@ -2,10 +2,7 @@ package fm.force.quiz.security.configuration
 
 import fm.force.quiz.security.entity.Role
 import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.boot.context.properties.NestedConfigurationProperty
 import org.springframework.context.annotation.Configuration
-import org.springframework.security.core.GrantedAuthority
-import org.springframework.stereotype.Component
 import java.time.Duration
 
 

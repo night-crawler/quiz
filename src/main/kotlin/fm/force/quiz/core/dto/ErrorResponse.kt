@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.exc.MismatchedInputException
 import com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException
 import fm.force.quiz.core.exception.NotFoundException
 import fm.force.quiz.core.exception.ValidationError
+import org.springframework.data.mapping.PropertyReferenceException
 import org.springframework.http.converter.HttpMessageNotReadableException
 
 fun ConstraintViolation.toFieldError() = FieldError(
@@ -31,6 +32,12 @@ data class ErrorResponse(
     }
 
     companion object {
+        fun of(ex: PropertyReferenceException) = ErrorResponse(
+                exception = ex.javaClass.simpleName,
+                type = Type.GENERAL,
+                errors = listOf(FieldError(fieldName = ex.propertyName, message = "Unknown field"))
+        )
+
         fun of(ex: NotFoundException) = ErrorResponse(
                 exception = ex.javaClass.simpleName,
                 type = Type.GENERAL,

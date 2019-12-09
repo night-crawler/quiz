@@ -33,3 +33,9 @@ val fkValidator = ValidatorBuilder.of(Long::class.java)
             it.greaterThan(0).message("Must be positive")
         }
         .build()
+
+val nonEmptyString = ValidatorBuilder.of(String::class.java)
+        .constraint(String::toString, "") {
+            it.notEmpty().message("String must not be empty")
+        }
+        .build()
