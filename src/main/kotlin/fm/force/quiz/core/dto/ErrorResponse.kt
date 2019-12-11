@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.exc.MismatchedInputException
 import com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException
 import fm.force.quiz.core.exception.NotFoundException
 import fm.force.quiz.core.exception.ValidationError
+import org.hibernate.exception.ConstraintViolationException
 import org.springframework.data.mapping.PropertyReferenceException
 import org.springframework.http.converter.HttpMessageNotReadableException
 
@@ -19,7 +20,8 @@ data class ErrorMessage(
 
 data class FieldError(
         val fieldName: String,
-        val message: String
+        val message: String,
+        val violatedValue: String? = null
 )
 
 data class ErrorResponse(
@@ -32,6 +34,38 @@ data class ErrorResponse(
     }
 
     companion object {
+        // TODO: this is very bad :(
+        private val rxFieldWithValues = "\\((?<fieldName>.+)\\)=\\((?<value>.+)\\)".toRegex()
+
+        fun of(ex: ConstraintViolationException): ErrorResponse {
+            val specificMessage = ex.cause?.message ?: ""
+            val groups = rxFieldWithValues.find(specificMessage)?.groups
+            val fieldName = groups?.get("fieldName")?.value
+            val value = groups?.get("value")?.value
+
+            if (!fieldName.isNullOrEmpty() && !value.isNullOrEmpty()) {
+                return ErrorResponse(
+                        exception = ex.javaClass.simpleName,
+                        type = Type.VALIDATION,
+                        errors = listOf(FieldError(
+                                fieldName = fieldName,
+                                message = "Tag with field name $fieldName exists: $value",
+                                violatedValue = value
+                        ))
+                )
+            }
+
+            return ErrorResponse(
+                    exception = ex.javaClass.simpleName,
+                    type = Type.VALIDATION,
+                    errors = listOf(FieldError(
+                            fieldName = "",
+                            message = ex.localizedMessage
+                    ))
+            )
+
+        }
+
         fun of(ex: PropertyReferenceException) = ErrorResponse(
                 exception = ex.javaClass.simpleName,
                 type = Type.GENERAL,

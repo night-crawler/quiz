@@ -3,7 +3,7 @@ package fm.force.quiz.core.controller
 import fm.force.quiz.core.dto.ErrorResponse
 import fm.force.quiz.core.exception.NotFoundException
 import fm.force.quiz.core.exception.ValidationError
-import org.springframework.dao.DataIntegrityViolationException
+import org.hibernate.exception.ConstraintViolationException
 import org.springframework.data.mapping.PropertyReferenceException
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -17,12 +17,10 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @ControllerAdvice
 class ExceptionHandler : ResponseEntityExceptionHandler() {
-//    @ResponseStatus(HttpStatus.CONFLICT)
-//    @ExceptionHandler(value = [DataIntegrityViolationException::class])
-//    fun handleConflict(ex: DataIntegrityViolationException): BaseExceptionDTO {
-//        return BaseExceptionDTO(ex.message ?: "")
-//    }
-//
+    @ExceptionHandler(ConstraintViolationException::class)
+    fun handleConstraintViolationException(ex: ConstraintViolationException) =
+        ResponseEntity(ErrorResponse.of(ex), HttpStatus.CONFLICT)
+
     @ExceptionHandler(PropertyReferenceException::class)
     fun handlePropertyReferenceException(ex: PropertyReferenceException) =
         ResponseEntity(ErrorResponse.of(ex), HttpStatus.BAD_REQUEST)
