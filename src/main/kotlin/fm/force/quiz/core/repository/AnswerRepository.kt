@@ -8,9 +8,9 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface JpaAnswerRepository : JpaRepository<Answer, Long> {
-    @Query("select t.id from Answer t where t.id in :ids and t.owner.id = :ownerId")
+    @Query("select a.id from Answer a where a.id in :ids and a.owner.id = :ownerId")
     fun findOwnedIds(
             @Param("ids") ids: Collection<Long>,
             @Param("ownerId") ownerId: Long
-    ) : Collection<Answer>
+    ) : Collection<Long>
 }

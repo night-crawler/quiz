@@ -30,8 +30,17 @@ class QuestionService(
         private val ownerId = authenticationFacade.principal.id!!
         val correctAnswers get() = instance.correctAnswers - instance.answers == emptySet<Long>()
         val answers get() = jpaAnswerRepository.findOwnedIds(instance.answers, ownerId).toSet() == instance.answers
-        val tags get() = jpaTagRepository.findOwnedIds(instance.tags, ownerId).toSet() == instance.tags
-        val topics get() = jpaTopicRepository.findOwnedIds(instance.tags, ownerId).toSet() == instance.tags
+
+        val tags
+            get() = if (instance.tags.isNotEmpty())
+                jpaTagRepository.findOwnedIds(instance.tags, ownerId).toSet() == instance.tags
+            else true
+
+        // ! we cannot query empty lists like this, hibernate will fail
+        val topics
+            get() = if (instance.topics.isNotEmpty())
+                jpaTopicRepository.findOwnedIds(instance.topics, ownerId).toSet() == instance.topics
+            else true
     }
 
     val questionDTOValidator = ValidatorBuilder.of<CreateQuestionDTO>()

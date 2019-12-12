@@ -1,6 +1,6 @@
 package fm.force.quiz.core.dto
 
-data class  CreateQuestionDTO(
+data class CreateQuestionDTO(
         val text: String,
         val answers: Set<Long>,
         val correctAnswers: Set<Long>,
