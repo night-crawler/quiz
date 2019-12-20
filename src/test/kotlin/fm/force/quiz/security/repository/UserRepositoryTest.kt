@@ -5,7 +5,6 @@ import fm.force.quiz.security.entity.User
 import io.kotlintest.Spec
 import io.kotlintest.matchers.collections.shouldContain
 import io.kotlintest.matchers.collections.shouldHaveSize
-import io.kotlintest.matchers.numerics.shouldBeGreaterThan
 import io.kotlintest.matchers.types.shouldNotBeNull
 import io.kotlintest.provided.fm.force.quiz.TestConfiguration
 import io.kotlintest.provided.fm.force.quiz.YamlPropertyLoaderFactory
@@ -50,7 +49,7 @@ open class UserRepositoryTest(
 
     init {
         "UserRepository" should {
-            "find users by name" {
+            "find users by email" {
                 val user = jpaUserRepository.findByEmail("vasya@force.fm")
                 user.shouldNotBeNull()
             }
@@ -82,7 +81,6 @@ open class UserRepositoryTest(
                 // also, we need to have an ability to find users with no roles at all
                 val weirdos = jpaUserRepository.findUserByRolesIsEmpty()
                 // it's probable we are running after some other tests
-                weirdos.size shouldBeGreaterThan 1
                 weirdos.map { it.username }.toSet() shouldContain("vasya")
             }
         }

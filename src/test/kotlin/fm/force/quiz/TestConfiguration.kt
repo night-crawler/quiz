@@ -1,13 +1,13 @@
 package io.kotlintest.provided.fm.force.quiz
 
-import io.kotlintest.provided.fm.force.quiz.YamlPropertyLoaderFactory
 import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer
 import org.springframework.boot.test.context.TestConfiguration
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.ComponentScan
-import org.springframework.context.annotation.PropertySource
+import org.springframework.context.annotation.*
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer
+import org.springframework.jmx.support.RegistrationPolicy
 import org.springframework.test.context.ContextConfiguration
+
+
 
 
 // Cannot have multiple configurations now for different app parts
@@ -15,8 +15,11 @@ import org.springframework.test.context.ContextConfiguration
 // Maybe this one is a solution: @EnableMBeanExport(registration=RegistrationPolicy.IGNORE_EXISTING)
 @TestConfiguration
 @PropertySource("classpath:application-test.yaml", factory = YamlPropertyLoaderFactory::class)
-@ComponentScan("fm.force.quiz")
+@ComponentScans(
+        ComponentScan("fm.force.quiz")
+)
 @ContextConfiguration(initializers=[ConfigFileApplicationContextInitializer::class])
+@EnableMBeanExport(registration= RegistrationPolicy.IGNORE_EXISTING)
 class TestConfiguration {
     companion object {
         @Bean

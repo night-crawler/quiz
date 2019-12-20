@@ -5,14 +5,12 @@ import fm.force.quiz.core.entity.Answer
 import fm.force.quiz.core.entity.Tag
 import fm.force.quiz.core.entity.Topic
 import fm.force.quiz.core.exception.ValidationError
-import fm.force.quiz.core.repository.JpaAnswerRepository
-import fm.force.quiz.core.repository.JpaTagRepository
-import fm.force.quiz.core.repository.JpaTopicRepository
 import fm.force.quiz.core.service.QuestionService
+import fm.force.quiz.factory.TestDataFactory
 import fm.force.quiz.security.entity.User
-import fm.force.quiz.security.repository.JpaUserRepository
 import fm.force.quiz.security.service.AuthenticationFacade
 import fm.force.quiz.security.service.JwtUserDetailsFactoryService
+import io.kotlintest.TestCase
 import io.kotlintest.data.forall
 import io.kotlintest.provided.fm.force.quiz.TestConfiguration
 import io.kotlintest.provided.fm.force.quiz.YamlPropertyLoaderFactory
@@ -27,25 +25,29 @@ import org.springframework.test.context.ContextConfiguration
 @PropertySource("classpath:application-test.yaml", factory = YamlPropertyLoaderFactory::class)
 @ContextConfiguration(classes = [TestConfiguration::class])
 open class QuestionServiceTest(
-        questionService: QuestionService,
-        jpaUserRepository: JpaUserRepository,
-        jwtUserDetailsFactoryService: JwtUserDetailsFactoryService,
-        jpaAnswerRepository: JpaAnswerRepository,
-        jpaTagRepository: JpaTagRepository,
-        jpaTopicRepository: JpaTopicRepository
+        private val testDataFactory: TestDataFactory,
+        private val jwtUserDetailsFactoryService: JwtUserDetailsFactoryService,
+        questionService: QuestionService
 ) : StringSpec() {
 
     @MockBean
     lateinit var authFacade: AuthenticationFacade
 
-    private val user = jpaUserRepository.save(User(username = "user@example.com", email = "user@example.com"))
-    private val answer = jpaAnswerRepository.save(Answer(text ="sample text", owner = user))
-    private val tag = jpaTagRepository.save(Tag(owner = user, name = "sample", slug = "sample"))
-    private val topic = jpaTopicRepository.save(Topic(owner = user, title = "sample topic"))
+    private lateinit var user: User
+    private lateinit var answer: Answer
+    private lateinit var tag: Tag
+    private lateinit var topic: Topic
+
+    override fun beforeTest(testCase: TestCase) {
+        user = testDataFactory.getUser()
+        answer = testDataFactory.getAnswer(owner = user)
+        tag = testDataFactory.getTag(owner = user)
+        topic = testDataFactory.getTopic(owner = user)
+        Mockito.`when`(authFacade.principal).thenReturn(jwtUserDetailsFactoryService.createUserDetails(user))
+    }
 
     init {
         "should validate" {
-            Mockito.`when`(authFacade.principal).thenReturn(jwtUserDetailsFactoryService.createUserDetails(user))
 
             forall(
                     row(CreateQuestionDTO("sample", setOf(1, 2), setOf(3, 4), setOf(5), setOf(6))),
