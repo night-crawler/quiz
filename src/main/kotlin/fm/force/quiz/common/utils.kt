@@ -1,18 +1,17 @@
 package fm.force.quiz.common
 
-import java.time.Instant
 import java.util.*
-import kotlin.math.log2
-import kotlin.math.nextUp
 
 val ALPHABET = ('a'..'z') + ('A'..'Z') + ('0'..'9')
 
 
-fun getRandomString(len: Int = 8) =
+fun getRandomString(len: Int = 8, alphabet: List<Char> = ALPHABET) =
         (1..len)
-                .map { kotlin.random.Random.nextInt(0, ALPHABET.size) }
-                .map(ALPHABET::get)
+                .map { kotlin.random.Random.nextInt(0, alphabet.size) }
+                .map(alphabet::get)
                 .joinToString("")
+
+fun String.randomString(len: Int = 8, alphabet: List<Char> = ALPHABET) = getRandomString(len, alphabet)
 
 fun Long.toBinaryString(): String = BitSet.valueOf(longArrayOf(this)).let { bs ->
     (63 downTo 0).joinToString("") {
@@ -27,24 +26,10 @@ fun Long.mostSignificantBit(): Int {
     while(n != 0L && n != -1L) {
         n = n shr 1
         count++
-        if (count > 100)
-            break
     }
     return count
 }
 
-fun Long.maxSignificant(): Long {
+fun Long.maxSignificantValue(): Long {
     return (1L shl mostSignificantBit()) - 1
-}
-
-class IdGenerator {
-    companion object {
-        fun valueOf(ts: Instant) {
-
-        }
-    }
-    fun generate() {
-        val a = System.currentTimeMillis()
-        val q = Date(a)
-    }
 }
