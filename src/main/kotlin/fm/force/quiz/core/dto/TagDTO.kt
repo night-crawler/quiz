@@ -8,7 +8,7 @@ data class CreateTagDTO(val name: String)
 data class TagDTO(val id: Long, val name: String, val slug: String, val createdAt: Instant)
 
 fun Tag.toDTO() = TagDTO(
-        id = id!!,
+        id = id,
         name = name,
         slug = slug,
         createdAt = createdAt

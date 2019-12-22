@@ -9,14 +9,10 @@ import org.springframework.transaction.support.TransactionTemplate
 
 
 @Repository
-interface JpaQuestionRepository : JpaRepository<Question, Long> {
-
-}
+interface JpaQuestionRepository : JpaRepository<Question, Long>
 
 @Repository
 class QuestionRepository(
         private val questionRepository: JpaQuestionRepository,
         private val transactionTemplate: TransactionTemplate
-) {
-
-}
+)

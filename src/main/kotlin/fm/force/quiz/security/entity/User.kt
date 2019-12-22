@@ -17,8 +17,13 @@ data class User(
 
         val isActive: Boolean = false,
 
-        @ManyToMany(fetch = FetchType.EAGER)
-        val roles: List<Role> = listOf()
+        @ManyToMany(targetEntity = Role::class, fetch = FetchType.EAGER)
+        @JoinTable(
+                name = "users__roles",
+                joinColumns = [JoinColumn(name = "user_id")],
+                inverseJoinColumns = [JoinColumn(name = "role_id")]
+        )
+        var roles: Set<Role> = setOf()
 
 ) : BaseEntity() {
     override fun toString() = "User(id=$id username=$email)"

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component
 @Component
 @ConditionalOnMissingBean(type=["PasswordEncoder"])
 class Argon2PasswordEncoder(
-        private final val config: Argon2PasswordConfigurationProperties
+        private val config: Argon2PasswordConfigurationProperties
 ) : PasswordEncoder {
     private val argon2: Argon2 = Argon2Factory.create()
     private var iterations = config.iterations

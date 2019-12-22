@@ -4,5 +4,4 @@ import am.ik.yavi.core.ConstraintViolations
 
 import java.lang.RuntimeException
 
-class ValidationError(val violations: ConstraintViolations) : RuntimeException() {
-}
+class ValidationError(val violations: ConstraintViolations) : RuntimeException()

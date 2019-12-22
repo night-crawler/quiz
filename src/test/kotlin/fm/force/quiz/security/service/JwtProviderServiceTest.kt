@@ -26,7 +26,7 @@ open class JwtProviderServiceTest(
         get() = User(
                 username = "username-${getRandomString()}",
                 email = "email-${getRandomString()}@example.com",
-                roles = listOf(Role(Role.predefinedRoleNames.random()))
+                roles = setOf(Role(Role.predefinedRoleNames.random()))
         )
 
     init {
@@ -48,7 +48,7 @@ open class JwtProviderServiceTest(
 
             "validate tokens" {
                 var token = jwtProviderService.issue(randomUserDetails)
-                var details = jwtProviderService.validate(token)
+                val details = jwtProviderService.validate(token)
                 details.shouldNotBeNull()
                 details.username.shouldNotBeBlank()
                 details.isUsable().shouldBeTrue()

@@ -1,10 +1,9 @@
 package fm.force.quiz.core.entity
 
-import org.hibernate.annotations.GenericGenerator
+import fm.force.quiz.common.ObjectId
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import java.time.Instant
-import javax.persistence.GeneratedValue
 import javax.persistence.Id
 import javax.persistence.MappedSuperclass
 
@@ -12,13 +11,29 @@ import javax.persistence.MappedSuperclass
 @MappedSuperclass
 class BaseQuizEntity(
         @Id
-        @GeneratedValue(generator = "increment")
-        @GenericGenerator(name = "increment", strategy = "increment")
-        val id: Long? = null,
+        val id: Long = ObjectId.now(),
 
         @CreatedDate
         val createdAt: Instant = Instant.now(),
 
         @LastModifiedDate
         var updatedAt: Instant = Instant.now()
-)
+) {
+        override fun equals(other: Any?): Boolean {
+                if (this === other) return true
+                if (other !is BaseQuizEntity) return false
+
+                if (id != other.id) return false
+                if (createdAt != other.createdAt) return false
+                if (updatedAt != other.updatedAt) return false
+
+                return true
+        }
+
+        override fun hashCode(): Int {
+                var result = id.hashCode()
+                result = 31 * result + createdAt.hashCode()
+                result = 31 * result + updatedAt.hashCode()
+                return result
+        }
+}

@@ -2,8 +2,7 @@ package io.kotlintest.provided.fm.force.quiz.core.repository
 
 import fm.force.quiz.core.entity.*
 import fm.force.quiz.core.repository.*
-import fm.force.quiz.security.entity.User
-import fm.force.quiz.security.repository.JpaUserRepository
+import fm.force.quiz.factory.TestDataFactory
 import io.kotlintest.provided.fm.force.quiz.TestConfiguration
 import io.kotlintest.provided.fm.force.quiz.YamlPropertyLoaderFactory
 import io.kotlintest.specs.StringSpec
@@ -15,21 +14,21 @@ import org.springframework.test.context.ContextConfiguration
 open class CoreRepositoryTest(
         jpaQuestionRepository: JpaQuestionRepository,
         jpaAnswerRepository: JpaAnswerRepository,
-        jpaUserRepository: JpaUserRepository,
         jpaQuizRepository: JpaQuizRepository,
         jpaQuizSessionAnswerRepository: JpaQuizSessionAnswerRepository,
         jpaQuizSessionRepository: JpaQuizSessionRepository,
         jpaTagRepository: JpaTagRepository,
         jpaTopicRepository: JpaTopicRepository,
         jpaDifficultyScaleRepository: JpaDifficultyScaleRepository,
-        jpaDifficultyScaleRangeRepository: JpaDifficultyScaleRangeRepository
+        jpaDifficultyScaleRangeRepository: JpaDifficultyScaleRangeRepository,
+        testDataFactory: TestDataFactory
 ) : StringSpec() {
 
     init {
-        "should create all needed instance" {
+        "should create all needed instances" {
             val repeats = 0..4
 
-            val user = jpaUserRepository.save(User("sample@example.com", email = "sample@example.com"))
+            val user = testDataFactory.getUser()
 
             val tags = jpaTagRepository.saveAll(repeats.map {
                 Tag(name = "tag sample #$it", slug = "tag-sample-$it", owner = user)

@@ -83,8 +83,8 @@ open class TagServiceTest(
             val tag = jpaTagRepository.save(Tag(owner = alien, name = "charade", slug = "charade"))
             val ownTag = jpaTagRepository.save(Tag(owner = user, name = "all mine", slug = "all-mine"))
 
-            shouldThrow<NotFoundException> { tagService.getTag(tag.id!!) }
-            tagService.getTag(ownTag.id!!).id shouldNotBe null
+            shouldThrow<NotFoundException> { tagService.getTag(tag.id) }
+            tagService.getTag(ownTag.id).id shouldNotBe null
         }
     }
 }

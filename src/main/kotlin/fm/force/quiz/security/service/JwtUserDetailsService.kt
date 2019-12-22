@@ -54,7 +54,7 @@ class JwtUserDetailsService(
                 isActive = passwordConfigurationProperties.userIsEnabledAfterCreation
         )
         val createdUser = jpaUserRepository.save(user)
-        return RegisterResponseDTO(createdUser.id!!, createdUser.username)
+        return RegisterResponseDTO(createdUser.id, createdUser.username)
     }
 
     fun login(request: LoginRequestDTO): JwtResponseDTO {

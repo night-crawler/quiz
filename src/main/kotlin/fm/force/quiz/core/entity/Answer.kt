@@ -17,4 +17,22 @@ data class Answer(
 
         @ManyToOne
         val owner: User
-) : BaseQuizEntity()
+) : BaseQuizEntity() {
+        override fun equals(other: Any?): Boolean {
+                if (this === other) return true
+                if (other !is Answer) return false
+                if (!super.equals(other)) return false
+
+                if (text != other.text) return false
+                if (owner != other.owner) return false
+
+                return true
+        }
+
+        override fun hashCode(): Int {
+                var result = super.hashCode()
+                result = 31 * result + text.hashCode()
+                result = 31 * result + owner.hashCode()
+                return result
+        }
+}

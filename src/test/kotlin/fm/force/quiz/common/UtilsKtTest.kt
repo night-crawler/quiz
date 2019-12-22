@@ -28,9 +28,4 @@ open class UtilsKtTest : WordSpec({
             Long.MIN_VALUE.toBinaryString().count { it == '0' } shouldBe 63
         }
     }
-
-    "qwe" should {
-        var ts = Instant.now()
-        ts.toEpochMilli()
-    }
 })

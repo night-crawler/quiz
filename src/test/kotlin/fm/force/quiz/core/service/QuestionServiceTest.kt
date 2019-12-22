@@ -60,12 +60,12 @@ open class QuestionServiceTest(
             forall(
                     row(CreateQuestionDTO(
                             text = "valid sample",
-                            answers = setOf(answer.id!!), correctAnswers = setOf(answer.id!!),
+                            answers = setOf(answer.id), correctAnswers = setOf(answer.id),
                             tags = emptySet(), topics = emptySet())),
                     row(CreateQuestionDTO(
                             text = "valid sample",
-                            answers = setOf(answer.id!!), correctAnswers = setOf(answer.id!!),
-                            tags = setOf(tag.id!!), topics = setOf(topic.id!!)))
+                            answers = setOf(answer.id), correctAnswers = setOf(answer.id),
+                            tags = setOf(tag.id), topics = setOf(topic.id)))
             ) {
                 questionService.validate(it)
             }

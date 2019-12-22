@@ -8,8 +8,6 @@ import org.springframework.jmx.support.RegistrationPolicy
 import org.springframework.test.context.ContextConfiguration
 
 
-
-
 // Cannot have multiple configurations now for different app parts
 // https://stackoverflow.com/questions/27440985/unable-to-register-mbean-hikaridatasource-hikaripool-0-with-key-datasource
 // Maybe this one is a solution: @EnableMBeanExport(registration=RegistrationPolicy.IGNORE_EXISTING)

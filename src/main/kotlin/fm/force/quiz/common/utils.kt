@@ -2,6 +2,7 @@ package fm.force.quiz.common
 
 import java.util.*
 
+
 val ALPHABET = ('a'..'z') + ('A'..'Z') + ('0'..'9')
 
 
