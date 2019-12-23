@@ -27,6 +27,7 @@ class TopicService(
             .build()
 
     fun validate(topic: Topic) = validator.validate(topic).throwIfInvalid { ValidationError(it) }
+
     fun create(topicDTO: CreateTopicDTO): Topic {
         val topic = Topic(
                 owner = authenticationFacade.user,
