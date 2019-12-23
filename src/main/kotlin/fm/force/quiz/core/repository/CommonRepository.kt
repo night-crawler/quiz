@@ -11,5 +11,5 @@ interface CommonRepository<T> {
     fun findOwnedIds(
             @Param("ids") ids: Collection<Long>,
             @Param("ownerId") ownerId: Long
-    ): Collection<Long>
+    ): List<Long>
 }

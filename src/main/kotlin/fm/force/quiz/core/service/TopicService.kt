@@ -3,18 +3,28 @@ package fm.force.quiz.core.service
 import am.ik.yavi.builder.ValidatorBuilder
 import am.ik.yavi.builder.konstraint
 import fm.force.quiz.configuration.properties.TopicValidationProperties
-import fm.force.quiz.core.dto.CreateTopicDTO
+import fm.force.quiz.core.dto.*
 import fm.force.quiz.core.entity.Topic
+import fm.force.quiz.core.entity.Topic_
 import fm.force.quiz.core.exception.ValidationError
 import fm.force.quiz.core.repository.JpaTopicRepository
 import fm.force.quiz.security.service.AuthenticationFacade
+import org.springframework.data.domain.Page
+import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 
 @Service
 class TopicService(
-        private val jpaTopicRepository: JpaTopicRepository,
         private val validationProps: TopicValidationProperties,
-        private val authenticationFacade: AuthenticationFacade
+        jpaTopicRepository: JpaTopicRepository,
+        paginationService: PaginationService,
+        sortingService: SortingService,
+        authenticationFacade: AuthenticationFacade
+) : AbstractPaginatedCRUDService<Topic, JpaTopicRepository, CreateTopicDTO, TopicDTO> (
+        repository = jpaTopicRepository,
+        authenticationFacade = authenticationFacade,
+        sortingService = sortingService,
+        paginationService = paginationService
 ) {
     var validator = ValidatorBuilder.of<Topic>()
             .konstraint(Topic::title) {
@@ -28,12 +38,30 @@ class TopicService(
 
     fun validate(topic: Topic) = validator.validate(topic).throwIfInvalid { ValidationError(it) }
 
-    fun create(topicDTO: CreateTopicDTO): Topic {
+    override fun create(createDTO: CreateTopicDTO): Topic {
         val topic = Topic(
                 owner = authenticationFacade.user,
-                title = topicDTO.title
+                title = createDTO.title
         )
         validate(topic)
-        return jpaTopicRepository.save(topic)
+        return repository.save(topic)
     }
+
+    override fun buildSingleArgumentSearchSpec(needle: String?): Specification<Topic> {
+        if (needle.isNullOrEmpty())
+            return emptySpecification
+
+        val lowerCaseNeedle = needle.toLowerCase()
+
+        val titleContains = Specification<Topic> { root, _, builder ->
+            builder.like(builder.lower(root[Topic_.title]), "%$lowerCaseNeedle%") }
+
+        val ownerEquals = Specification<Topic> { root, _, builder ->
+            builder.equal(root[Topic_.owner], authenticationFacade.user) }
+
+        return Specification.where(titleContains).and(ownerEquals)
+    }
+
+    override fun serializePage(page: Page<Topic>): PageDTO = page.toDTO { it.toDTO() }
+    override fun get(id: Long): TopicDTO = getInstance(id).toDTO()
 }

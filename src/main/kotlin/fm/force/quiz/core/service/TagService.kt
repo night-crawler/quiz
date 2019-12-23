@@ -6,30 +6,34 @@ import fm.force.quiz.core.entity.Tag
 import org.springframework.stereotype.Service
 import com.github.slugify.Slugify
 import fm.force.quiz.configuration.properties.TagValidationProperties
-import fm.force.quiz.core.dto.CreateTagDTO
-import fm.force.quiz.core.dto.toDTO
+import fm.force.quiz.core.dto.*
 import fm.force.quiz.core.entity.Tag_
-import fm.force.quiz.core.exception.NotFoundException
 import fm.force.quiz.core.exception.ValidationError
 import fm.force.quiz.core.repository.JpaTagRepository
 import fm.force.quiz.security.service.AuthenticationFacade
+import org.springframework.data.domain.Page
 import org.springframework.data.jpa.domain.Specification
 
 
 @Service
 class TagService(
-        private val authenticationFacade: AuthenticationFacade,
-        private val jpaTagRepository: JpaTagRepository,
-        private val validationProps: TagValidationProperties
+        private val validationProps: TagValidationProperties,
+        jpaTagRepository: JpaTagRepository,
+        paginationService: PaginationService,
+        sortingService: SortingService,
+        authenticationFacade: AuthenticationFacade
+) : AbstractPaginatedCRUDService<Tag, JpaTagRepository, CreateTagDTO, TagDTO>(
+        repository = jpaTagRepository,
+        authenticationFacade = authenticationFacade,
+        paginationService = paginationService,
+        sortingService = sortingService
 ) {
     companion object {
         private val slugifier = Slugify()
         fun slugify(text: String): String = slugifier.slugify(text)
     }
 
-    private val emptySpecification = Specification<Tag> { _, _, _ -> null}
-
-    fun buildSearchSpec(needle: String?): Specification<Tag> {
+    override fun buildSingleArgumentSearchSpec(needle: String?): Specification<Tag> {
         if (needle.isNullOrEmpty())
             return emptySpecification
 
@@ -64,20 +68,18 @@ class TagService(
             }
             .build()
 
-    fun validate(tag: Tag) = validator.validate(tag).throwIfInvalid { ValidationError(it) }
+    fun validate(instance: Tag) = validator.validate(instance).throwIfInvalid { ValidationError(it) }
 
-    fun create(tagDTO: CreateTagDTO): Tag {
+    override fun create(createDTO: CreateTagDTO): Tag {
         val tag = Tag(
                 owner = authenticationFacade.user,
-                name = tagDTO.name,
-                slug = slugify(tagDTO.name)
+                name = createDTO.name,
+                slug = slugify(createDTO.name)
         )
         validate(tag)
-        return jpaTagRepository.save(tag)
+        return repository.save(tag)
     }
 
-    fun getTag(tagId: Long) = jpaTagRepository
-            .findByIdAndOwner(tagId, authenticationFacade.user)
-            .orElseThrow { NotFoundException(tagId, Tag::class) }
-            .toDTO()
+    override fun get(id: Long) = getInstance(id).toDTO()
+    override fun serializePage(page: Page<Tag>): PageDTO = page.toDTO { it.toDTO() }
 }

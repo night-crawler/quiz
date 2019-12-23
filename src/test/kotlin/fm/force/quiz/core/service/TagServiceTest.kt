@@ -3,6 +3,8 @@ package io.kotlintest.provided.fm.force.quiz.core.service
 import fm.force.quiz.common.getRandomString
 import fm.force.quiz.configuration.properties.TagValidationProperties
 import fm.force.quiz.core.dto.CreateTagDTO
+import fm.force.quiz.core.dto.PaginationQuery
+import fm.force.quiz.core.dto.SortQuery
 import fm.force.quiz.core.entity.Tag
 import fm.force.quiz.core.exception.NotFoundException
 import fm.force.quiz.core.exception.ValidationError
@@ -74,7 +76,7 @@ open class TagServiceTest(
                     Tag(owner = user, name = "prefix-user-1", slug = "prefix-user-1")
             ))
 
-            val spec = tagService.buildSearchSpec("prefix")
+            val spec = tagService.buildSingleArgumentSearchSpec("prefix")
             val foundTags = jpaTagRepository.findAll(spec)
             foundTags shouldHaveSize 1
         }
@@ -83,8 +85,21 @@ open class TagServiceTest(
             val tag = jpaTagRepository.save(Tag(owner = alien, name = "charade", slug = "charade"))
             val ownTag = jpaTagRepository.save(Tag(owner = user, name = "all mine", slug = "all-mine"))
 
-            shouldThrow<NotFoundException> { tagService.getTag(tag.id) }
-            tagService.getTag(ownTag.id).id shouldNotBe null
+            shouldThrow<NotFoundException> { tagService.get(tag.id) }
+            tagService.get(ownTag.id).id shouldNotBe null
+        }
+
+        "should return paginated find responses" {
+            (1..5).map {
+                testDataFactory.getTag(owner = user, name = "test-prefix-${it * 100}-suffix")
+            }
+
+            val p1 = tagService.find(
+                    PaginationQuery(null, null),
+                    SortQuery(listOf("-id")),
+                    "test-prefix"
+            )
+            p1.content shouldHaveSize 5
         }
     }
 }

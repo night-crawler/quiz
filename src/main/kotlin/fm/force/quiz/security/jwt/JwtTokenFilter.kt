@@ -21,10 +21,7 @@ class JwtTokenFilter(
     *     failureHandler.onAuthenticationFailure(httpRequest, httpResponse, exc)
     */
 
-
-    /* sometimes spring calls doFilter twice after an auth failure:
-     * first time for the original request, and the second one for an `/error` url
-    */
+    /* sometimes spring calls doFilter twice after an auth failure */
     override fun doFilter(request: ServletRequest?, response: ServletResponse?, chain: FilterChain?) {
         val httpRequest = request as HttpServletRequest?
         val path = httpRequest?.requestURI

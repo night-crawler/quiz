@@ -8,6 +8,7 @@ import fm.force.quiz.core.exception.ValidationError
 import org.hibernate.exception.ConstraintViolationException
 import org.springframework.data.mapping.PropertyReferenceException
 import org.springframework.http.converter.HttpMessageNotReadableException
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 
 fun ConstraintViolation.toFieldError() = FieldError(
         fieldName = name(),
@@ -30,7 +31,7 @@ data class ErrorResponse(
         val errors: List<Any> = emptyList()
 ) {
     enum class Type {
-        VALIDATION, GENERAL
+        VALIDATION, GENERAL, AUTH
     }
 
     companion object {
@@ -63,8 +64,13 @@ data class ErrorResponse(
                             message = ex.localizedMessage
                     ))
             )
-
         }
+
+        fun of(ex: UsernameNotFoundException) = ErrorResponse(
+                exception = ex.javaClass.simpleName,
+                type = Type.AUTH,
+                errors = listOf(ErrorMessage(ex.localizedMessage))
+        )
 
         fun of(ex: PropertyReferenceException) = ErrorResponse(
                 exception = ex.javaClass.simpleName,
