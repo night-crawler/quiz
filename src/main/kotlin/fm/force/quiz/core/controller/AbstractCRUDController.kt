@@ -7,6 +7,7 @@ import fm.force.quiz.core.repository.CommonRepository
 import fm.force.quiz.core.service.AbstractPaginatedCRUDService
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor
+import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 
 abstract class AbstractCRUDController<ENT, REPO, CRDTO, SERDTO>  (
@@ -21,6 +22,10 @@ abstract class AbstractCRUDController<ENT, REPO, CRDTO, SERDTO>  (
 
     @GetMapping("{instanceId}")
     open fun get(@PathVariable instanceId: Long) : SERDTO = service.serializeEntity(service.getInstance(instanceId))
+
+    @DeleteMapping("{instanceId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    open fun delete(@PathVariable instanceId: Long) = service.delete(instanceId)
 
     @GetMapping
     open fun find(

@@ -4,6 +4,7 @@ import fm.force.quiz.core.dto.ErrorResponse
 import fm.force.quiz.core.exception.NotFoundException
 import fm.force.quiz.core.exception.ValidationError
 import org.hibernate.exception.ConstraintViolationException
+import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.data.mapping.PropertyReferenceException
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -19,6 +20,10 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @ControllerAdvice
 class ExceptionHandler : ResponseEntityExceptionHandler() {
+    @ExceptionHandler(EmptyResultDataAccessException::class)
+    fun handleEmptyResultDataAccessException(ex: EmptyResultDataAccessException) =
+            ResponseEntity(ErrorResponse.of(ex), HttpStatus.NOT_FOUND)
+
     @ExceptionHandler(UsernameNotFoundException::class)
     fun handleUsernameNotFoundException(ex: UsernameNotFoundException) =
             ResponseEntity(ErrorResponse.of(ex), HttpStatus.FORBIDDEN)
