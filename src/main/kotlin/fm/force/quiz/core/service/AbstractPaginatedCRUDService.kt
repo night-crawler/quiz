@@ -3,7 +3,6 @@ package fm.force.quiz.core.service
 import fm.force.quiz.core.dto.PageDTO
 import fm.force.quiz.core.dto.PaginationQuery
 import fm.force.quiz.core.dto.SortQuery
-import fm.force.quiz.core.entity.Tag
 import fm.force.quiz.core.exception.NotFoundException
 import fm.force.quiz.core.repository.CommonRepository
 import fm.force.quiz.security.service.AuthenticationFacade
@@ -27,12 +26,12 @@ abstract class AbstractPaginatedCRUDService<ENT, REPO, CRDTO, SERDTO>(
 
     abstract fun buildSingleArgumentSearchSpec(needle: String?): Specification<ENT>
     abstract fun serializePage(page: Page<ENT>): PageDTO
-    abstract fun get(id: Long): SERDTO
+    abstract fun serializeEntity(entity: ENT) : SERDTO
     abstract fun create(createDTO: CRDTO) : ENT
 
     open fun getInstance(id: Long): ENT = repository
             .findByIdAndOwner(id, authenticationFacade.user)
-            .orElseThrow { NotFoundException(id, Tag::class) }
+            .orElseThrow { NotFoundException(id, this::class) }
 
     open fun find(
             paginationQuery: PaginationQuery,

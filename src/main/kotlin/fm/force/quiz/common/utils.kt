@@ -12,7 +12,6 @@ fun getRandomString(len: Int = 8, alphabet: List<Char> = ALPHABET) =
                 .map(alphabet::get)
                 .joinToString("")
 
-fun String.randomString(len: Int = 8, alphabet: List<Char> = ALPHABET) = getRandomString(len, alphabet)
 
 fun Long.toBinaryString(): String = BitSet.valueOf(longArrayOf(this)).let { bs ->
     (63 downTo 0).joinToString("") {

@@ -80,6 +80,6 @@ class TagService(
         return repository.save(tag)
     }
 
-    override fun get(id: Long) = getInstance(id).toDTO()
     override fun serializePage(page: Page<Tag>): PageDTO = page.toDTO { it.toDTO() }
+    override fun serializeEntity(entity: Tag): TagDTO = entity.toDTO()
 }

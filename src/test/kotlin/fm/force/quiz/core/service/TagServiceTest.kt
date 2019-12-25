@@ -11,45 +11,27 @@ import fm.force.quiz.core.exception.ValidationError
 import fm.force.quiz.core.repository.JpaTagRepository
 import fm.force.quiz.core.service.TagService
 import fm.force.quiz.factory.TestDataFactory
-import fm.force.quiz.security.entity.User
-import fm.force.quiz.security.service.AuthenticationFacade
 import fm.force.quiz.security.service.JwtUserDetailsFactoryService
-import io.kotlintest.TestCase
 import io.kotlintest.data.forall
 import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.provided.fm.force.quiz.TestConfiguration
 import io.kotlintest.provided.fm.force.quiz.YamlPropertyLoaderFactory
-import io.kotlintest.specs.StringSpec
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.tables.row
-import org.mockito.Mockito
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.context.annotation.PropertySource
 import org.springframework.test.context.ContextConfiguration
 
 @PropertySource("classpath:application-test.yaml", factory = YamlPropertyLoaderFactory::class)
 @ContextConfiguration(classes = [TestConfiguration::class])
 open class TagServiceTest(
-        private val jwtUserDetailsFactoryService: JwtUserDetailsFactoryService,
-        private val testDataFactory: TestDataFactory,
+        jwtUserDetailsFactoryService: JwtUserDetailsFactoryService,
+        testDataFactory: TestDataFactory,
         jpaTagRepository: JpaTagRepository,
         tagService: TagService,
         validationProps: TagValidationProperties
-) : StringSpec() {
-    @MockBean
-    private lateinit var authFacade: AuthenticationFacade
-    private lateinit var user: User
-    private lateinit var alien: User
-
-    override fun beforeTest(testCase: TestCase) {
-        user = testDataFactory.getUser()
-        alien = testDataFactory.getUser()
-
-        Mockito.`when`(authFacade.principal).thenReturn(jwtUserDetailsFactoryService.createUserDetails(user))
-        Mockito.`when`(authFacade.user).thenReturn(user)
-    }
+) : GenericCRUDServiceTest(testDataFactory = testDataFactory, jwtUserDetailsFactoryService = jwtUserDetailsFactoryService) {
 
     init {
         "should throw ValidationError on too short or too long tag names" {
@@ -82,11 +64,11 @@ open class TagServiceTest(
         }
 
         "users must not be able to access foreign tags by id" {
-            val tag = jpaTagRepository.save(Tag(owner = alien, name = "charade", slug = "charade"))
+            val alienTag = jpaTagRepository.save(Tag(owner = alien, name = "charade", slug = "charade"))
             val ownTag = jpaTagRepository.save(Tag(owner = user, name = "all mine", slug = "all-mine"))
 
-            shouldThrow<NotFoundException> { tagService.get(tag.id) }
-            tagService.get(ownTag.id).id shouldNotBe null
+            shouldThrow<NotFoundException> { tagService.getInstance(alienTag.id) }
+            tagService.getInstance(ownTag.id).id shouldNotBe null
         }
 
         "should return paginated find responses" {

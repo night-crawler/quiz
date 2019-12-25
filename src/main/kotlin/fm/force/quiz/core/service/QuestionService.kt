@@ -4,7 +4,11 @@ import am.ik.yavi.builder.ValidatorBuilder
 import am.ik.yavi.builder.konstraint
 import fm.force.quiz.configuration.properties.QuestionValidationProperties
 import fm.force.quiz.core.dto.CreateQuestionDTO
+import fm.force.quiz.core.dto.PageDTO
+import fm.force.quiz.core.dto.QuestionDTO
+import fm.force.quiz.core.dto.toDTO
 import fm.force.quiz.core.entity.Question
+import fm.force.quiz.core.entity.Question_
 import fm.force.quiz.core.exception.ValidationError
 import fm.force.quiz.core.repository.JpaAnswerRepository
 import fm.force.quiz.core.repository.JpaQuestionRepository
@@ -12,18 +16,27 @@ import fm.force.quiz.core.repository.JpaTagRepository
 import fm.force.quiz.core.repository.JpaTopicRepository
 import fm.force.quiz.core.validator.fkValidator
 import fm.force.quiz.security.service.AuthenticationFacade
+import org.springframework.data.domain.Page
+import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 import javax.transaction.Transactional
 
 
 @Service
 class QuestionService(
-        val jpaQuestionRepository: JpaQuestionRepository,
         val jpaAnswerRepository: JpaAnswerRepository,
         val jpaTagRepository: JpaTagRepository,
         val jpaTopicRepository: JpaTopicRepository,
-        val authenticationFacade: AuthenticationFacade,
-        val validationProps: QuestionValidationProperties
+        val validationProps: QuestionValidationProperties,
+        authenticationFacade: AuthenticationFacade,
+        jpaQuestionRepository: JpaQuestionRepository,
+        paginationService: PaginationService,
+        sortingService: SortingService
+) : AbstractPaginatedCRUDService<Question, JpaQuestionRepository, CreateQuestionDTO, QuestionDTO>(
+        repository = jpaQuestionRepository,
+        authenticationFacade = authenticationFacade,
+        paginationService = paginationService,
+        sortingService = sortingService
 ) {
     // all field names must remain same in order to be able to be merged
     inner class CreateQuestionDTOWrapper(private val instance: CreateQuestionDTO) {
@@ -98,23 +111,41 @@ class QuestionService(
     }
 
     @Transactional
-    fun create(createQuestionDTO: CreateQuestionDTO): Question {
-        validate(createQuestionDTO)
+    override fun create(createDTO: CreateQuestionDTO): Question {
+        validate(createDTO)
 
         val answersMap = jpaAnswerRepository
-                .findAllById(createQuestionDTO.answers)
+                .findAllById(createDTO.answers)
                 .map { it.id to it }.toMap()
 
         val question = Question(
                 owner = authenticationFacade.user,
-                text = createQuestionDTO.text,
-                answers = createQuestionDTO.answers.map { answersMap[it]!! }.toSet(),
-                correctAnswers = createQuestionDTO.correctAnswers.map { answersMap[it]!! }.toSet(),
-                tags = jpaTagRepository.findAllById(createQuestionDTO.tags).toSet(),
-                topics = jpaTopicRepository.findAllById(createQuestionDTO.topics).toSet(),
-                difficulty = createQuestionDTO.difficulty
+                text = createDTO.text,
+                answers = createDTO.answers.map { answersMap[it]!! }.toSet(),
+                correctAnswers = createDTO.correctAnswers.map { answersMap[it]!! }.toSet(),
+                tags = jpaTagRepository.findAllById(createDTO.tags).toSet(),
+                topics = jpaTopicRepository.findAllById(createDTO.topics).toSet(),
+                difficulty = createDTO.difficulty
         )
 
-        return jpaQuestionRepository.save(question)
+        return repository.save(question)
     }
+
+    override fun buildSingleArgumentSearchSpec(needle: String?): Specification<Question> {
+        if (needle.isNullOrEmpty())
+            return emptySpecification
+
+        val lowerCaseNeedle = needle.toLowerCase()
+
+        val ownerEquals = Specification<Question> { root, _, builder ->
+            builder.equal(root[Question_.owner], authenticationFacade.user) }
+
+        val textLike = Specification<Question> { root, _, builder ->
+            builder.like(builder.lower(root[Question_.text]), "%$lowerCaseNeedle%") }
+
+        return Specification.where(ownerEquals).and(textLike)
+    }
+
+    override fun serializePage(page: Page<Question>): PageDTO = page.toDTO { it.toDTO() }
+    override fun serializeEntity(entity: Question): QuestionDTO = entity.toDTO()
 }

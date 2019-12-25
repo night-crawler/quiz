@@ -63,5 +63,5 @@ class TopicService(
     }
 
     override fun serializePage(page: Page<Topic>): PageDTO = page.toDTO { it.toDTO() }
-    override fun get(id: Long): TopicDTO = getInstance(id).toDTO()
+    override fun serializeEntity(entity: Topic): TopicDTO = entity.toDTO()
 }
