@@ -13,7 +13,7 @@ data class Question(
         @ManyToOne val owner: User,
 
         @Column(columnDefinition = "TEXT")
-        val text: String,
+        var text: String,
 
         @ManyToMany(targetEntity = Answer::class, fetch = FetchType.LAZY)
         @JoinTable(
@@ -21,7 +21,7 @@ data class Question(
                 joinColumns = [JoinColumn(name = "question_id")],
                 inverseJoinColumns = [JoinColumn(name = "answer_id")]
         )
-        val answers: Set<Answer> = setOf(),
+        var answers: MutableSet<Answer> = mutableSetOf(),
 
         @ManyToMany(targetEntity = Answer::class, fetch = FetchType.LAZY)
         @JoinTable(
@@ -29,7 +29,7 @@ data class Question(
                 joinColumns = [JoinColumn(name = "question_id")],
                 inverseJoinColumns = [JoinColumn(name = "answer_id")]
         )
-        var correctAnswers: Set<Answer> = setOf(),
+        var correctAnswers: MutableSet<Answer> = mutableSetOf(),
 
         @ManyToMany(targetEntity = Tag::class, fetch = FetchType.LAZY)
         @JoinTable(
@@ -37,7 +37,7 @@ data class Question(
                 joinColumns = [JoinColumn(name = "question_id")],
                 inverseJoinColumns = [JoinColumn(name = "tag_id")]
         )
-        var tags: Set<Tag> = setOf(),
+        var tags: MutableSet<Tag> = mutableSetOf(),
 
         @ManyToMany(targetEntity = Topic::class, fetch = FetchType.LAZY)
         @JoinTable(
@@ -45,7 +45,7 @@ data class Question(
                 joinColumns = [JoinColumn(name = "question_id")],
                 inverseJoinColumns = [JoinColumn(name = "topic_id")]
         )
-        var topics: Set<Topic> = setOf(),
+        var topics: MutableSet<Topic> = mutableSetOf(),
 
         /**
          * Normalized difficulty in range []0;1e6)

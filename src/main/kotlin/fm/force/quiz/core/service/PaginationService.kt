@@ -16,8 +16,8 @@ import org.springframework.stereotype.Service
 class PaginationService(
         val paginationProps: PaginationValidationProperties
 ) {
-    private val whenPageIsPresent = ConstraintCondition<PaginationQuery> { query, _: ConstraintGroup? -> query.page != null }
-    private val whenPageSizeIsPresent = ConstraintCondition<PaginationQuery> { query, _: ConstraintGroup? -> query.pageSize != null }
+    private val whenPageIsPresent = ConstraintCondition<PaginationQuery> { query, _ -> query.page != null }
+    private val whenPageSizeIsPresent = ConstraintCondition<PaginationQuery> { query, _ -> query.pageSize != null }
 
     val validator = ValidatorBuilder.of<PaginationQuery>()
             .konstraintOnCondition(whenPageIsPresent) {

@@ -56,25 +56,25 @@ open class CoreRepositoryTest(
             })
 
             val question1 = jpaQuestionRepository.save(Question(
-                    owner = user, text = "Sample question 1", answers = answersSet1.toSet(),
-                    correctAnswers = setOf(answersSet1[0]),
-                    topics = setOf(topics[0], topics[1]),
+                    owner = user, text = "Sample question 1", answers = answersSet1.toMutableSet(),
+                    correctAnswers = mutableSetOf(answersSet1[0]),
+                    topics = mutableSetOf(topics[0], topics[1]),
                     difficulty = 2
             ))
 
             val question2 = jpaQuestionRepository.save(Question(
-                    owner = user, text = "Sample question 1", answers = answersSet2.toSet(),
-                    correctAnswers = setOf(answersSet2[0]),
-                    topics = setOf(topics[2], topics[3]),
+                    owner = user, text = "Sample question 1", answers = answersSet2.toMutableSet(),
+                    correctAnswers = mutableSetOf(answersSet2[0]),
+                    topics = mutableSetOf(topics[2], topics[3]),
                     difficulty = 3
             ))
 
             val quiz = jpaQuizRepository.save(Quiz(
                     owner = user, title = "Test Quiz",
-                    questions = setOf(question1, question2),
-                    tags = setOf(tags[0]),
+                    questions = mutableSetOf(question1, question2),
+                    tags = mutableSetOf(tags[0]),
                     difficultyScale = difficultyScale,
-                    topics = setOf(topics[2], topics[3])
+                    topics = mutableSetOf(topics[2], topics[3])
             ))
 
             val quizSession = jpaQuizSessionRepository.save(QuizSession(

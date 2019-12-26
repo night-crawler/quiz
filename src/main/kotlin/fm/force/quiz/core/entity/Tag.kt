@@ -10,6 +10,6 @@ import javax.persistence.Table
 @Table(name = "tags")
 data class Tag(
         @ManyToOne val owner: User,
-        @Column(length = 100, unique = true) val name: String,
-        @Column(length = 150, unique = true) val slug: String
+        @Column(length = 100, unique = true) var name: String,
+        @Column(length = 150, unique = true) var slug: String
 ) : BaseQuizEntity()

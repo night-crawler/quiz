@@ -15,5 +15,5 @@ data class DifficultyScale(
         var max: Int = 9,
 
         @OneToMany(mappedBy = "difficultyScale")
-        val difficultyScaleRanges: Set<DifficultyScaleRange> = setOf()
+        val difficultyScaleRanges: MutableSet<DifficultyScaleRange> = mutableSetOf()
 ): BaseQuizEntity()

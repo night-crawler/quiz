@@ -7,9 +7,16 @@ import java.util.*
 
 interface CommonRepository<T> {
     fun findByIdAndOwner(id: Long, owner: User): Optional<T>
+
     @Query("select t.id from #{#entityName} t where t.id in :ids and t.owner.id = :ownerId")
     fun findOwnedIds(
             @Param("ids") ids: Collection<Long>,
             @Param("ownerId") ownerId: Long
     ): List<Long>
+
+    @Query("select t from #{#entityName} t where t.id in :ids and t.owner.id = :ownerId")
+    fun findOwned(
+            @Param("ids") ids: Collection<Long>,
+            @Param("ownerId") ownerId: Long
+    ): List<T>
 }

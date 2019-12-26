@@ -52,16 +52,16 @@ class TestDataFactory(
     fun getQuestion(
             owner: User = getUser(),
             text: String = getRandomString(16),
-            answers: Set<Answer> = (1..5).map { getAnswer(owner = owner) }.toSet(),
-            topics: Set<Topic> = (1..5).map { getTopic(owner = owner) }.toSet(),
-            tags: Set<Tag> = (1..5).map { getTag(owner = owner) }.toSet(),
+            answers: MutableSet<Answer> = (1..5).map { getAnswer(owner = owner) }.toMutableSet(),
+            topics: MutableSet<Topic> = (1..5).map { getTopic(owner = owner) }.toMutableSet(),
+            tags: MutableSet<Tag> = (1..5).map { getTag(owner = owner) }.toMutableSet(),
             difficulty: Int = Random.nextInt(1000)
     ) = jpaQuestionRepository.save(Question(
             owner = owner,
             text = text,
             answers = answers,
             topics = topics,
-            correctAnswers = setOf(answers.random()),
+            correctAnswers = mutableSetOf(answers.random()),
             tags = tags,
             difficulty = difficulty
     ))

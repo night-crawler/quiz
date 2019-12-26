@@ -27,6 +27,9 @@ abstract class AbstractCRUDController<ENT, REPO, CRDTO, SERDTO>  (
     @ResponseStatus(HttpStatus.NO_CONTENT)
     open fun delete(@PathVariable instanceId: Long) = service.delete(instanceId)
 
+    @PatchMapping("{instanceId}")
+    open fun patch(@PathVariable instanceId: Long, @RequestBody patchDTO: CRDTO) = service.patch(instanceId, patchDTO)
+
     @GetMapping
     open fun find(
             paginationQuery: PaginationQuery,

@@ -2,8 +2,11 @@ package fm.force.quiz.core.service
 
 import am.ik.yavi.builder.ValidatorBuilder
 import am.ik.yavi.builder.konstraint
+import am.ik.yavi.builder.konstraintOnCondition
+import am.ik.yavi.builder.konstraintOnGroup
+import am.ik.yavi.core.ConstraintCondition
 import fm.force.quiz.configuration.properties.QuestionValidationProperties
-import fm.force.quiz.core.dto.CreateQuestionDTO
+import fm.force.quiz.core.dto.PatchQuestionDTO
 import fm.force.quiz.core.dto.PageDTO
 import fm.force.quiz.core.dto.QuestionDTO
 import fm.force.quiz.core.dto.toDTO
@@ -19,116 +22,167 @@ import fm.force.quiz.security.service.AuthenticationFacade
 import org.springframework.data.domain.Page
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
+import java.util.function.Predicate
 import javax.transaction.Transactional
 
 
 @Service
 class QuestionService(
-        val jpaAnswerRepository: JpaAnswerRepository,
-        val jpaTagRepository: JpaTagRepository,
-        val jpaTopicRepository: JpaTopicRepository,
-        val validationProps: QuestionValidationProperties,
+        private val jpaAnswerRepository: JpaAnswerRepository,
+        private val jpaTagRepository: JpaTagRepository,
+        private val jpaTopicRepository: JpaTopicRepository,
+        private val validationProps: QuestionValidationProperties,
         authenticationFacade: AuthenticationFacade,
         jpaQuestionRepository: JpaQuestionRepository,
         paginationService: PaginationService,
         sortingService: SortingService
-) : AbstractPaginatedCRUDService<Question, JpaQuestionRepository, CreateQuestionDTO, QuestionDTO>(
+) : AbstractPaginatedCRUDService<Question, JpaQuestionRepository, PatchQuestionDTO, QuestionDTO>(
         repository = jpaQuestionRepository,
         authenticationFacade = authenticationFacade,
         paginationService = paginationService,
         sortingService = sortingService
 ) {
-    // all field names must remain same in order to be able to be merged
-    inner class CreateQuestionDTOWrapper(private val instance: CreateQuestionDTO) {
-        private val ownerId = authenticationFacade.principal.id!!
-        val correctAnswers get() = instance.correctAnswers - instance.answers == emptySet<Long>()
-        val answers get() = jpaAnswerRepository.findOwnedIds(instance.answers, ownerId).toSet() == instance.answers
+    private val msgTextTooShort = "Must be at least ${validationProps.minTextLength} characters long"
+    private val msgTooManyAnswers = "Only ${validationProps.maxAnswers} answers are allowed"
+    private val msgTooManyTags = "Only ${validationProps.maxTags} tags are allowed"
+    private val msgNegativeDifficulty = "Must be greater than 0"
+    private val msgAnswersEmpty = "Provide at least one answer"
+    private val msgNotNull = "Must be present"
+    private val msgWrongCorrectAnswers = "Correct answers must be a subset of answers"
+    private val msgWrongAnswers = "Some entered answers do not belong to you or do not exist"
+    private val msgWrongTags = "Some entered tags do not belong to you or do not exist"
+    private val msgWrongTopics = "Some entered topics do not belong to you or do not exist"
 
-        val tags
-            get() = if (instance.tags.isNotEmpty())
-                jpaTagRepository.findOwnedIds(instance.tags, ownerId).toSet() == instance.tags
-            else true
+    private val whenTextIsPresent = ConstraintCondition<PatchQuestionDTO> { dto, _ -> dto.text != null }
+    private val whenAnswersArePresent = ConstraintCondition<PatchQuestionDTO> { dto, _ -> dto.answers != null }
+    private val whenCorrectAnswersArePresent = ConstraintCondition<PatchQuestionDTO> { dto, _ -> dto.correctAnswers != null }
+    private val whenTagsArePresent = ConstraintCondition<PatchQuestionDTO> { dto, _ -> dto.tags != null }
+    private val whenTopicsArePresent = ConstraintCondition<PatchQuestionDTO> { dto, _ -> dto.topics != null }
+    private val whenDifficultyIsPresent = ConstraintCondition<PatchQuestionDTO> { dto, _ -> dto.difficulty != null }
 
-        // ! we cannot query empty lists like this, hibernate will fail
-        val topics
-            get() = if (instance.topics.isNotEmpty())
-                jpaTopicRepository.findOwnedIds(instance.topics, ownerId).toSet() == instance.topics
-            else true
+    private val whenAnswerIdsDoNotMatch = Predicate<PatchQuestionDTO> {
+        if (it.correctAnswers == null || it.answers == null) true
+        else (it.correctAnswers - it.answers).isEmpty()
+    }
+    private val whenAnswersDoNotExist = Predicate<PatchQuestionDTO> {
+        if (it.answers.isNullOrEmpty()) true
+        else jpaAnswerRepository.findOwnedIds(it.answers, authenticationFacade.user.id).toSet() == it.answers
+    }
+    private val whenTopicsDoNotExist = Predicate<PatchQuestionDTO> {
+        if (it.topics.isNullOrEmpty()) true
+        else jpaTopicRepository.findOwnedIds(it.topics, authenticationFacade.user.id).toSet() == it.topics
+    }
+    private val whenTagsDoNotExist = Predicate<PatchQuestionDTO> {
+        if (it.tags.isNullOrEmpty()) true
+        else jpaTagRepository.findOwnedIds(it.tags, authenticationFacade.user.id).toSet() == it.tags
+    }
+    private val whenAnswersDoNotMatch = Predicate<Question> {
+        (it.correctAnswers - it.answers).isEmpty()
     }
 
-    val questionDTOValidator = ValidatorBuilder.of<CreateQuestionDTO>()
-            .konstraint(CreateQuestionDTO::text) {
-                greaterThan(validationProps.minTextLength).message("Must be at least ${validationProps.minTextLength} characters long")
+    private val validator = ValidatorBuilder.of<PatchQuestionDTO>()
+            // Called only when CREATE constraint group is passed to validate()
+            .konstraintOnGroup(CRUDConstraintGroup.CREATE) {
+                konstraint(PatchQuestionDTO::text) { notNull().message(msgNotNull) }
+                konstraint(PatchQuestionDTO::answers) { notNull().message(msgNotNull) }
+                konstraint(PatchQuestionDTO::correctAnswers) { notNull().message(msgNotNull) }
+
+                constraintOnTarget(whenAnswerIdsDoNotMatch, "correctAnswers", "", msgWrongCorrectAnswers)
             }
 
-            .konstraint(CreateQuestionDTO::answers) {
-                lessThan(validationProps.maxAnswers).message("Only ${validationProps.maxAnswers} answers are allowed")
-                greaterThan(0).message("Provide at least one answer")
+            // everything else is used when updating
+            .konstraintOnCondition(whenTextIsPresent) {
+                konstraint(PatchQuestionDTO::text) {
+                    greaterThan(validationProps.minTextLength).message(msgTextTooShort)
+                }
             }
-            .forEach(CreateQuestionDTO::answers, "answers", fkValidator)
 
-            .konstraint(CreateQuestionDTO::correctAnswers) {
-                lessThan(validationProps.maxAnswers).message("Only ${validationProps.maxAnswers} correct answers are allowed")
-                greaterThan(0).message("Provide at least one correct answer")
+            .konstraintOnCondition(whenAnswersArePresent) {
+                konstraint(PatchQuestionDTO::answers) {
+                    lessThan(validationProps.maxAnswers).message(msgTooManyAnswers)
+                    greaterThan(0).message(msgAnswersEmpty)
+                }.forEach(PatchQuestionDTO::answers, "answers", fkValidator)
+                constraintOnTarget(whenAnswersDoNotExist, "answers", "", msgWrongAnswers)
             }
-            .forEach(CreateQuestionDTO::correctAnswers, "correctAnswers", fkValidator)
 
-            .konstraint(CreateQuestionDTO::tags) {
-                lessThan(validationProps.maxTags).message("Only ${validationProps.maxTags} tags are allowed")
+            .konstraintOnCondition(whenCorrectAnswersArePresent) {
+                konstraint(PatchQuestionDTO::correctAnswers) {
+                    lessThan(validationProps.maxAnswers).message(msgTooManyAnswers)
+                    greaterThan(0).message(msgAnswersEmpty)
+                }.forEach(PatchQuestionDTO::correctAnswers, "correctAnswers", fkValidator)
             }
-            .forEach(CreateQuestionDTO::tags, "tags", fkValidator)
 
-            .forEach(CreateQuestionDTO::topics, "topics", fkValidator)
+            .konstraintOnCondition(whenTagsArePresent) {
+                konstraint(PatchQuestionDTO::tags) {
+                    lessThan(validationProps.maxTags).message(msgTooManyTags)
+                }.forEach(PatchQuestionDTO::tags, "tags", fkValidator)
+                constraintOnTarget(whenTagsDoNotExist, "tags", "", msgWrongTags)
+            }
 
-            .konstraint(CreateQuestionDTO::difficulty) {
-                greaterThanOrEqual(0).message("Must be greater than 0")
+            .konstraintOnCondition(whenTopicsArePresent) {
+                forEach(PatchQuestionDTO::topics, "topics", fkValidator)
+                constraintOnTarget(whenTopicsDoNotExist, "topics", "", msgWrongTopics)
+            }
+
+            .konstraintOnCondition(whenDifficultyIsPresent) {
+                konstraint(PatchQuestionDTO::difficulty) {
+                    greaterThanOrEqual(0).message(msgNegativeDifficulty)
+                }
             }
             .build()
 
-    val questionDTOMiscValidator = ValidatorBuilder.of<CreateQuestionDTOWrapper>()
-            .konstraint(CreateQuestionDTOWrapper::correctAnswers) {
-                isTrue.message("Must be a subset of all answers")
-            }
-            .konstraint(CreateQuestionDTOWrapper::answers) {
-                isTrue.message("Provided answers seem not to belong to you or do not exist")
-            }
-            .konstraint(CreateQuestionDTOWrapper::topics) {
-                isTrue.message("Provided topics seem not to belong to you or do not exist")
-            }
-            .konstraint(CreateQuestionDTOWrapper::tags) {
-                isTrue.message("Provided tags do not belong to you or do not exist")
-            }
+    val integrityValidator = ValidatorBuilder.of<Question>()
+            .constraintOnTarget(whenAnswersDoNotMatch, "correctAnswers", "", msgWrongCorrectAnswers)
             .build()
 
-    fun validate(question: CreateQuestionDTO) {
-        questionDTOValidator
-                .validate(question)
-                .throwIfInvalid { ValidationError(it) }
+    fun validatePatch(updateDTO: PatchQuestionDTO) = validator
+            // everything else is supposed to be the update group, thus no need to pass anything else to validate()
+            .validate(updateDTO)
+            .throwIfInvalid { ValidationError(it) }
 
-        questionDTOMiscValidator
-                .validate(CreateQuestionDTOWrapper(question))
-                .throwIfInvalid { ValidationError(it) }
-    }
+    fun validateCreate(createDTO: PatchQuestionDTO) = validator
+            .validate(createDTO, CRUDConstraintGroup.CREATE)
+            .throwIfInvalid { ValidationError(it) }
+
+    fun validateQuestion(question: Question) = integrityValidator
+            .validate(question)
+            .throwIfInvalid { ValidationError(it) }
+
+    private fun retrieveAnswers(ids: Collection<Long>?) = ids?.let { jpaAnswerRepository.findAllById(it).toMutableSet() } ?: mutableSetOf()
+    private fun retrieveTopics(ids: Collection<Long>?) = ids?.let { jpaTopicRepository.findAllById(it).toMutableSet() } ?: mutableSetOf()
+    private fun retrieveTags(ids: Collection<Long>?) = ids?.let { jpaTagRepository.findAllById(it).toMutableSet() } ?: mutableSetOf()
 
     @Transactional
-    override fun create(createDTO: CreateQuestionDTO): Question {
-        validate(createDTO)
-
-        val answersMap = jpaAnswerRepository
-                .findAllById(createDTO.answers)
-                .map { it.id to it }.toMap()
-
-        val question = Question(
+    override fun create(createDTO: PatchQuestionDTO): Question {
+        validateCreate(createDTO)
+        // after validation text + answers are never null
+        val question = with(createDTO) { Question(
                 owner = authenticationFacade.user,
-                text = createDTO.text,
-                answers = createDTO.answers.map { answersMap[it]!! }.toSet(),
-                correctAnswers = createDTO.correctAnswers.map { answersMap[it]!! }.toSet(),
-                tags = jpaTagRepository.findAllById(createDTO.tags).toSet(),
-                topics = jpaTopicRepository.findAllById(createDTO.topics).toSet(),
-                difficulty = createDTO.difficulty
-        )
-
+                text = text!!,
+                answers = retrieveAnswers(answers),
+                correctAnswers = retrieveAnswers(correctAnswers),
+                tags = retrieveTags(tags),
+                topics = retrieveTopics(topics),
+                difficulty = difficulty ?: 0
+        )}
         return repository.save(question)
+    }
+
+    override fun patch(id: Long, patchDTO: PatchQuestionDTO): Question {
+        validatePatch(patchDTO)
+        val question = getInstance(id)
+        val modifiedQuestion = with(patchDTO) {
+            if (text != null) question.text = text
+            if (answers != null) question.answers = retrieveAnswers(answers)
+            if (correctAnswers != null) question.correctAnswers = retrieveAnswers(correctAnswers)
+            if (tags != null) question.tags = retrieveTags(tags)
+            if (topics != null) question.topics = retrieveTopics(topics)
+            if (difficulty != null) question.difficulty = difficulty
+
+            question
+        }
+        validateQuestion(modifiedQuestion)
+        return repository.save(modifiedQuestion)
     }
 
     override fun buildSingleArgumentSearchSpec(needle: String?): Specification<Question> {
@@ -138,10 +192,12 @@ class QuestionService(
         val lowerCaseNeedle = needle.toLowerCase()
 
         val ownerEquals = Specification<Question> { root, _, builder ->
-            builder.equal(root[Question_.owner], authenticationFacade.user) }
+            builder.equal(root[Question_.owner], authenticationFacade.user)
+        }
 
         val textLike = Specification<Question> { root, _, builder ->
-            builder.like(builder.lower(root[Question_.text]), "%$lowerCaseNeedle%") }
+            builder.like(builder.lower(root[Question_.text]), "%$lowerCaseNeedle%")
+        }
 
         return Specification.where(ownerEquals).and(textLike)
     }

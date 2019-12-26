@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor
+import org.springframework.web.client.HttpClientErrorException
 import javax.transaction.Transactional
 
 abstract class AbstractPaginatedCRUDService<ENT, REPO, CRDTO, SERDTO>(
@@ -34,6 +35,7 @@ abstract class AbstractPaginatedCRUDService<ENT, REPO, CRDTO, SERDTO>(
             .findByIdAndOwner(id, authenticationFacade.user)
             .orElseThrow { NotFoundException(id, this::class) }
 
+    @Transactional
     open fun find(
             paginationQuery: PaginationQuery,
             sortQuery: SortQuery,
@@ -46,6 +48,6 @@ abstract class AbstractPaginatedCRUDService<ENT, REPO, CRDTO, SERDTO>(
         return serializePage(page)
     }
 
-    @Transactional
     open fun delete(id: Long) = getInstance(id).let { repository.delete(it) }
+    open fun patch(id: Long, patchDTO: CRDTO): ENT = throw NotImplementedError("Patch method is not implemented")
 }

@@ -1,6 +1,6 @@
 package io.kotlintest.provided.fm.force.quiz.core.service
 
-import fm.force.quiz.core.dto.CreateQuestionDTO
+import fm.force.quiz.core.dto.PatchQuestionDTO
 import fm.force.quiz.core.dto.PaginationQuery
 import fm.force.quiz.core.dto.SortQuery
 import fm.force.quiz.core.entity.Answer
@@ -15,6 +15,7 @@ import io.kotlintest.data.forall
 import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.provided.fm.force.quiz.TestConfiguration
 import io.kotlintest.provided.fm.force.quiz.YamlPropertyLoaderFactory
+import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.tables.row
 import org.springframework.context.annotation.PropertySource
@@ -41,24 +42,24 @@ open class QuestionServiceTest(
     init {
         "should validate" {
             forall(
-                    row(CreateQuestionDTO("sample", setOf(1, 2), setOf(3, 4), setOf(5), setOf(6))),
-                    row(CreateQuestionDTO("", setOf(1, 22), setOf(1, 33), setOf(44), setOf(66))),
-                    row(CreateQuestionDTO("", emptySet(), emptySet(), emptySet(), emptySet()))
+                    row(PatchQuestionDTO("sample", setOf(1, 2), setOf(3, 4), setOf(5), setOf(6))),
+                    row(PatchQuestionDTO("", setOf(1, 22), setOf(1, 33), setOf(44), setOf(66))),
+                    row(PatchQuestionDTO("", emptySet(), emptySet(), emptySet(), emptySet()))
             ) {
-                shouldThrow<ValidationError> { questionService.validate(it) }
+                shouldThrow<ValidationError> { questionService.validatePatch(it) }
             }
 
             forall(
-                    row(CreateQuestionDTO(
+                    row(PatchQuestionDTO(
                             text = "valid sample",
                             answers = setOf(answer.id), correctAnswers = setOf(answer.id),
                             tags = emptySet(), topics = emptySet())),
-                    row(CreateQuestionDTO(
+                    row(PatchQuestionDTO(
                             text = "valid sample",
                             answers = setOf(answer.id), correctAnswers = setOf(answer.id),
                             tags = setOf(tag.id), topics = setOf(topic.id)))
             ) {
-                questionService.validate(it)
+                questionService.validatePatch(it)
             }
         }
 
@@ -68,6 +69,30 @@ open class QuestionServiceTest(
 
             val page = questionService.find(PaginationQuery.default(), SortQuery.byIdDesc(), "SurPRise")
             page.content shouldHaveSize 5
+        }
+
+        "should update" {
+            val tag = testDataFactory.getTag(owner = user)
+            val topic = testDataFactory.getTopic(owner = user)
+            val answer = testDataFactory.getAnswer(owner = user)
+            val question = testDataFactory.getQuestion(owner = user)
+
+            val patchDTO = PatchQuestionDTO(
+                    text = "new text",
+                    answers = setOf(answer.id),
+                    correctAnswers = setOf(answer.id),
+                    topics = setOf(topic.id),
+                    tags = setOf(tag.id),
+                    difficulty = 100500
+            )
+
+            val updatedQuestion = questionService.patch(question.id, patchDTO)
+            updatedQuestion.text shouldBe "new text"
+            updatedQuestion.answers shouldBe mutableSetOf(answer)
+            updatedQuestion.correctAnswers shouldBe mutableSetOf(answer)
+            updatedQuestion.tags shouldBe mutableSetOf(tag)
+            updatedQuestion.topics shouldBe mutableSetOf(topic)
+            updatedQuestion.difficulty shouldBe 100500
         }
     }
 }

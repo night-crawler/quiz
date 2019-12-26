@@ -16,7 +16,7 @@ data class Quiz(
                 joinColumns = [JoinColumn(name = "quiz_id")],
                 inverseJoinColumns = [JoinColumn(name = "question_id")]
         )
-        var questions: Set<Question> = setOf(),
+        var questions: MutableSet<Question> = mutableSetOf(),
 
         @ManyToMany(targetEntity = Tag::class, fetch = FetchType.LAZY)
         @JoinTable(
@@ -24,7 +24,7 @@ data class Quiz(
                 joinColumns = [JoinColumn(name = "quiz_id")],
                 inverseJoinColumns = [JoinColumn(name = "tag_id")]
         )
-        var tags: Set<Tag> = setOf(),
+        var tags: MutableSet<Tag> = mutableSetOf(),
 
         @ManyToMany(targetEntity = Topic::class, fetch = FetchType.LAZY)
         @JoinTable(
@@ -32,7 +32,7 @@ data class Quiz(
                 joinColumns = [JoinColumn(name = "quiz_id")],
                 inverseJoinColumns = [JoinColumn(name = "topic_id")]
         )
-        var topics: Set<Topic> = setOf(),
+        var topics: MutableSet<Topic> = mutableSetOf(),
 
         @ManyToOne var difficultyScale: DifficultyScale? = null
 
