@@ -15,6 +15,7 @@ import fm.force.quiz.security.service.AuthenticationFacade
 import org.springframework.data.domain.Page
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
+import java.time.Instant
 
 @Service
 class AnswerService(
@@ -63,6 +64,14 @@ class AnswerService(
                 text = createDTO.text,
                 owner = authenticationFacade.user
         )
+        validate(answer)
+        return repository.save(answer)
+    }
+
+    override fun patch(id: Long, patchDTO: CreateAnswerDTO): Answer {
+        val answer = getInstance(id)
+        answer.text = patchDTO.text
+        answer.updatedAt = Instant.now()
         validate(answer)
         return repository.save(answer)
     }

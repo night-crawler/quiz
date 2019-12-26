@@ -12,6 +12,7 @@ import fm.force.quiz.security.service.AuthenticationFacade
 import org.springframework.data.domain.Page
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
+import java.time.Instant
 
 @Service
 class TopicService(
@@ -20,7 +21,7 @@ class TopicService(
         paginationService: PaginationService,
         sortingService: SortingService,
         authenticationFacade: AuthenticationFacade
-) : AbstractPaginatedCRUDService<Topic, JpaTopicRepository, CreateTopicDTO, TopicDTO> (
+) : AbstractPaginatedCRUDService<Topic, JpaTopicRepository, PatchTopicDTO, TopicDTO> (
         repository = jpaTopicRepository,
         authenticationFacade = authenticationFacade,
         sortingService = sortingService,
@@ -38,7 +39,7 @@ class TopicService(
 
     fun validate(topic: Topic) = validator.validate(topic).throwIfInvalid { ValidationError(it) }
 
-    override fun create(createDTO: CreateTopicDTO): Topic {
+    override fun create(createDTO: PatchTopicDTO): Topic {
         val topic = Topic(
                 owner = authenticationFacade.user,
                 title = createDTO.title
@@ -60,6 +61,14 @@ class TopicService(
             builder.equal(root[Topic_.owner], authenticationFacade.user) }
 
         return Specification.where(titleContains).and(ownerEquals)
+    }
+
+    override fun patch(id: Long, patchDTO: PatchTopicDTO): Topic {
+        val topic = getInstance(id)
+        topic.title = patchDTO.title
+        topic.updatedAt = Instant.now()
+        validate(topic)
+        return repository.save(topic)
     }
 
     override fun serializePage(page: Page<Topic>): PageDTO = page.toDTO { it.toDTO() }

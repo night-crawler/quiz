@@ -13,6 +13,7 @@ import fm.force.quiz.core.repository.JpaTagRepository
 import fm.force.quiz.security.service.AuthenticationFacade
 import org.springframework.data.domain.Page
 import org.springframework.data.jpa.domain.Specification
+import java.time.Instant
 
 
 @Service
@@ -22,7 +23,7 @@ class TagService(
         paginationService: PaginationService,
         sortingService: SortingService,
         authenticationFacade: AuthenticationFacade
-) : AbstractPaginatedCRUDService<Tag, JpaTagRepository, CreateTagDTO, TagDTO>(
+) : AbstractPaginatedCRUDService<Tag, JpaTagRepository, PatchTagDTO, TagDTO>(
         repository = jpaTagRepository,
         authenticationFacade = authenticationFacade,
         paginationService = paginationService,
@@ -70,12 +71,21 @@ class TagService(
 
     fun validate(instance: Tag) = validator.validate(instance).throwIfInvalid { ValidationError(it) }
 
-    override fun create(createDTO: CreateTagDTO): Tag {
+    override fun create(createDTO: PatchTagDTO): Tag {
         val tag = Tag(
                 owner = authenticationFacade.user,
                 name = createDTO.name,
                 slug = slugify(createDTO.name)
         )
+        validate(tag)
+        return repository.save(tag)
+    }
+
+    override fun patch(id: Long, patchDTO: PatchTagDTO): Tag {
+        val tag = getInstance(id)
+        tag.name = patchDTO.name
+        tag.slug = slugify(patchDTO.name)
+        tag.updatedAt = Instant.now()
         validate(tag)
         return repository.save(tag)
     }

@@ -7,7 +7,7 @@ import javax.persistence.*
 @Table(name = "answers")
 data class Answer(
         @Column(columnDefinition = "TEXT")
-        val text: String,
+        var text: String,
 
         @ManyToMany(mappedBy = "answers", fetch = FetchType.LAZY)
         val questions: Set<Question> = setOf(),

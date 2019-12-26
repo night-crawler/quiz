@@ -9,11 +9,13 @@ spring:
   jpa:
     properties:
       hibernate:
+        format_sql: true
         temp:
           use_jdbc_metadata_defaults: false
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: none
+    show-sql: false
 
 force:
   security:

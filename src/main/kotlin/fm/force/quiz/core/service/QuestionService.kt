@@ -22,6 +22,7 @@ import fm.force.quiz.security.service.AuthenticationFacade
 import org.springframework.data.domain.Page
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
+import java.time.Instant
 import java.util.function.Predicate
 import javax.transaction.Transactional
 
@@ -181,6 +182,7 @@ class QuestionService(
 
             question
         }
+        modifiedQuestion.updatedAt = Instant.now()
         validateQuestion(modifiedQuestion)
         return repository.save(modifiedQuestion)
     }

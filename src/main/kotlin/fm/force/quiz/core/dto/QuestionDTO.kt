@@ -1,6 +1,7 @@
 package fm.force.quiz.core.dto
 
 import fm.force.quiz.core.entity.Question
+import java.time.Instant
 
 data class PatchQuestionDTO(
         val text: String? = null,
@@ -18,7 +19,9 @@ data class QuestionDTO(
         val correctAnswers: Collection<AnswerDTO>,
         val tags: Collection<TagDTO>,
         val topics: Collection<TopicDTO>,
-        val difficulty: Int
+        val difficulty: Int,
+        val createdAt: Instant,
+        val updatedAt: Instant
 )
 
 
@@ -29,5 +32,7 @@ fun Question.toDTO() = QuestionDTO(
         correctAnswers = correctAnswers.map { it.toDTO() },
         tags = tags.map { it.toDTO() },
         topics = topics.map { it.toDTO() },
-        difficulty = difficulty
+        difficulty = difficulty,
+        createdAt = createdAt,
+        updatedAt = updatedAt
 )
