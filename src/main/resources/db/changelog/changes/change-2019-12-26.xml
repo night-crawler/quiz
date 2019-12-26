@@ -1,0 +1,348 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-1">
+        <createTable tableName="answers">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="answersPK"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="text" type="TEXT"/>
+            <column name="owner_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-2">
+        <createTable tableName="difficulty_scale_ranges">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="difficulty_scale_rangesPK"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="max" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="min" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR(255)"/>
+            <column name="difficulty_scale_id" type="BIGINT"/>
+            <column name="owner_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-3">
+        <createTable tableName="difficulty_scales">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="difficulty_scalesPK"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="max" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="owner_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-4">
+        <createTable tableName="questions">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="questionsPK"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="difficulty" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="text" type="TEXT"/>
+            <column name="owner_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-5">
+        <createTable tableName="questions__rel_answers__answers">
+            <column name="question_id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="answer_id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-6">
+        <createTable tableName="questions__rel_correct_answers__answers">
+            <column name="question_id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="answer_id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-7">
+        <createTable tableName="questions__tags">
+            <column name="question_id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="tag_id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-8">
+        <createTable tableName="questions__topics">
+            <column name="question_id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="topic_id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-9">
+        <createTable tableName="quiz__questions">
+            <column name="quiz_id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="question_id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-10">
+        <createTable tableName="quiz_session_answers">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="quiz_session_answersPK"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="answer_id" type="BIGINT"/>
+            <column name="owner_id" type="BIGINT"/>
+            <column name="question_id" type="BIGINT"/>
+            <column name="quiz_id" type="BIGINT"/>
+            <column name="quiz_session_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-11">
+        <createTable tableName="quiz_sessions">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="quiz_sessionsPK"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="cancelled_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="completed_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="is_cancelled" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_completed" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="valid_till" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="difficulty_scale_id" type="BIGINT"/>
+            <column name="owner_id" type="BIGINT"/>
+            <column name="quiz_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-12">
+        <createTable tableName="quizzes">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="quizzesPK"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="title" type="VARCHAR(255)"/>
+            <column name="difficulty_scale_id" type="BIGINT"/>
+            <column name="owner_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-13">
+        <createTable tableName="quizzes__tags">
+            <column name="quiz_id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="tag_id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-14">
+        <createTable tableName="quizzes__topics">
+            <column name="quiz_id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="topic_id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-15">
+        <createTable tableName="roles">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="rolesPK"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="name" type="VARCHAR(16)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-16">
+        <createTable tableName="tags">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="tagsPK"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="name" type="VARCHAR(100)"/>
+            <column name="slug" type="VARCHAR(150)"/>
+            <column name="owner_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-17">
+        <createTable tableName="topics">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="topicsPK"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="title" type="VARCHAR(255)"/>
+            <column name="owner_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-18">
+        <createTable tableName="users">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="usersPK"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="email" type="VARCHAR(255)"/>
+            <column name="first_name" type="VARCHAR(255)"/>
+            <column name="is_active" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="VARCHAR(255)"/>
+            <column name="password" type="VARCHAR(255)"/>
+            <column name="username" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-19">
+        <createTable tableName="users__roles">
+            <column name="user_id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="role_id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-20">
+        <addUniqueConstraint columnNames="name" constraintName="UC_TAGSNAME_COL" tableName="tags"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-21">
+        <addUniqueConstraint columnNames="slug" constraintName="UC_TAGSSLUG_COL" tableName="tags"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-22">
+        <addUniqueConstraint columnNames="email" constraintName="UC_USERSEMAIL_COL" tableName="users"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-23">
+        <addUniqueConstraint columnNames="username" constraintName="UC_USERSUSERNAME_COL" tableName="users"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-24">
+        <addForeignKeyConstraint baseColumnNames="owner_id" baseTableName="difficulty_scale_ranges" constraintName="FK1d7hpglwdflma86jmdpye6qev" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-25">
+        <addForeignKeyConstraint baseColumnNames="quiz_id" baseTableName="quizzes__topics" constraintName="FK22dqhocer1n8eeytw2t22ydo5" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="quizzes" validate="true"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-26">
+        <addForeignKeyConstraint baseColumnNames="quiz_id" baseTableName="quizzes__tags" constraintName="FK26auc18ppud4m9myavq3qyc6s" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="quizzes" validate="true"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-27">
+        <addForeignKeyConstraint baseColumnNames="quiz_id" baseTableName="quiz__questions" constraintName="FK2fjfot2978an4yylgewwmjput" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="quizzes" validate="true"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-28">
+        <addForeignKeyConstraint baseColumnNames="question_id" baseTableName="questions__rel_answers__answers" constraintName="FK2whg0wjo1jwhakojgoe5swf4m" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="questions" validate="true"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-29">
+        <addForeignKeyConstraint baseColumnNames="owner_id" baseTableName="topics" constraintName="FK37blcsb67llwnbp6n09wkaiej" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-30">
+        <addForeignKeyConstraint baseColumnNames="question_id" baseTableName="quiz__questions" constraintName="FK57box55bkey4tvfbd3lsgo53y" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="questions" validate="true"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-31">
+        <addForeignKeyConstraint baseColumnNames="difficulty_scale_id" baseTableName="difficulty_scale_ranges" constraintName="FK6h271mxbe1vqo4uttvgm9w96e" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="difficulty_scales" validate="true"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-32">
+        <addForeignKeyConstraint baseColumnNames="topic_id" baseTableName="quizzes__topics" constraintName="FK6xafkyt0wkkuciu46j72vtn6y" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="topics" validate="true"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-33">
+        <addForeignKeyConstraint baseColumnNames="owner_id" baseTableName="quiz_sessions" constraintName="FK7eklt05hehbj42a62233s66sd" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-34">
+        <addForeignKeyConstraint baseColumnNames="difficulty_scale_id" baseTableName="quizzes" constraintName="FK9tli57niekm9mnarkhadwgqyx" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="difficulty_scales" validate="true"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-35">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="users__roles" constraintName="FKa04llu200ljd0gnpidiu6eafb" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-36">
+        <addForeignKeyConstraint baseColumnNames="question_id" baseTableName="questions__topics" constraintName="FKbjvd7wxstjbca50movhnwni0l" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="questions" validate="true"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-37">
+        <addForeignKeyConstraint baseColumnNames="owner_id" baseTableName="quizzes" constraintName="FKcgtvxlg0vclvu22rqhebpovvq" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-38">
+        <addForeignKeyConstraint baseColumnNames="quiz_id" baseTableName="quiz_session_answers" constraintName="FKddje2q88tfyd7617avwtvc3i3" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="quizzes" validate="true"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-39">
+        <addForeignKeyConstraint baseColumnNames="topic_id" baseTableName="questions__topics" constraintName="FKdr603672pods0i5ki90ry763d" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="topics" validate="true"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-40">
+        <addForeignKeyConstraint baseColumnNames="owner_id" baseTableName="answers" constraintName="FKf69hfxnhqxt9b657uqmjgirm2" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-41">
+        <addForeignKeyConstraint baseColumnNames="question_id" baseTableName="questions__rel_correct_answers__answers" constraintName="FKfacfwbxpnd6xqrn960ljwqq7e" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="questions" validate="true"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-42">
+        <addForeignKeyConstraint baseColumnNames="difficulty_scale_id" baseTableName="quiz_sessions" constraintName="FKgise2nldin1rqy611rd6ahk6" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="difficulty_scales" validate="true"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-43">
+        <addForeignKeyConstraint baseColumnNames="answer_id" baseTableName="questions__rel_answers__answers" constraintName="FKha6950p4efeiy3fic9tblrxwd" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="answers" validate="true"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-44">
+        <addForeignKeyConstraint baseColumnNames="answer_id" baseTableName="questions__rel_correct_answers__answers" constraintName="FKhmhf09cfxonn16niyiovmgico" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="answers" validate="true"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-45">
+        <addForeignKeyConstraint baseColumnNames="tag_id" baseTableName="questions__tags" constraintName="FKjs8wi80nkgcdp5d4hu764sh7m" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tags" validate="true"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-46">
+        <addForeignKeyConstraint baseColumnNames="question_id" baseTableName="questions__tags" constraintName="FKk97tv7hr4s783fvde6c8i5qwu" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="questions" validate="true"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-47">
+        <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="users__roles" constraintName="FKmwqjxjlcgf8cdixdcpx1jjs1x" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="roles" validate="true"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-48">
+        <addForeignKeyConstraint baseColumnNames="quiz_session_id" baseTableName="quiz_session_answers" constraintName="FKopnpgknywwua65cpqma95c7aq" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="quiz_sessions" validate="true"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-49">
+        <addForeignKeyConstraint baseColumnNames="tag_id" baseTableName="quizzes__tags" constraintName="FKp1k3jug91c9cmi41goulhvneh" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tags" validate="true"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-50">
+        <addForeignKeyConstraint baseColumnNames="owner_id" baseTableName="quiz_session_answers" constraintName="FKqct49hfikobv6oaqgumu506j6" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-51">
+        <addForeignKeyConstraint baseColumnNames="owner_id" baseTableName="difficulty_scales" constraintName="FKrd7dca37grxlvdnjttmy478jj" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-52">
+        <addForeignKeyConstraint baseColumnNames="question_id" baseTableName="quiz_session_answers" constraintName="FKsf3nij2oisp9f655rkxsaw8gu" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="questions" validate="true"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-53">
+        <addForeignKeyConstraint baseColumnNames="answer_id" baseTableName="quiz_session_answers" constraintName="FKsq84brltraekqvtwqjbqnkkug" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="answers" validate="true"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-54">
+        <addForeignKeyConstraint baseColumnNames="quiz_id" baseTableName="quiz_sessions" constraintName="FKth8oxrekwmqh63ra9vr84cn17" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="quizzes" validate="true"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-55">
+        <addForeignKeyConstraint baseColumnNames="owner_id" baseTableName="questions" constraintName="FKtm69wrebkw0hv1r6icibg62m4" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1577383512239-56">
+        <addForeignKeyConstraint baseColumnNames="owner_id" baseTableName="tags" constraintName="FKx0nceen1ii190w7et5r042qt" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+</databaseChangeLog>
