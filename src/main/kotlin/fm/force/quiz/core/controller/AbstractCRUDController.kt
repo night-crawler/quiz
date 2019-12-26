@@ -28,7 +28,8 @@ abstract class AbstractCRUDController<ENT, REPO, CRDTO, SERDTO>  (
     open fun delete(@PathVariable instanceId: Long) = service.delete(instanceId)
 
     @PatchMapping("{instanceId}")
-    open fun patch(@PathVariable instanceId: Long, @RequestBody patchDTO: CRDTO) = service.patch(instanceId, patchDTO)
+    open fun patch(@PathVariable instanceId: Long, @RequestBody patchDTO: CRDTO) =
+            service.serializeEntity(service.patch(instanceId, patchDTO))
 
     @GetMapping
     open fun find(
