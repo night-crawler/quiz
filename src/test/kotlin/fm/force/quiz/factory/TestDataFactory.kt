@@ -1,14 +1,8 @@
 package fm.force.quiz.factory
 
 import fm.force.quiz.common.getRandomString
-import fm.force.quiz.core.entity.Answer
-import fm.force.quiz.core.entity.Question
-import fm.force.quiz.core.entity.Tag
-import fm.force.quiz.core.entity.Topic
-import fm.force.quiz.core.repository.JpaAnswerRepository
-import fm.force.quiz.core.repository.JpaQuestionRepository
-import fm.force.quiz.core.repository.JpaTagRepository
-import fm.force.quiz.core.repository.JpaTopicRepository
+import fm.force.quiz.core.entity.*
+import fm.force.quiz.core.repository.*
 import fm.force.quiz.security.entity.User
 import fm.force.quiz.security.repository.JpaUserRepository
 import org.springframework.stereotype.Service
@@ -21,7 +15,9 @@ class TestDataFactory(
         private val jpaAnswerRepository: JpaAnswerRepository,
         private val jpaTagRepository: JpaTagRepository,
         private val jpaTopicRepository: JpaTopicRepository,
-        private val jpaQuestionRepository: JpaQuestionRepository
+        private val jpaQuestionRepository: JpaQuestionRepository,
+        private val jpaDifficultyScaleRepository: JpaDifficultyScaleRepository,
+        private val jpaDifficultyScaleRangeRepository: JpaDifficultyScaleRangeRepository
 ) {
     @Transactional
     fun getUser(
@@ -64,5 +60,36 @@ class TestDataFactory(
             correctAnswers = mutableSetOf(answers.random()),
             tags = tags,
             difficulty = difficulty
+    ))
+
+    @Transactional
+    fun getDifficultyScale(
+            owner: User = getUser(),
+            name: String = getRandomString(16),
+            max: Int = Random.nextInt(Int.MAX_VALUE),
+            createNRandomRanges: Int = 5
+    ) = jpaDifficultyScaleRepository.save(DifficultyScale(
+            owner = owner,
+            name = name,
+            max = max
+    )).also {
+        (1..(maxOf(createNRandomRanges, 0))).forEach { _ ->
+            getDifficultyScaleRange(owner = owner, difficultyScale = it)
+        }
+    }
+
+    @Transactional
+    fun getDifficultyScaleRange(
+            owner: User = getUser(),
+            title: String = getRandomString(16),
+            min: Int = 0,
+            max: Int = Random.nextInt(Int.MAX_VALUE),
+            difficultyScale: DifficultyScale = getDifficultyScale(owner = owner)
+    ) = jpaDifficultyScaleRangeRepository.save(DifficultyScaleRange(
+            owner = owner,
+            title = title,
+            difficultyScale = difficultyScale,
+            min = min,
+            max = max
     ))
 }

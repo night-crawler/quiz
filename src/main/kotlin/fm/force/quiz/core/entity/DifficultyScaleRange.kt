@@ -16,4 +16,26 @@ data class DifficultyScaleRange(
         var min: Int = 0,
         var max: Int = 10
 
-) : BaseQuizEntity()
+) : BaseQuizEntity() {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is DifficultyScaleRange) return false
+        if (!super.equals(other)) return false
+
+        if (owner != other.owner) return false
+        if (title != other.title) return false
+        if (min != other.min) return false
+        if (max != other.max) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + owner.hashCode()
+        result = 31 * result + title.hashCode()
+        result = 31 * result + min
+        result = 31 * result + max
+        return result
+    }
+}
