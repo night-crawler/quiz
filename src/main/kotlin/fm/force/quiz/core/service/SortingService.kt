@@ -9,7 +9,7 @@ import fm.force.quiz.configuration.properties.SortingValidationProperties
 import fm.force.quiz.core.dto.SortQuery
 import fm.force.quiz.core.exception.SortingViolations
 import fm.force.quiz.core.exception.ValidationError
-import fm.force.quiz.core.validator.nonEmptyString
+import fm.force.quiz.common.nonEmptyString
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 

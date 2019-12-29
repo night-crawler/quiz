@@ -8,4 +8,5 @@ import org.springframework.context.annotation.Configuration
 class TagValidationProperties {
     var minTagLength: Int = 3
     var maxTagLength: Int = 100
+    var maxSlugLength: Int = 150
 }

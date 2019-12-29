@@ -1,10 +1,10 @@
 package fm.force.quiz.core.service
 
 import am.ik.yavi.builder.ValidatorBuilder
-import am.ik.yavi.builder.konstraint
 import fm.force.quiz.core.entity.Tag
 import org.springframework.stereotype.Service
 import com.github.slugify.Slugify
+import fm.force.quiz.common.stringConstraint
 import fm.force.quiz.configuration.properties.TagValidationProperties
 import fm.force.quiz.core.dto.*
 import fm.force.quiz.core.entity.Tag_
@@ -18,7 +18,7 @@ import java.time.Instant
 
 @Service
 class TagService(
-        private val validationProps: TagValidationProperties,
+        validationProps: TagValidationProperties,
         jpaTagRepository: JpaTagRepository,
         paginationService: PaginationService,
         sortingService: SortingService,
@@ -58,18 +58,17 @@ class TagService(
     }
 
     private val validator = ValidatorBuilder.of<Tag>()
-            .konstraint(Tag::name) {
-                greaterThanOrEqual(validationProps.minTagLength).message("Tag must be at least ${validationProps.minTagLength} characters long")
-            }
-            .konstraint(Tag::name) {
-                lessThanOrEqual(validationProps.maxTagLength).message("Tag must be maximum ${validationProps.maxTagLength} characters long")
-            }
-            .konstraint(Tag::slug) {
-                notBlank().message("There was a problem creating a slug")
-            }
+            .stringConstraint(Tag::name, validationProps.minTagLength..validationProps.maxTagLength)
             .build()
 
-    fun validate(instance: Tag) = validator.validate(instance).throwIfInvalid { ValidationError(it) }
+    private val slugValidator = ValidatorBuilder.of<Tag>()
+            .stringConstraint(Tag::slug, validationProps.minTagLength..validationProps.maxSlugLength)
+            .build()
+
+    fun validate(instance: Tag) {
+        validator.validate(instance).throwIfInvalid { ValidationError(it) }
+        slugValidator.validate(instance).throwIfInvalid { ValidationError(it) }
+    }
 
     override fun create(createDTO: PatchTagDTO): Tag {
         val tag = Tag(

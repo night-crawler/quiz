@@ -1,7 +1,7 @@
 package fm.force.quiz.core.service
 
 import am.ik.yavi.builder.ValidatorBuilder
-import am.ik.yavi.builder.konstraint
+import fm.force.quiz.common.stringConstraint
 import fm.force.quiz.configuration.properties.AnswerValidationProperties
 import fm.force.quiz.core.dto.AnswerDTO
 import fm.force.quiz.core.dto.CreateAnswerDTO
@@ -31,13 +31,7 @@ class AnswerService(
         sortingService = sortingService
 ) {
     val validator = ValidatorBuilder.of<Answer>()
-            .konstraint(Answer::text) {
-                greaterThanOrEqual(validationProps.minAnswerLength)
-                        .message("Answer text must at least be ${validationProps.minAnswerLength} characters long")
-
-                lessThanOrEqual(validationProps.maxAnswerLength)
-                        .message("Answer text must be max ${validationProps.maxAnswerLength} characters long")
-            }
+            .stringConstraint(Answer::text, validationProps.minAnswerLength..validationProps.maxAnswerLength)
             .build()
 
     fun validate(instance: Answer) = validator.validate(instance).throwIfInvalid { ValidationError(it) }

@@ -9,4 +9,5 @@ class QuestionValidationProperties {
     var minTextLength: Int = 5
     var maxAnswers: Int = 10
     var maxTags: Int = 20
+    var maxTopics: Int = 20
 }

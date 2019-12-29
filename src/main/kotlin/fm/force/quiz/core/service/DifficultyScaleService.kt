@@ -1,10 +1,10 @@
 package fm.force.quiz.core.service
 
 import am.ik.yavi.builder.ValidatorBuilder
-import am.ik.yavi.builder.konstraint
-import am.ik.yavi.builder.konstraintOnCondition
 import am.ik.yavi.builder.konstraintOnGroup
-import am.ik.yavi.core.ConstraintCondition
+import fm.force.quiz.common.mandatory
+import fm.force.quiz.common.intConstraint
+import fm.force.quiz.common.stringConstraint
 import fm.force.quiz.configuration.properties.DifficultyScaleValidationProperties
 import fm.force.quiz.core.dto.PatchDifficultyScaleDTO
 import fm.force.quiz.core.dto.DifficultyScaleDTO
@@ -33,31 +33,13 @@ class DifficultyScaleService(
         paginationService = paginationService,
         sortingService = sortingService
 ) {
-    private val msgWrongName = "Name length must be in range ${validationProps.minNameLength} - ${validationProps.maxNameLength}"
-    private val msgWrongMax = "Scale max must be in range 1 - ${validationProps.allowedMax}"
-    private val msgNotNul = "Must not be null"
-
-    private val whenNameIsPresent = ConstraintCondition<PatchDifficultyScaleDTO> { dto, _ -> dto.name != null }
-    private val whenMaxIsPresent = ConstraintCondition<PatchDifficultyScaleDTO> { dto, _ -> dto.max != null }
-
     val validator = ValidatorBuilder.of<PatchDifficultyScaleDTO>()
             .konstraintOnGroup(CRUDConstraintGroup.CREATE) {
-                konstraint(PatchDifficultyScaleDTO::name) { notNull().message(msgNotNul) }
-                konstraint(PatchDifficultyScaleDTO::max) { notNull().message(msgNotNul) }
+                mandatory(PatchDifficultyScaleDTO::name)
+                mandatory(PatchDifficultyScaleDTO::max)
             }
-
-            .konstraintOnCondition(whenNameIsPresent) {
-                konstraint(PatchDifficultyScaleDTO::name) {
-                    greaterThanOrEqual(validationProps.minNameLength).message(msgWrongName)
-                    lessThanOrEqual(validationProps.maxNameLength).message(msgWrongName)
-                }
-            }
-            .konstraintOnCondition(whenMaxIsPresent) {
-                konstraint(PatchDifficultyScaleDTO::max) {
-                    greaterThanOrEqual(1).message(msgWrongMax)
-                    lessThanOrEqual(validationProps.allowedMax).message(msgWrongMax)
-                }
-            }
+            .stringConstraint(PatchDifficultyScaleDTO::name, validationProps.minNameLength..validationProps.maxNameLength)
+            .intConstraint(PatchDifficultyScaleDTO::max, 1..validationProps.allowedMax)
             .build()
 
     fun validateCreate(createDTO: PatchDifficultyScaleDTO) = validator

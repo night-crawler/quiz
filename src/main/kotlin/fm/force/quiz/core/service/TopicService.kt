@@ -1,7 +1,7 @@
 package fm.force.quiz.core.service
 
 import am.ik.yavi.builder.ValidatorBuilder
-import am.ik.yavi.builder.konstraint
+import fm.force.quiz.common.stringConstraint
 import fm.force.quiz.configuration.properties.TopicValidationProperties
 import fm.force.quiz.core.dto.*
 import fm.force.quiz.core.entity.Topic
@@ -16,7 +16,7 @@ import java.time.Instant
 
 @Service
 class TopicService(
-        private val validationProps: TopicValidationProperties,
+        validationProps: TopicValidationProperties,
         jpaTopicRepository: JpaTopicRepository,
         paginationService: PaginationService,
         sortingService: SortingService,
@@ -28,13 +28,7 @@ class TopicService(
         paginationService = paginationService
 ) {
     var validator = ValidatorBuilder.of<Topic>()
-            .konstraint(Topic::title) {
-                greaterThanOrEqual(validationProps.minTitleLength)
-                        .message("Topic title must be at least ${validationProps.minTitleLength} characters long")
-
-                lessThanOrEqual(validationProps.maxTitleLength)
-                        .message("Topic title must be maximum ${validationProps.maxTitleLength} characters long")
-            }
+            .stringConstraint(Topic::title, validationProps.minTitleLength..validationProps.maxTitleLength)
             .build()
 
     fun validate(topic: Topic) = validator.validate(topic).throwIfInvalid { ValidationError(it) }
