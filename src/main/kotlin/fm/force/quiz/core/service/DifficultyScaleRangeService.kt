@@ -3,7 +3,7 @@ package fm.force.quiz.core.service
 import am.ik.yavi.builder.ValidatorBuilder
 import am.ik.yavi.builder.konstraint
 import am.ik.yavi.builder.konstraintOnGroup
-import fm.force.quiz.common.*
+import fm.force.quiz.common.SpecificationBuilder
 import fm.force.quiz.configuration.properties.DifficultyScaleRangeValidationProperties
 import fm.force.quiz.core.dto.DifficultyScaleRangeDTO
 import fm.force.quiz.core.dto.PageDTO
@@ -16,6 +16,10 @@ import fm.force.quiz.core.exception.NotFoundException
 import fm.force.quiz.core.exception.ValidationError
 import fm.force.quiz.core.repository.JpaDifficultyScaleRangeRepository
 import fm.force.quiz.core.repository.JpaDifficultyScaleRepository
+import fm.force.quiz.core.validator.fkConstraint
+import fm.force.quiz.core.validator.intConstraint
+import fm.force.quiz.core.validator.mandatory
+import fm.force.quiz.core.validator.stringConstraint
 import fm.force.quiz.security.service.AuthenticationFacade
 import org.springframework.data.domain.Page
 import org.springframework.data.jpa.domain.Specification
@@ -92,17 +96,9 @@ class DifficultyScaleRangeService(
         if (needle.isNullOrEmpty())
             return emptySpecification
 
-        val lowerCaseNeedle = needle.toLowerCase()
-
-        val ownerEquals = Specification<DifficultyScaleRange> { root, _, builder ->
-            builder.equal(root[DifficultyScaleRange_.owner], authenticationFacade.user)
-        }
-
-        val nameContains = Specification<DifficultyScaleRange> { root, _, builder ->
-            builder.like(builder.lower(root[DifficultyScaleRange_.title]), "%$lowerCaseNeedle%")
-        }
-
-        return Specification.where(ownerEquals).and(nameContains)
+        return Specification
+                .where(SpecificationBuilder.fk(authenticationFacade::user, DifficultyScaleRange_.owner))
+                .and(SpecificationBuilder.ciContains(needle, DifficultyScaleRange_.title))
     }
 
     override fun serializePage(page: Page<DifficultyScaleRange>): PageDTO = page.toDTO { it.toDTO() }

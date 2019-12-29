@@ -1,7 +1,7 @@
 package fm.force.quiz.core.service
 
 import am.ik.yavi.builder.ValidatorBuilder
-import fm.force.quiz.common.intConstraint
+import fm.force.quiz.core.validator.intConstraint
 import fm.force.quiz.configuration.properties.PaginationValidationProperties
 import fm.force.quiz.core.dto.PaginationParams
 import fm.force.quiz.core.dto.PaginationQuery

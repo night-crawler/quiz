@@ -1,7 +1,8 @@
 package fm.force.quiz.core.service
 
 import am.ik.yavi.builder.ValidatorBuilder
-import fm.force.quiz.common.stringConstraint
+import fm.force.quiz.common.SpecificationBuilder
+import fm.force.quiz.core.validator.stringConstraint
 import fm.force.quiz.configuration.properties.AnswerValidationProperties
 import fm.force.quiz.core.dto.AnswerDTO
 import fm.force.quiz.core.dto.CreateAnswerDTO
@@ -40,15 +41,9 @@ class AnswerService(
         if (needle.isNullOrEmpty())
             return emptySpecification
 
-        val lowerCaseNeedle = needle.toLowerCase()
-
-        val ownerEquals = Specification<Answer> { root, _, builder ->
-            builder.equal(root[Answer_.owner], authenticationFacade.user) }
-
-        val textContains = Specification<Answer> {  root, _, builder ->
-            builder.like(builder.lower(root[Answer_.text]), "%$lowerCaseNeedle%") }
-
-        return Specification.where(ownerEquals).and(textContains)
+        return Specification
+                .where(SpecificationBuilder.fk(authenticationFacade::user, Answer_.owner))
+                .and(SpecificationBuilder.ciContains(needle, Answer_.text))
     }
 
     override fun serializePage(page: Page<Answer>): PageDTO = page.toDTO { it.toDTO() }

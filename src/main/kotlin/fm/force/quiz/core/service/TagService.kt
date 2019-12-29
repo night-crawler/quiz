@@ -4,7 +4,8 @@ import am.ik.yavi.builder.ValidatorBuilder
 import fm.force.quiz.core.entity.Tag
 import org.springframework.stereotype.Service
 import com.github.slugify.Slugify
-import fm.force.quiz.common.stringConstraint
+import fm.force.quiz.common.SpecificationBuilder
+import fm.force.quiz.core.validator.stringConstraint
 import fm.force.quiz.configuration.properties.TagValidationProperties
 import fm.force.quiz.core.dto.*
 import fm.force.quiz.core.entity.Tag_
@@ -38,23 +39,13 @@ class TagService(
         if (needle.isNullOrEmpty())
             return emptySpecification
 
-        val lowerCaseNeedle = needle.toLowerCase()
-
-        val nameStartsWith = Specification<Tag> { root, _, builder ->
-            builder.like(builder.lower(root[Tag_.name]), "$lowerCaseNeedle%") }
-
-        val nameEndsWith = Specification<Tag> { root, _, builder ->
-            builder.like(builder.lower(root[Tag_.name]), "%$lowerCaseNeedle") }
-
-        val nameEquals = Specification<Tag> { root, _, builder ->
-            builder.equal(builder.lower(root[Tag_.name]), lowerCaseNeedle) }
-
-        val ownerEquals = Specification<Tag> { root, _, builder ->
-            builder.equal(root[Tag_.owner], authenticationFacade.user) }
-
-        return Specification.where(ownerEquals).and(
-                Specification.where(nameEquals).or(nameStartsWith).or(nameEndsWith)
-        )
+        return Specification
+                .where(SpecificationBuilder.fk(authenticationFacade::user, Tag_.owner))
+                .and(Specification
+                                .where(SpecificationBuilder.ciEquals(needle, Tag_.name))
+                                .or(SpecificationBuilder.ciStartsWith(needle, Tag_.name))
+                                .or(SpecificationBuilder.ciEndsWith(needle, Tag_.name))
+                )
     }
 
     private val validator = ValidatorBuilder.of<Tag>()

@@ -1,7 +1,8 @@
 package fm.force.quiz.core.service
 
 import am.ik.yavi.builder.ValidatorBuilder
-import fm.force.quiz.common.stringConstraint
+import fm.force.quiz.common.SpecificationBuilder
+import fm.force.quiz.core.validator.stringConstraint
 import fm.force.quiz.configuration.properties.TopicValidationProperties
 import fm.force.quiz.core.dto.*
 import fm.force.quiz.core.entity.Topic
@@ -46,15 +47,9 @@ class TopicService(
         if (needle.isNullOrEmpty())
             return emptySpecification
 
-        val lowerCaseNeedle = needle.toLowerCase()
-
-        val titleContains = Specification<Topic> { root, _, builder ->
-            builder.like(builder.lower(root[Topic_.title]), "%$lowerCaseNeedle%") }
-
-        val ownerEquals = Specification<Topic> { root, _, builder ->
-            builder.equal(root[Topic_.owner], authenticationFacade.user) }
-
-        return Specification.where(titleContains).and(ownerEquals)
+        return Specification
+                .where(SpecificationBuilder.fk(authenticationFacade::user, Topic_.owner))
+                .and(SpecificationBuilder.ciContains(needle, Topic_.title))
     }
 
     override fun patch(id: Long, patchDTO: PatchTopicDTO): Topic {

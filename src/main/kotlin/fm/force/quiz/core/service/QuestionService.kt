@@ -2,7 +2,7 @@ package fm.force.quiz.core.service
 
 import am.ik.yavi.builder.ValidatorBuilder
 import am.ik.yavi.builder.konstraintOnGroup
-import fm.force.quiz.common.*
+import fm.force.quiz.common.SpecificationBuilder
 import fm.force.quiz.configuration.properties.QuestionValidationProperties
 import fm.force.quiz.core.dto.PageDTO
 import fm.force.quiz.core.dto.PatchQuestionDTO
@@ -15,6 +15,7 @@ import fm.force.quiz.core.repository.JpaAnswerRepository
 import fm.force.quiz.core.repository.JpaQuestionRepository
 import fm.force.quiz.core.repository.JpaTagRepository
 import fm.force.quiz.core.repository.JpaTopicRepository
+import fm.force.quiz.core.validator.*
 import fm.force.quiz.security.service.AuthenticationFacade
 import org.springframework.data.domain.Page
 import org.springframework.data.jpa.domain.Specification
@@ -139,17 +140,9 @@ class QuestionService(
         if (needle.isNullOrEmpty())
             return emptySpecification
 
-        val lowerCaseNeedle = needle.toLowerCase()
-
-        val ownerEquals = Specification<Question> { root, _, builder ->
-            builder.equal(root[Question_.owner], authenticationFacade.user)
-        }
-
-        val textLike = Specification<Question> { root, _, builder ->
-            builder.like(builder.lower(root[Question_.text]), "%$lowerCaseNeedle%")
-        }
-
-        return Specification.where(ownerEquals).and(textLike)
+        return Specification
+                .where(SpecificationBuilder.fk(authenticationFacade::user, Question_.owner))
+                .and(SpecificationBuilder.ciContains(needle, Question_.text))
     }
 
     override fun serializePage(page: Page<Question>): PageDTO = page.toDTO { it.toDTO() }

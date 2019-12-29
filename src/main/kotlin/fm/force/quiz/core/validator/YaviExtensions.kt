@@ -1,4 +1,4 @@
-package fm.force.quiz.common
+package fm.force.quiz.core.validator
 
 import am.ik.yavi.builder.ValidatorBuilder
 import am.ik.yavi.builder.konstraint

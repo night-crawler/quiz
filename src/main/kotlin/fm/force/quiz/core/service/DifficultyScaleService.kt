@@ -2,9 +2,10 @@ package fm.force.quiz.core.service
 
 import am.ik.yavi.builder.ValidatorBuilder
 import am.ik.yavi.builder.konstraintOnGroup
-import fm.force.quiz.common.mandatory
-import fm.force.quiz.common.intConstraint
-import fm.force.quiz.common.stringConstraint
+import fm.force.quiz.common.SpecificationBuilder
+import fm.force.quiz.core.validator.mandatory
+import fm.force.quiz.core.validator.intConstraint
+import fm.force.quiz.core.validator.stringConstraint
 import fm.force.quiz.configuration.properties.DifficultyScaleValidationProperties
 import fm.force.quiz.core.dto.PatchDifficultyScaleDTO
 import fm.force.quiz.core.dto.DifficultyScaleDTO
@@ -54,17 +55,9 @@ class DifficultyScaleService(
         if (needle.isNullOrEmpty())
             return emptySpecification
 
-        val lowerCaseNeedle = needle.toLowerCase()
-
-        val ownerEquals = Specification<DifficultyScale> { root, _, builder ->
-            builder.equal(root[DifficultyScale_.owner], authenticationFacade.user)
-        }
-
-        val nameContains = Specification<DifficultyScale> { root, _, builder ->
-            builder.like(builder.lower(root[DifficultyScale_.name]), "%$lowerCaseNeedle%")
-        }
-
-        return Specification.where(ownerEquals).and(nameContains)
+        return Specification
+                .where(SpecificationBuilder.fk(authenticationFacade::user, DifficultyScale_.owner))
+                .and(SpecificationBuilder.ciContains(needle, DifficultyScale_.name))
     }
 
     override fun serializePage(page: Page<DifficultyScale>): PageDTO = page.toDTO { it.toDTO() }
