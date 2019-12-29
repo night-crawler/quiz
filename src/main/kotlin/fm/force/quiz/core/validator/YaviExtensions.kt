@@ -134,7 +134,7 @@ fun <T, K : Collection<Long>?, R> ValidatorBuilder<T>.fkListConstraint(
         property: KProperty1<T, K>,
         repository: CommonRepository<R>,
         range: ClosedRange<Int>,
-        getUser: () -> Long,
+        getOwnerId: () -> Long,
         errorTemplate: String = "Provide %d - %d items for the field %s",
         missingItemsTemplate: String = "Some of entered items are missing or do not belong to your user",
         locale: Locale = Locale.ENGLISH,
@@ -146,7 +146,7 @@ fun <T, K : Collection<Long>?, R> ValidatorBuilder<T>.fkListConstraint(
     val whenSomeItemsDoNotExist = Predicate<T> {
         val value = property(it)
         if (value.isNullOrEmpty()) true
-        else repository.findOwnedIds(value, getUser()).toSet() == value
+        else repository.findOwnedIds(value, getOwnerId()).toSet() == value
     }
 
     konstraintOnCondition(notNullCondition(property)) {

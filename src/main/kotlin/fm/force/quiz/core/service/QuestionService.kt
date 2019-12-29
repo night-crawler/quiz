@@ -53,22 +53,22 @@ class QuestionService(
             .fkListConstraint(
                     PatchQuestionDTO::answers, jpaAnswerRepository,
                     1..validationProps.maxAnswers,
-                    getUser = { authenticationFacade.user.id }
+                    getOwnerId = { authenticationFacade.user.id }
             )
             .fkListConstraint(
                     PatchQuestionDTO::correctAnswers, jpaAnswerRepository,
                     1..validationProps.maxAnswers,
-                    getUser = { authenticationFacade.user.id }
+                    getOwnerId = { authenticationFacade.user.id }
             )
             .fkListConstraint(
                     PatchQuestionDTO::tags, jpaTagRepository,
                     0..validationProps.maxTags,
-                    getUser = { authenticationFacade.user.id }
+                    getOwnerId = { authenticationFacade.user.id }
             )
             .fkListConstraint(
                     PatchQuestionDTO::topics, jpaTopicRepository,
                     0..validationProps.maxTopics,
-                    getUser = { authenticationFacade.user.id }
+                    getOwnerId = { authenticationFacade.user.id }
             )
             .intConstraint(PatchQuestionDTO::difficulty, 0..Int.MAX_VALUE)
             .build()
