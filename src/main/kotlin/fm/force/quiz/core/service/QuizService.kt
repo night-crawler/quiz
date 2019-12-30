@@ -4,10 +4,12 @@ import am.ik.yavi.builder.ValidatorBuilder
 import am.ik.yavi.builder.konstraintOnGroup
 import fm.force.quiz.common.SpecificationBuilder
 import fm.force.quiz.configuration.properties.QuizValidationProperties
-import fm.force.quiz.core.dto.*
+import fm.force.quiz.core.dto.PageDTO
+import fm.force.quiz.core.dto.PatchQuizDTO
+import fm.force.quiz.core.dto.QuizDTO
+import fm.force.quiz.core.dto.toDTO
 import fm.force.quiz.core.entity.Quiz
 import fm.force.quiz.core.entity.Quiz_
-import fm.force.quiz.core.exception.ValidationError
 import fm.force.quiz.core.repository.*
 import fm.force.quiz.core.validator.fkConstraint
 import fm.force.quiz.core.validator.fkListConstraint
@@ -38,7 +40,7 @@ class QuizService(
         paginationService = paginationService,
         sortingService = sortingService
 ) {
-    val validator = ValidatorBuilder.of<PatchQuizDTO>()
+    override var dtoValidator = ValidatorBuilder.of<PatchQuizDTO>()
             .konstraintOnGroup(CRUDConstraintGroup.CREATE) {
                 mandatory(PatchQuizDTO::title)
             }
@@ -64,14 +66,6 @@ class QuizService(
                     getOwnerId = { authenticationFacade.user.id }
             )
             .build()
-
-    fun validateCreate(createDTO: PatchQuizDTO) = validator
-            .validate(createDTO, CRUDConstraintGroup.CREATE)
-            .throwIfInvalid { ValidationError(it) }
-
-    fun validatePatch(patchDTO: PatchQuizDTO) = validator
-            .validate(patchDTO)
-            .throwIfInvalid { ValidationError(it) }
 
     override fun buildSingleArgumentSearchSpec(needle: String?): Specification<Quiz> {
         if (needle.isNullOrEmpty())
@@ -100,14 +94,16 @@ class QuizService(
     @Transactional
     override fun create(createDTO: PatchQuizDTO): Quiz {
         validateCreate(createDTO)
-        val entity = with(createDTO) { Quiz(
-                owner = authenticationFacade.user,
-                title = title!!,
-                questions = retrieveQuestions(questions),
-                topics = retrieveTopics(topics),
-                tags = retrieveTags(tags),
-                difficultyScale = retrieveDifficultyScale(difficultyScale)
-        ) }
+        val entity = with(createDTO) {
+            Quiz(
+                    owner = authenticationFacade.user,
+                    title = title!!,
+                    questions = retrieveQuestions(questions),
+                    topics = retrieveTopics(topics),
+                    tags = retrieveTags(tags),
+                    difficultyScale = retrieveDifficultyScale(difficultyScale)
+            )
+        }
         return repository.save(entity)
     }
 

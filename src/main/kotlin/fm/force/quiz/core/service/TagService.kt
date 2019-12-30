@@ -1,19 +1,22 @@
 package fm.force.quiz.core.service
 
 import am.ik.yavi.builder.ValidatorBuilder
-import fm.force.quiz.core.entity.Tag
-import org.springframework.stereotype.Service
 import com.github.slugify.Slugify
 import fm.force.quiz.common.SpecificationBuilder
-import fm.force.quiz.core.validator.stringConstraint
 import fm.force.quiz.configuration.properties.TagValidationProperties
-import fm.force.quiz.core.dto.*
+import fm.force.quiz.core.dto.PageDTO
+import fm.force.quiz.core.dto.PatchTagDTO
+import fm.force.quiz.core.dto.TagDTO
+import fm.force.quiz.core.dto.toDTO
+import fm.force.quiz.core.entity.Tag
 import fm.force.quiz.core.entity.Tag_
 import fm.force.quiz.core.exception.ValidationError
 import fm.force.quiz.core.repository.JpaTagRepository
+import fm.force.quiz.core.validator.stringConstraint
 import fm.force.quiz.security.service.AuthenticationFacade
 import org.springframework.data.domain.Page
 import org.springframework.data.jpa.domain.Specification
+import org.springframework.stereotype.Service
 import java.time.Instant
 
 
@@ -42,13 +45,13 @@ class TagService(
         return Specification
                 .where(SpecificationBuilder.fk(authenticationFacade::user, Tag_.owner))
                 .and(Specification
-                                .where(SpecificationBuilder.ciEquals(needle, Tag_.name))
-                                .or(SpecificationBuilder.ciStartsWith(needle, Tag_.name))
-                                .or(SpecificationBuilder.ciEndsWith(needle, Tag_.name))
+                        .where(SpecificationBuilder.ciEquals(needle, Tag_.name))
+                        .or(SpecificationBuilder.ciStartsWith(needle, Tag_.name))
+                        .or(SpecificationBuilder.ciEndsWith(needle, Tag_.name))
                 )
     }
 
-    private val validator = ValidatorBuilder.of<Tag>()
+    override var entityValidator = ValidatorBuilder.of<Tag>()
             .stringConstraint(Tag::name, validationProps.minTagLength..validationProps.maxTagLength)
             .build()
 
@@ -56,9 +59,9 @@ class TagService(
             .stringConstraint(Tag::slug, validationProps.minTagLength..validationProps.maxSlugLength)
             .build()
 
-    fun validate(instance: Tag) {
-        validator.validate(instance).throwIfInvalid { ValidationError(it) }
-        slugValidator.validate(instance).throwIfInvalid { ValidationError(it) }
+    override fun validateEntity(entity: Tag) {
+        entityValidator.validate(entity).throwIfInvalid { ValidationError(it) }
+        slugValidator.validate(entity).throwIfInvalid { ValidationError(it) }
     }
 
     override fun create(createDTO: PatchTagDTO): Tag {
@@ -67,7 +70,7 @@ class TagService(
                 name = createDTO.name,
                 slug = slugify(createDTO.name)
         )
-        validate(tag)
+        validateEntity(tag)
         return repository.save(tag)
     }
 
@@ -76,7 +79,7 @@ class TagService(
         tag.name = patchDTO.name
         tag.slug = slugify(patchDTO.name)
         tag.updatedAt = Instant.now()
-        validate(tag)
+        validateEntity(tag)
         return repository.save(tag)
     }
 

@@ -10,7 +10,6 @@ import fm.force.quiz.core.dto.QuestionDTO
 import fm.force.quiz.core.dto.toDTO
 import fm.force.quiz.core.entity.Question
 import fm.force.quiz.core.entity.Question_
-import fm.force.quiz.core.exception.ValidationError
 import fm.force.quiz.core.repository.JpaAnswerRepository
 import fm.force.quiz.core.repository.JpaQuestionRepository
 import fm.force.quiz.core.repository.JpaTagRepository
@@ -41,7 +40,7 @@ class QuestionService(
         sortingService = sortingService
 ) {
 
-    private val validator = ValidatorBuilder.of<PatchQuestionDTO>()
+    override var dtoValidator = ValidatorBuilder.of<PatchQuestionDTO>()
             .konstraintOnGroup(CRUDConstraintGroup.CREATE) {
                 mandatory(PatchQuestionDTO::text)
                 mandatory(PatchQuestionDTO::answers)
@@ -73,22 +72,9 @@ class QuestionService(
             .intConstraint(PatchQuestionDTO::difficulty, 0..Int.MAX_VALUE)
             .build()
 
-    val integrityValidator = ValidatorBuilder.of<Question>()
+    override var entityValidator = ValidatorBuilder.of<Question>()
             .optionalSubset(Question::answers, Question::correctAnswers)
             .build()
-
-    fun validatePatch(updateDTO: PatchQuestionDTO) = validator
-            // everything else is supposed to be the update group, thus no need to pass anything else to validate()
-            .validate(updateDTO)
-            .throwIfInvalid { ValidationError(it) }
-
-    fun validateCreate(createDTO: PatchQuestionDTO) = validator
-            .validate(createDTO, CRUDConstraintGroup.CREATE)
-            .throwIfInvalid { ValidationError(it) }
-
-    fun validateQuestion(question: Question) = integrityValidator
-            .validate(question)
-            .throwIfInvalid { ValidationError(it) }
 
     private fun retrieveAnswers(ids: Collection<Long>?) = ids?.let { jpaAnswerRepository.findAllById(it).toMutableSet() }
             ?: mutableSetOf()
@@ -132,7 +118,7 @@ class QuestionService(
             question
         }
         modifiedQuestion.updatedAt = Instant.now()
-        validateQuestion(modifiedQuestion)
+        validateEntity(modifiedQuestion)
         return repository.save(modifiedQuestion)
     }
 

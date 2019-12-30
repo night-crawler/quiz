@@ -38,7 +38,7 @@ open class AnswerServiceTest(
                     row(Answer(text = getRandomString(validationProps.minAnswerLength - 1), owner = user)),
                     row(Answer(text = getRandomString(validationProps.maxAnswerLength + 1), owner = user))
             ) {
-                shouldThrow<ValidationError> { answerService.validate(it) }
+                shouldThrow<ValidationError> { answerService.validateEntity(it) }
             }
         }
 

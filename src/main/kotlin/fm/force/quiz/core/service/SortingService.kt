@@ -25,7 +25,7 @@ class SortingService(
                     lessThanOrEqual(validationProps.maxSortingFields).message(
                             "The `sort` parameter must contain max ${validationProps.maxSortingFields} items")
                 }
-                .forEach(SortQuery::sort, "sort", nonEmptyString)
+                        .forEach(SortQuery::sort, "sort", nonEmptyString)
             }
             .build()
 

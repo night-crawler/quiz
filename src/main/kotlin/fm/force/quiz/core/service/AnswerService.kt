@@ -2,7 +2,6 @@ package fm.force.quiz.core.service
 
 import am.ik.yavi.builder.ValidatorBuilder
 import fm.force.quiz.common.SpecificationBuilder
-import fm.force.quiz.core.validator.stringConstraint
 import fm.force.quiz.configuration.properties.AnswerValidationProperties
 import fm.force.quiz.core.dto.AnswerDTO
 import fm.force.quiz.core.dto.CreateAnswerDTO
@@ -10,8 +9,8 @@ import fm.force.quiz.core.dto.PageDTO
 import fm.force.quiz.core.dto.toDTO
 import fm.force.quiz.core.entity.Answer
 import fm.force.quiz.core.entity.Answer_
-import fm.force.quiz.core.exception.ValidationError
 import fm.force.quiz.core.repository.JpaAnswerRepository
+import fm.force.quiz.core.validator.stringConstraint
 import fm.force.quiz.security.service.AuthenticationFacade
 import org.springframework.data.domain.Page
 import org.springframework.data.jpa.domain.Specification
@@ -31,11 +30,9 @@ class AnswerService(
         paginationService = paginationService,
         sortingService = sortingService
 ) {
-    val validator = ValidatorBuilder.of<Answer>()
+    override var entityValidator = ValidatorBuilder.of<Answer>()
             .stringConstraint(Answer::text, validationProps.minAnswerLength..validationProps.maxAnswerLength)
             .build()
-
-    fun validate(instance: Answer) = validator.validate(instance).throwIfInvalid { ValidationError(it) }
 
     override fun buildSingleArgumentSearchSpec(needle: String?): Specification<Answer> {
         if (needle.isNullOrEmpty())
@@ -53,7 +50,7 @@ class AnswerService(
                 text = createDTO.text,
                 owner = authenticationFacade.user
         )
-        validate(answer)
+        validateEntity(answer)
         return repository.save(answer)
     }
 
@@ -61,7 +58,7 @@ class AnswerService(
         val answer = getInstance(id)
         answer.text = patchDTO.text
         answer.updatedAt = Instant.now()
-        validate(answer)
+        validateEntity(answer)
         return repository.save(answer)
     }
 

@@ -1,9 +1,11 @@
 package fm.force.quiz.core.service
 
+import am.ik.yavi.core.Validator
 import fm.force.quiz.core.dto.PageDTO
 import fm.force.quiz.core.dto.PaginationQuery
 import fm.force.quiz.core.dto.SortQuery
 import fm.force.quiz.core.exception.NotFoundException
+import fm.force.quiz.core.exception.ValidationError
 import fm.force.quiz.core.repository.CommonRepository
 import fm.force.quiz.security.service.AuthenticationFacade
 import org.springframework.data.domain.Page
@@ -19,16 +21,31 @@ abstract class AbstractPaginatedCRUDService<ENT, REPO, CRDTO, SERDTO>(
         private val paginationService: PaginationService,
         private val sortingService: SortingService
 )
-    where REPO: JpaRepository<ENT, Long>,
-          REPO: CommonRepository<ENT>,
-          REPO: JpaSpecificationExecutor<ENT> {
+        where REPO : JpaRepository<ENT, Long>,
+              REPO : CommonRepository<ENT>,
+              REPO : JpaSpecificationExecutor<ENT> {
 
     val emptySpecification = Specification<ENT> { _, _, _ -> null }
 
+    open lateinit var entityValidator: Validator<ENT>
+    open lateinit var dtoValidator: Validator<CRDTO>
+
+    open fun validateEntity(entity: ENT) = entityValidator
+            .validate(entity)
+            .throwIfInvalid { ValidationError(it) }
+
+    open fun validatePatch(patchDTO: CRDTO) = dtoValidator
+            .validate(patchDTO, CRUDConstraintGroup.UPDATE)
+            .throwIfInvalid { ValidationError(it) }
+
+    open fun validateCreate(createDTO: CRDTO) = dtoValidator
+            .validate(createDTO, CRUDConstraintGroup.CREATE)
+            .throwIfInvalid { ValidationError(it) }
+
     abstract fun buildSingleArgumentSearchSpec(needle: String?): Specification<ENT>
     abstract fun serializePage(page: Page<ENT>): PageDTO
-    abstract fun serializeEntity(entity: ENT) : SERDTO
-    abstract fun create(createDTO: CRDTO) : ENT
+    abstract fun serializeEntity(entity: ENT): SERDTO
+    abstract fun create(createDTO: CRDTO): ENT
 
     open fun getInstance(id: Long): ENT = repository
             .findByIdAndOwner(id, authenticationFacade.user)

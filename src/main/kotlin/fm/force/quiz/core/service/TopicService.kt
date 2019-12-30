@@ -2,13 +2,15 @@ package fm.force.quiz.core.service
 
 import am.ik.yavi.builder.ValidatorBuilder
 import fm.force.quiz.common.SpecificationBuilder
-import fm.force.quiz.core.validator.stringConstraint
 import fm.force.quiz.configuration.properties.TopicValidationProperties
-import fm.force.quiz.core.dto.*
+import fm.force.quiz.core.dto.PageDTO
+import fm.force.quiz.core.dto.PatchTopicDTO
+import fm.force.quiz.core.dto.TopicDTO
+import fm.force.quiz.core.dto.toDTO
 import fm.force.quiz.core.entity.Topic
 import fm.force.quiz.core.entity.Topic_
-import fm.force.quiz.core.exception.ValidationError
 import fm.force.quiz.core.repository.JpaTopicRepository
+import fm.force.quiz.core.validator.stringConstraint
 import fm.force.quiz.security.service.AuthenticationFacade
 import org.springframework.data.domain.Page
 import org.springframework.data.jpa.domain.Specification
@@ -22,24 +24,22 @@ class TopicService(
         paginationService: PaginationService,
         sortingService: SortingService,
         authenticationFacade: AuthenticationFacade
-) : AbstractPaginatedCRUDService<Topic, JpaTopicRepository, PatchTopicDTO, TopicDTO> (
+) : AbstractPaginatedCRUDService<Topic, JpaTopicRepository, PatchTopicDTO, TopicDTO>(
         repository = jpaTopicRepository,
         authenticationFacade = authenticationFacade,
         sortingService = sortingService,
         paginationService = paginationService
 ) {
-    var validator = ValidatorBuilder.of<Topic>()
+    override var entityValidator = ValidatorBuilder.of<Topic>()
             .stringConstraint(Topic::title, validationProps.minTitleLength..validationProps.maxTitleLength)
             .build()
-
-    fun validate(topic: Topic) = validator.validate(topic).throwIfInvalid { ValidationError(it) }
 
     override fun create(createDTO: PatchTopicDTO): Topic {
         val topic = Topic(
                 owner = authenticationFacade.user,
                 title = createDTO.title
         )
-        validate(topic)
+        validateEntity(topic)
         return repository.save(topic)
     }
 
@@ -56,7 +56,7 @@ class TopicService(
         val topic = getInstance(id)
         topic.title = patchDTO.title
         topic.updatedAt = Instant.now()
-        validate(topic)
+        validateEntity(topic)
         return repository.save(topic)
     }
 

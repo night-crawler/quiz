@@ -13,7 +13,6 @@ import fm.force.quiz.core.entity.DifficultyScale
 import fm.force.quiz.core.entity.DifficultyScaleRange
 import fm.force.quiz.core.entity.DifficultyScaleRange_
 import fm.force.quiz.core.exception.NotFoundException
-import fm.force.quiz.core.exception.ValidationError
 import fm.force.quiz.core.repository.JpaDifficultyScaleRangeRepository
 import fm.force.quiz.core.repository.JpaDifficultyScaleRepository
 import fm.force.quiz.core.validator.fkConstraint
@@ -51,12 +50,12 @@ class DifficultyScaleRangeService(
         repository.findIntersecting(it.difficultyScale.id, it.min, it.max).isEmpty()
     }
 
-    val integrityValidator = ValidatorBuilder.of<DifficultyScaleRange>()
+    override var entityValidator = ValidatorBuilder.of<DifficultyScaleRange>()
             .constraintOnTarget(whenMinMaxSwapped, "max", "", msgMaxMustBeLessThanMin)
             .constraintOnTarget(whenIntersects, "max", "", msgMaxMustBeLessThanMin)
             .build()
 
-    val dtoValidator = ValidatorBuilder.of<PatchDifficultyScaleRangeDTO>()
+    override var dtoValidator = ValidatorBuilder.of<PatchDifficultyScaleRangeDTO>()
             .konstraintOnGroup(CRUDConstraintGroup.CREATE) {
                 mandatory(PatchDifficultyScaleRangeDTO::title)
                 mandatory(PatchDifficultyScaleRangeDTO::min)
@@ -79,18 +78,6 @@ class DifficultyScaleRangeService(
                     getOwnerId = { authenticationFacade.user.id }
             )
             .build()
-
-    fun validateCreate(createDTO: PatchDifficultyScaleRangeDTO) = dtoValidator
-            .validate(createDTO, CRUDConstraintGroup.CREATE)
-            .throwIfInvalid { ValidationError(it) }
-
-    fun validatePatch(patchDTO: PatchDifficultyScaleRangeDTO) = dtoValidator
-            .validate(patchDTO, CRUDConstraintGroup.UPDATE)
-            .throwIfInvalid { ValidationError(it) }
-
-    fun validateEntity(entity: DifficultyScaleRange) = integrityValidator
-            .validate(entity)
-            .throwIfInvalid { ValidationError(it) }
 
     override fun buildSingleArgumentSearchSpec(needle: String?): Specification<DifficultyScaleRange> {
         if (needle.isNullOrEmpty())
