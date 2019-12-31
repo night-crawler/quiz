@@ -7,11 +7,11 @@ import fm.force.quiz.core.dto.SortQuery
 import fm.force.quiz.core.exception.NotFoundException
 import fm.force.quiz.core.exception.ValidationError
 import fm.force.quiz.core.repository.CommonRepository
+import fm.force.quiz.core.repository.CustomJpaRepository
 import fm.force.quiz.security.service.AuthenticationFacade
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.jpa.domain.Specification
-import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import javax.transaction.Transactional
 
@@ -21,7 +21,7 @@ abstract class AbstractPaginatedCRUDService<ENT, REPO, CRDTO, SERDTO>(
         private val paginationService: PaginationService,
         private val sortingService: SortingService
 )
-        where REPO : JpaRepository<ENT, Long>,
+        where REPO : CustomJpaRepository<ENT, Long>,
               REPO : CommonRepository<ENT>,
               REPO : JpaSpecificationExecutor<ENT> {
 

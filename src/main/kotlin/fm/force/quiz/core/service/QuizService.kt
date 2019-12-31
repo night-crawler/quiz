@@ -11,7 +11,6 @@ import fm.force.quiz.core.dto.toDTO
 import fm.force.quiz.core.entity.Quiz
 import fm.force.quiz.core.entity.QuizQuestion
 import fm.force.quiz.core.entity.Quiz_
-import fm.force.quiz.core.exception.NotFoundException
 import fm.force.quiz.core.repository.*
 import fm.force.quiz.core.validator.fkConstraint
 import fm.force.quiz.core.validator.fkListConstraint
@@ -107,17 +106,14 @@ class QuizService(
             )
         }
         entity = repository.save(entity)
-        var quizQuestions = retrieveQuestions(createDTO.questions).mapIndexed { index, question -> QuizQuestion(
+        val quizQuestions = retrieveQuestions(createDTO.questions).mapIndexed { index, question -> QuizQuestion(
                 owner = authenticationFacade.user,
                 quiz = entity,
                 question = question,
                 seq = index
         ) }
-        quizQuestions = jpaQuizQuestionRepository.saveAll(quizQuestions)
-//        entity.quizQuestions = quizQuestions.toMutableSet()
-
-        return repository.findById(entity.id).orElseThrow { NotFoundException(entity.id, Quiz::class) }
-//        return repository.save(entity)
+        jpaQuizQuestionRepository.saveAll(quizQuestions)
+        return entity
     }
 
     override fun patch(id: Long, patchDTO: PatchQuizDTO): Quiz {
