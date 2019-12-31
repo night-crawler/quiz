@@ -1,13 +1,11 @@
-package io.kotlintest.provided.fm.force.quiz.common
+package fm.force.quiz.common
 
-import fm.force.quiz.common.ObjectId
 import io.kotlintest.data.forall
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
-import io.kotlintest.specs.StringSpec
 import io.kotlintest.shouldThrow
+import io.kotlintest.specs.StringSpec
 import io.kotlintest.tables.row
-import java.lang.IllegalArgumentException
 
 open class ObjectIdTest : StringSpec() {
     init {

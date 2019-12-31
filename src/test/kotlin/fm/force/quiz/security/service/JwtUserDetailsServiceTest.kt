@@ -1,10 +1,9 @@
-package io.kotlintest.provided.fm.force.quiz.security.service
+package fm.force.quiz.security.service
 
+import fm.force.quiz.TestConfiguration
 import fm.force.quiz.security.dto.RegisterRequestDTO
-import fm.force.quiz.security.service.JwtUserDetailsService
 import io.kotlintest.matchers.haveSize
 import io.kotlintest.matchers.numerics.shouldBeGreaterThan
-import io.kotlintest.provided.fm.force.quiz.TestConfiguration
 import io.kotlintest.should
 import io.kotlintest.shouldNotBe
 import io.kotlintest.shouldThrow

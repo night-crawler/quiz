@@ -1,9 +1,6 @@
-package io.kotlintest.provided.fm.force.quiz.security.service
+package fm.force.quiz.security.service
 
-import fm.force.quiz.security.service.JwtRequestAuthProviderService
-import fm.force.quiz.security.service.JwtProviderService
-import fm.force.quiz.security.service.JwtUserDetailsFactoryService
-import io.kotlintest.provided.fm.force.quiz.TestConfiguration
+import fm.force.quiz.TestConfiguration
 import io.kotlintest.specs.WordSpec
 import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.test.context.ContextConfiguration

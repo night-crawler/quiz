@@ -1,16 +1,14 @@
-package io.kotlintest.provided.fm.force.quiz.security.service
+package fm.force.quiz.security.service
 
+import fm.force.quiz.TestConfiguration
 import fm.force.quiz.common.getRandomString
 import fm.force.quiz.security.entity.Role
 import fm.force.quiz.security.entity.User
 import fm.force.quiz.security.jwt.JwtUserDetails
-import fm.force.quiz.security.service.JwtProviderService
-import fm.force.quiz.security.service.JwtUserDetailsFactoryService
 import io.kotlintest.matchers.boolean.shouldBeTrue
 import io.kotlintest.matchers.string.shouldNotBeBlank
 import io.kotlintest.matchers.types.shouldBeNull
 import io.kotlintest.matchers.types.shouldNotBeNull
-import io.kotlintest.provided.fm.force.quiz.TestConfiguration
 import io.kotlintest.specs.WordSpec
 import org.springframework.test.context.ContextConfiguration
 import java.util.*

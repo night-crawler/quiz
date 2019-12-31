@@ -6,8 +6,8 @@ import io.kotlintest.Spec
 import io.kotlintest.matchers.collections.shouldContain
 import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.matchers.types.shouldNotBeNull
-import io.kotlintest.provided.fm.force.quiz.TestConfiguration
-import io.kotlintest.provided.fm.force.quiz.YamlPropertyLoaderFactory
+import fm.force.quiz.TestConfiguration
+import fm.force.quiz.YamlPropertyLoaderFactory
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
 import org.springframework.context.annotation.PropertySource

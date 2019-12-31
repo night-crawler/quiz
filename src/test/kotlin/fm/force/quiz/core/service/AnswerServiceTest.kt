@@ -1,5 +1,7 @@
-package io.kotlintest.provided.fm.force.quiz.core.service
+package fm.force.quiz.core.service
 
+import fm.force.quiz.TestConfiguration
+import fm.force.quiz.YamlPropertyLoaderFactory
 import fm.force.quiz.common.getRandomString
 import fm.force.quiz.configuration.properties.AnswerValidationProperties
 import fm.force.quiz.core.dto.CreateAnswerDTO
@@ -7,13 +9,10 @@ import fm.force.quiz.core.dto.PaginationQuery
 import fm.force.quiz.core.dto.SortQuery
 import fm.force.quiz.core.entity.Answer
 import fm.force.quiz.core.exception.ValidationError
-import fm.force.quiz.core.service.AnswerService
 import fm.force.quiz.factory.TestDataFactory
 import fm.force.quiz.security.service.JwtUserDetailsFactoryService
 import io.kotlintest.data.forall
 import io.kotlintest.matchers.collections.shouldHaveSize
-import io.kotlintest.provided.fm.force.quiz.TestConfiguration
-import io.kotlintest.provided.fm.force.quiz.YamlPropertyLoaderFactory
 import io.kotlintest.shouldThrow
 import io.kotlintest.tables.row
 import org.springframework.context.annotation.PropertySource

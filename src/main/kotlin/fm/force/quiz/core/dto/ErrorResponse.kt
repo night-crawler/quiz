@@ -6,7 +6,6 @@ import com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException
 import fm.force.quiz.core.exception.NotFoundException
 import fm.force.quiz.core.exception.ValidationError
 import org.hibernate.exception.ConstraintViolationException
-import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.data.mapping.PropertyReferenceException
 import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.security.core.userdetails.UsernameNotFoundException

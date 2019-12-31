@@ -1,13 +1,12 @@
-package io.kotlintest.provided.fm.force.quiz.core.service
+package fm.force.quiz.core.service
 
+import fm.force.quiz.TestConfiguration
+import fm.force.quiz.YamlPropertyLoaderFactory
 import fm.force.quiz.configuration.properties.PaginationValidationProperties
 import fm.force.quiz.core.dto.PaginationParams
 import fm.force.quiz.core.dto.PaginationQuery
 import fm.force.quiz.core.exception.ValidationError
-import fm.force.quiz.core.service.PaginationService
 import io.kotlintest.data.forall
-import io.kotlintest.provided.fm.force.quiz.TestConfiguration
-import io.kotlintest.provided.fm.force.quiz.YamlPropertyLoaderFactory
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.StringSpec

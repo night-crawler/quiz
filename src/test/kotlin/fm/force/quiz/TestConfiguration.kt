@@ -1,4 +1,4 @@
-package io.kotlintest.provided.fm.force.quiz
+package fm.force.quiz
 
 import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer
 import org.springframework.boot.test.context.TestConfiguration

@@ -1,4 +1,4 @@
-package io.kotlintest.provided.fm.force.quiz.core.service
+package fm.force.quiz.core.service
 
 import fm.force.quiz.factory.TestDataFactory
 import fm.force.quiz.security.entity.User

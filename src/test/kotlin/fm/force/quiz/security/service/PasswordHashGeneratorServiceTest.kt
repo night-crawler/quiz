@@ -1,10 +1,9 @@
-package io.kotlintest.provided.fm.force.quiz.security.service
+package fm.force.quiz.security.service
 
-import fm.force.quiz.security.service.PasswordHashGeneratorService
+import fm.force.quiz.TestConfiguration
 import io.kotlintest.matchers.boolean.shouldBeTrue
 import io.kotlintest.matchers.string.shouldNotBeBlank
 import io.kotlintest.matchers.types.shouldNotBeNull
-import io.kotlintest.provided.fm.force.quiz.TestConfiguration
 import io.kotlintest.specs.WordSpec
 import org.springframework.test.context.ContextConfiguration
 
