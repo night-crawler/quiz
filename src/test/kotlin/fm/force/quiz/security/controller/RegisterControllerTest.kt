@@ -1,6 +1,7 @@
 package fm.force.quiz.security.controller
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import fm.force.quiz.TestConfiguration
 import fm.force.quiz.security.dto.RegisterRequestDTO
 import fm.force.quiz.YamlPropertyLoaderFactory
 import io.kotlintest.specs.WordSpec
@@ -9,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.PropertySource
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
@@ -16,6 +18,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
+@ContextConfiguration(classes = [TestConfiguration::class])
 @PropertySource("classpath:application-test.yaml", factory = YamlPropertyLoaderFactory::class)
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
