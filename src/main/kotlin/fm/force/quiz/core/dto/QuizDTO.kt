@@ -5,7 +5,6 @@ import fm.force.quiz.core.entity.Quiz
 data class QuizDTO(
         val id: Long,
         val owner: Long,
-        val questions: Collection<QuestionDTO>,
         val tags: Collection<TagDTO>,
         val topics: Collection<TopicDTO>,
         val difficultyScale: DifficultyScaleDTO?
@@ -23,7 +22,6 @@ data class PatchQuizDTO(
 fun Quiz.toDTO() = QuizDTO(
         id = id,
         owner = owner.id,
-        questions = questions.map { it.toDTO() },
         tags = tags.map { it.toDTO() },
         topics = topics.map { it.toDTO() },
         difficultyScale = difficultyScale?.toDTO()

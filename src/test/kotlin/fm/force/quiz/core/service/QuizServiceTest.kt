@@ -63,13 +63,13 @@ open class QuizServiceTest(
                     topics = setOf(topics.random().id, topics.random().id),
                     difficultyScale = scale.id
             )
-            quizService.create(dto)
+            val quiz = quizService.create(dto)
+            println(quiz.quizQuestions)
         }
 
         "should paginate" {
             (1..5).map { testDataFactory.getQuiz(owner = user, title = "This title is exciting $it") }
             (1..5).map { testDataFactory.getQuiz(owner = alien, title = "This title is exciting $it") }
-
             val page = quizService.find(
                     PaginationQuery.default(),
                     SortQuery.byIdDesc(),
@@ -91,7 +91,6 @@ open class QuizServiceTest(
             val patched = quizService.patch(quiz.id, patch)
             patched.title shouldBe "sample!"
             patched.updatedAt shouldNotBe quiz.updatedAt
-            patched.questions shouldHaveSize 0
             patched.tags shouldHaveSize 0
             patched.topics shouldHaveSize 0
         }

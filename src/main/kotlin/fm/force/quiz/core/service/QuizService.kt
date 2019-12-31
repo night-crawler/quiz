@@ -9,7 +9,9 @@ import fm.force.quiz.core.dto.PatchQuizDTO
 import fm.force.quiz.core.dto.QuizDTO
 import fm.force.quiz.core.dto.toDTO
 import fm.force.quiz.core.entity.Quiz
+import fm.force.quiz.core.entity.QuizQuestion
 import fm.force.quiz.core.entity.Quiz_
+import fm.force.quiz.core.exception.NotFoundException
 import fm.force.quiz.core.repository.*
 import fm.force.quiz.core.validator.fkConstraint
 import fm.force.quiz.core.validator.fkListConstraint
@@ -29,6 +31,7 @@ class QuizService(
         private val jpaTopicRepository: JpaTopicRepository,
         private val jpaQuestionRepository: JpaQuestionRepository,
         private val jpaDifficultyScaleRepository: JpaDifficultyScaleRepository,
+        private val jpaQuizQuestionRepository: JpaQuizQuestionRepository,
         validationProps: QuizValidationProperties,
         authenticationFacade: AuthenticationFacade,
         jpaQuizRepository: JpaQuizRepository,
@@ -94,24 +97,33 @@ class QuizService(
     @Transactional
     override fun create(createDTO: PatchQuizDTO): Quiz {
         validateCreate(createDTO)
-        val entity = with(createDTO) {
+        var entity = with(createDTO) {
             Quiz(
                     owner = authenticationFacade.user,
                     title = title!!,
-                    questions = retrieveQuestions(questions),
                     topics = retrieveTopics(topics),
                     tags = retrieveTags(tags),
                     difficultyScale = retrieveDifficultyScale(difficultyScale)
             )
         }
-        return repository.save(entity)
+        entity = repository.save(entity)
+        var quizQuestions = retrieveQuestions(createDTO.questions).mapIndexed { index, question -> QuizQuestion(
+                owner = authenticationFacade.user,
+                quiz = entity,
+                question = question,
+                seq = index
+        ) }
+        quizQuestions = jpaQuizQuestionRepository.saveAll(quizQuestions)
+//        entity.quizQuestions = quizQuestions.toMutableSet()
+
+        return repository.findById(entity.id).orElseThrow { NotFoundException(entity.id, Quiz::class) }
+//        return repository.save(entity)
     }
 
     override fun patch(id: Long, patchDTO: PatchQuizDTO): Quiz {
         validatePatch(patchDTO)
         val modified = getInstance(id).apply {
             if (patchDTO.title != null) title = patchDTO.title
-            if (patchDTO.questions != null) questions = retrieveQuestions(patchDTO.questions)
             if (patchDTO.topics != null) topics = retrieveTopics(patchDTO.topics)
             if (patchDTO.tags != null) tags = retrieveTags(patchDTO.tags)
             if (patchDTO.difficultyScale != null) difficultyScale = retrieveDifficultyScale(patchDTO.difficultyScale)

@@ -18,7 +18,8 @@ class TestDataFactory(
         private val jpaQuestionRepository: JpaQuestionRepository,
         private val jpaDifficultyScaleRepository: JpaDifficultyScaleRepository,
         private val jpaDifficultyScaleRangeRepository: JpaDifficultyScaleRangeRepository,
-        private val jpaQuizRepository: JpaQuizRepository
+        private val jpaQuizRepository: JpaQuizRepository,
+        private val jpaQuizQuestionRepository: JpaQuizQuestionRepository
 ) {
     @Transactional
     fun getUser(
@@ -95,16 +96,27 @@ class TestDataFactory(
     ))
 
     @Transactional
+    fun getQuizQuestion(
+            owner: User = getUser(),
+            quiz: Quiz = getQuiz(owner = owner),
+            question: Question = getQuestion(owner = owner),
+            seq: Int = Random.nextInt(Int.MAX_VALUE)
+    ) = jpaQuizQuestionRepository.save(QuizQuestion(
+            owner = owner,
+            quiz = quiz,
+            question = question,
+            seq = seq
+    ))
+
+    @Transactional
     fun getQuiz(
             owner: User = getUser(),
             title: String = getRandomString(16),
-            questions: MutableSet<Question> = (1..5).map { getQuestion(owner = owner) }.toMutableSet(),
             topics: MutableSet<Topic> = (1..5).map { getTopic(owner = owner) }.toMutableSet(),
             tags: MutableSet<Tag> = (1..5).map { getTag(owner = owner) }.toMutableSet(),
             difficultyScale: DifficultyScale? = getDifficultyScale(owner = owner)
     ) = jpaQuizRepository.save(Quiz(
             owner = owner,
-            questions = questions,
             title = title,
             topics = topics,
             tags = tags,
