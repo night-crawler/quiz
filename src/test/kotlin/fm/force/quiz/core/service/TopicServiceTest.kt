@@ -5,7 +5,7 @@ import fm.force.quiz.YamlPropertyLoaderFactory
 import fm.force.quiz.common.getRandomString
 import fm.force.quiz.configuration.properties.TopicValidationProperties
 import fm.force.quiz.core.dto.PaginationQuery
-import fm.force.quiz.core.dto.PatchTopicDTO
+import fm.force.quiz.core.dto.TopicPatchDTO
 import fm.force.quiz.core.dto.SortQuery
 import fm.force.quiz.core.exception.NotFoundException
 import fm.force.quiz.core.exception.ValidationError
@@ -29,8 +29,8 @@ class TopicServiceTest(
     init {
         "should validate topic title length" {
             forall(
-                    row(PatchTopicDTO(getRandomString(validationProps.minTitleLength - 1))),
-                    row(PatchTopicDTO(getRandomString(validationProps.maxTitleLength + 1)))
+                    row(TopicPatchDTO(getRandomString(validationProps.minTitleLength - 1))),
+                    row(TopicPatchDTO(getRandomString(validationProps.maxTitleLength + 1)))
             ) {
                 shouldThrow<ValidationError> { topicService.create(it) }
             }

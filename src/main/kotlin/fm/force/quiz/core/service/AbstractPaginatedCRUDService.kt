@@ -1,9 +1,7 @@
 package fm.force.quiz.core.service
 
 import am.ik.yavi.core.Validator
-import fm.force.quiz.core.dto.PageDTO
-import fm.force.quiz.core.dto.PaginationQuery
-import fm.force.quiz.core.dto.SortQuery
+import fm.force.quiz.core.dto.*
 import fm.force.quiz.core.exception.NotFoundException
 import fm.force.quiz.core.exception.ValidationError
 import fm.force.quiz.core.repository.CommonRepository
@@ -15,39 +13,39 @@ import org.springframework.data.jpa.domain.Specification
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import javax.transaction.Transactional
 
-abstract class AbstractPaginatedCRUDService<ENT, REPO, CRDTO, SERDTO>(
-        val repository: REPO,
+abstract class AbstractPaginatedCRUDService<EntType, RepoType, PatchType, DTOType : DTOSerializationMarker>(
+        val repository: RepoType,
         val authenticationFacade: AuthenticationFacade,
         private val paginationService: PaginationService,
         private val sortingService: SortingService
 )
-        where REPO : CustomJpaRepository<ENT, Long>,
-              REPO : CommonRepository<ENT>,
-              REPO : JpaSpecificationExecutor<ENT> {
+        where RepoType : CustomJpaRepository<EntType, Long>,
+              RepoType : CommonRepository<EntType>,
+              RepoType : JpaSpecificationExecutor<EntType> {
 
-    val emptySpecification = Specification<ENT> { _, _, _ -> null }
+    val emptySpecification = Specification<EntType> { _, _, _ -> null }
 
-    open lateinit var entityValidator: Validator<ENT>
-    open lateinit var dtoValidator: Validator<CRDTO>
+    open lateinit var entityValidator: Validator<EntType>
+    open lateinit var dtoValidator: Validator<PatchType>
 
-    open fun validateEntity(entity: ENT) = entityValidator
+    open fun validateEntity(entity: EntType) = entityValidator
             .validate(entity)
             .throwIfInvalid { ValidationError(it) }
 
-    open fun validatePatch(patchDTO: CRDTO) = dtoValidator
+    open fun validatePatch(patchDTO: PatchType) = dtoValidator
             .validate(patchDTO, CRUDConstraintGroup.UPDATE)
             .throwIfInvalid { ValidationError(it) }
 
-    open fun validateCreate(createDTO: CRDTO) = dtoValidator
+    open fun validateCreate(createDTO: PatchType) = dtoValidator
             .validate(createDTO, CRUDConstraintGroup.CREATE)
             .throwIfInvalid { ValidationError(it) }
 
-    abstract fun buildSingleArgumentSearchSpec(needle: String?): Specification<ENT>
-    abstract fun serializePage(page: Page<ENT>): PageDTO
-    abstract fun serializeEntity(entity: ENT): SERDTO
-    abstract fun create(createDTO: CRDTO): ENT
+    abstract fun buildSingleArgumentSearchSpec(needle: String?): Specification<EntType>
+    abstract fun serializePage(page: Page<EntType>): PageDTO
+    abstract fun serializeEntity(entity: EntType): DTOType
+    abstract fun create(createDTO: PatchType): EntType
 
-    open fun getInstance(id: Long): ENT = repository
+    open fun getInstance(id: Long): EntType = repository
             .findByIdAndOwner(id, authenticationFacade.user)
             .orElseThrow { NotFoundException(id, this::class) }
 
@@ -65,5 +63,5 @@ abstract class AbstractPaginatedCRUDService<ENT, REPO, CRDTO, SERDTO>(
     }
 
     open fun delete(id: Long) = getInstance(id).let { repository.delete(it) }
-    open fun patch(id: Long, patchDTO: CRDTO): ENT = throw NotImplementedError("Patch method is not implemented")
+    open fun patch(id: Long, patchDTO: PatchType): EntType = throw NotImplementedError("Patch method is not implemented")
 }

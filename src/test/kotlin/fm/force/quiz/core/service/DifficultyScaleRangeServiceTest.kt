@@ -4,7 +4,7 @@ import fm.force.quiz.TestConfiguration
 import fm.force.quiz.YamlPropertyLoaderFactory
 import fm.force.quiz.configuration.properties.DifficultyScaleRangeValidationProperties
 import fm.force.quiz.core.dto.PaginationQuery
-import fm.force.quiz.core.dto.PatchDifficultyScaleRangeDTO
+import fm.force.quiz.core.dto.DifficultyScaleRangePatchDTO
 import fm.force.quiz.core.dto.SortQuery
 import fm.force.quiz.core.exception.ValidationError
 import fm.force.quiz.factory.TestDataFactory
@@ -32,12 +32,12 @@ open class DifficultyScaleRangeServiceTest(
         "should validate when creating a new instance" {
             val range = testDataFactory.getDifficultyScaleRange(owner = user)
             forall(
-                    row(PatchDifficultyScaleRangeDTO()),
-                    row(PatchDifficultyScaleRangeDTO(difficultyScale = -1)),
-                    row(PatchDifficultyScaleRangeDTO(title = "")),
-                    row(PatchDifficultyScaleRangeDTO(min = -1)),
+                    row(DifficultyScaleRangePatchDTO()),
+                    row(DifficultyScaleRangePatchDTO(difficultyScale = -1)),
+                    row(DifficultyScaleRangePatchDTO(title = "")),
+                    row(DifficultyScaleRangePatchDTO(min = -1)),
                     // swap min & max
-                    row(PatchDifficultyScaleRangeDTO(difficultyScale = range.difficultyScale.id, min = validationProps.maxUpper, max = 1, title = "sample sample"))
+                    row(DifficultyScaleRangePatchDTO(difficultyScale = range.difficultyScale.id, min = validationProps.maxUpper, max = 1, title = "sample sample"))
             ) {
                 shouldThrow<ValidationError> { service.create(it) }
             }
@@ -46,12 +46,12 @@ open class DifficultyScaleRangeServiceTest(
         "should validate when patching existent instance" {
             val range = testDataFactory.getDifficultyScaleRange(owner = user, min = 100, max = 1000)
             // difficultyScale must not be changed
-            var patch = PatchDifficultyScaleRangeDTO(
+            var patch = DifficultyScaleRangePatchDTO(
                     difficultyScale = range.id, min = 100, max = validationProps.maxUpper, title = "sample sample")
             shouldThrow<ValidationError> { service.patch(range.id, patch) }
 
             // even if a patch itself is valid, we must check against changed boundaries
-            patch = PatchDifficultyScaleRangeDTO(max = 1)
+            patch = DifficultyScaleRangePatchDTO(max = 1)
             shouldThrow<ValidationError> { service.patch(range.id, patch) }
         }
 
@@ -59,13 +59,13 @@ open class DifficultyScaleRangeServiceTest(
             val scale = testDataFactory.getDifficultyScale(owner = user, createNRandomRanges = 0)
             testDataFactory.getDifficultyScaleRange(owner = user, difficultyScale = scale, min = 5, max = 10)
 
-            var r = PatchDifficultyScaleRangeDTO(difficultyScale = scale.id, title = "sample", min = 0, max = 5)
+            var r = DifficultyScaleRangePatchDTO(difficultyScale = scale.id, title = "sample", min = 0, max = 5)
             shouldThrow<ValidationError> { service.create(r) }
 
-            r = PatchDifficultyScaleRangeDTO(difficultyScale = scale.id, title = "sample", min = 10, max = 12)
+            r = DifficultyScaleRangePatchDTO(difficultyScale = scale.id, title = "sample", min = 10, max = 12)
             shouldThrow<ValidationError> { service.create(r) }
 
-            r = PatchDifficultyScaleRangeDTO(difficultyScale = scale.id, title = "sample", min = 13, max = 13)
+            r = DifficultyScaleRangePatchDTO(difficultyScale = scale.id, title = "sample", min = 13, max = 13)
             service.create(r)
         }
 

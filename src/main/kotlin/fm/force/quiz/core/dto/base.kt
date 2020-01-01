@@ -15,6 +15,11 @@ inline fun <T : BaseQuizEntity> Page<out T>.toDTO(serialize: (T) -> Any) = PageD
         content = content.map(serialize)
 )
 
+enum class SerializationType {
+    FULL, RESTRICTED
+}
 
 interface DTOMarker
-interface DTOSerializeMarker : DTOMarker
+interface DTOSerializationMarker : DTOMarker
+interface DTOFullSerializationMarker : DTOSerializationMarker
+interface DTORestrictedSerializationMarker : DTOSerializationMarker

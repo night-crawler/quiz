@@ -10,4 +10,4 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("answers")
 class AnswerController(answerService: AnswerService)
-    : AbstractCRUDController<Answer, JpaAnswerRepository, CreateAnswerDTO, AnswerDTO>(answerService)
+    : AbstractCRUDController<Answer, JpaAnswerRepository, AnswerPatchDTO, AnswerFullDTO>(answerService)

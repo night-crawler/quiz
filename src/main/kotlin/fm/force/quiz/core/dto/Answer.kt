@@ -2,23 +2,21 @@ package fm.force.quiz.core.dto
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer
-import fm.force.quiz.core.entity.Tag
+import fm.force.quiz.core.entity.Answer
 import java.time.Instant
 
-data class PatchTagDTO(val name: String) : DTOMarker
-
-data class TagDTO(
+data class AnswerFullDTO(
         @JsonSerialize(using = ToStringSerializer::class) val id: Long,
-        val name: String,
-        val slug: String,
+        val text: String,
         val createdAt: Instant,
         val updatedAt: Instant
-) : DTOSerializeMarker
+) : DTOFullSerializationMarker
 
-fun Tag.toDTO() = TagDTO(
+data class AnswerPatchDTO(val text: String) : DTOMarker
+
+fun Answer.toFullDTO() = AnswerFullDTO(
         id = id,
-        name = name,
-        slug = slug,
+        text = text,
         createdAt = createdAt,
         updatedAt = updatedAt
 )

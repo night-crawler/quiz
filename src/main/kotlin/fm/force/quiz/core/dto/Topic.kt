@@ -5,20 +5,18 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer
 import fm.force.quiz.core.entity.Topic
 import java.time.Instant
 
-data class PatchTopicDTO(val title: String) : DTOMarker
-
-data class TopicDTO(
+data class TopicFullDTO(
         @JsonSerialize(using = ToStringSerializer::class) val id: Long,
-        @JsonSerialize(using = ToStringSerializer::class) val owner: Long,
         val title: String,
         val createdAt: Instant,
         val updatedAt: Instant
-) : DTOSerializeMarker
+) : DTOFullSerializationMarker
 
-fun Topic.toDTO() = TopicDTO(
+data class TopicPatchDTO(val title: String) : DTOMarker
+
+fun Topic.toFullDTO() = TopicFullDTO(
         id = id,
         title = title,
-        owner = owner.id,
         createdAt = createdAt,
         updatedAt = updatedAt
 )

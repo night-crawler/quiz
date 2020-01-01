@@ -4,10 +4,7 @@ import am.ik.yavi.builder.ValidatorBuilder
 import com.github.slugify.Slugify
 import fm.force.quiz.common.SpecificationBuilder
 import fm.force.quiz.configuration.properties.TagValidationProperties
-import fm.force.quiz.core.dto.PageDTO
-import fm.force.quiz.core.dto.PatchTagDTO
-import fm.force.quiz.core.dto.TagDTO
-import fm.force.quiz.core.dto.toDTO
+import fm.force.quiz.core.dto.*
 import fm.force.quiz.core.entity.Tag
 import fm.force.quiz.core.entity.Tag_
 import fm.force.quiz.core.exception.ValidationError
@@ -27,7 +24,7 @@ class TagService(
         paginationService: PaginationService,
         sortingService: SortingService,
         authenticationFacade: AuthenticationFacade
-) : AbstractPaginatedCRUDService<Tag, JpaTagRepository, PatchTagDTO, TagDTO>(
+) : AbstractPaginatedCRUDService<Tag, JpaTagRepository, TagPatchDTO, TagFullDTO>(
         repository = jpaTagRepository,
         authenticationFacade = authenticationFacade,
         paginationService = paginationService,
@@ -64,7 +61,7 @@ class TagService(
         slugValidator.validate(entity).throwIfInvalid { ValidationError(it) }
     }
 
-    override fun create(createDTO: PatchTagDTO): Tag {
+    override fun create(createDTO: TagPatchDTO): Tag {
         val tag = Tag(
                 owner = authenticationFacade.user,
                 name = createDTO.name,
@@ -74,7 +71,7 @@ class TagService(
         return repository.save(tag)
     }
 
-    override fun patch(id: Long, patchDTO: PatchTagDTO): Tag {
+    override fun patch(id: Long, patchDTO: TagPatchDTO): Tag {
         val tag = getInstance(id)
         tag.name = patchDTO.name
         tag.slug = slugify(patchDTO.name)
@@ -83,6 +80,6 @@ class TagService(
         return repository.save(tag)
     }
 
-    override fun serializePage(page: Page<Tag>): PageDTO = page.toDTO { it.toDTO() }
-    override fun serializeEntity(entity: Tag): TagDTO = entity.toDTO()
+    override fun serializePage(page: Page<Tag>): PageDTO = page.toDTO { it.toFullDTO() }
+    override fun serializeEntity(entity: Tag): TagFullDTO = entity.toFullDTO()
 }

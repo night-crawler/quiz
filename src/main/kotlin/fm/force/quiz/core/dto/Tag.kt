@@ -2,28 +2,23 @@ package fm.force.quiz.core.dto
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer
-import fm.force.quiz.core.entity.DifficultyScale
+import fm.force.quiz.core.entity.Tag
 import java.time.Instant
 
-data class DifficultyScaleDTO(
+data class TagFullDTO(
         @JsonSerialize(using = ToStringSerializer::class) val id: Long,
         val name: String,
-        val difficultyScaleRanges: Collection<DifficultyScaleRangeDTO>,
+        val slug: String,
         val createdAt: Instant,
         val updatedAt: Instant
-) : DTOSerializeMarker
+) : DTOFullSerializationMarker
 
+data class TagPatchDTO(val name: String) : DTOMarker
 
-data class PatchDifficultyScaleDTO(
-        val name: String? = null,
-        val max: Int? = null
-) : DTOMarker
-
-
-fun DifficultyScale.toDTO() = DifficultyScaleDTO(
+fun Tag.toFullDTO() = TagFullDTO(
         id = id,
         name = name,
-        difficultyScaleRanges = difficultyScaleRanges.map { it.toDTO() },
+        slug = slug,
         createdAt = createdAt,
         updatedAt = updatedAt
 )

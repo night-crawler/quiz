@@ -3,10 +3,7 @@ package fm.force.quiz.core.service
 import am.ik.yavi.builder.ValidatorBuilder
 import fm.force.quiz.common.SpecificationBuilder
 import fm.force.quiz.configuration.properties.TopicValidationProperties
-import fm.force.quiz.core.dto.PageDTO
-import fm.force.quiz.core.dto.PatchTopicDTO
-import fm.force.quiz.core.dto.TopicDTO
-import fm.force.quiz.core.dto.toDTO
+import fm.force.quiz.core.dto.*
 import fm.force.quiz.core.entity.Topic
 import fm.force.quiz.core.entity.Topic_
 import fm.force.quiz.core.repository.JpaTopicRepository
@@ -24,7 +21,7 @@ class TopicService(
         paginationService: PaginationService,
         sortingService: SortingService,
         authenticationFacade: AuthenticationFacade
-) : AbstractPaginatedCRUDService<Topic, JpaTopicRepository, PatchTopicDTO, TopicDTO>(
+) : AbstractPaginatedCRUDService<Topic, JpaTopicRepository, TopicPatchDTO, TopicFullDTO>(
         repository = jpaTopicRepository,
         authenticationFacade = authenticationFacade,
         sortingService = sortingService,
@@ -34,7 +31,7 @@ class TopicService(
             .stringConstraint(Topic::title, validationProps.minTitleLength..validationProps.maxTitleLength)
             .build()
 
-    override fun create(createDTO: PatchTopicDTO): Topic {
+    override fun create(createDTO: TopicPatchDTO): Topic {
         val topic = Topic(
                 owner = authenticationFacade.user,
                 title = createDTO.title
@@ -52,7 +49,7 @@ class TopicService(
                 .and(SpecificationBuilder.ciContains(needle, Topic_.title))
     }
 
-    override fun patch(id: Long, patchDTO: PatchTopicDTO): Topic {
+    override fun patch(id: Long, patchDTO: TopicPatchDTO): Topic {
         val topic = getInstance(id)
         topic.title = patchDTO.title
         topic.updatedAt = Instant.now()
@@ -60,6 +57,6 @@ class TopicService(
         return repository.save(topic)
     }
 
-    override fun serializePage(page: Page<Topic>): PageDTO = page.toDTO { it.toDTO() }
-    override fun serializeEntity(entity: Topic): TopicDTO = entity.toDTO()
+    override fun serializePage(page: Page<Topic>): PageDTO = page.toDTO { it.toFullDTO() }
+    override fun serializeEntity(entity: Topic): TopicFullDTO = entity.toFullDTO()
 }

@@ -5,7 +5,7 @@ import fm.force.quiz.YamlPropertyLoaderFactory
 import fm.force.quiz.common.getRandomString
 import fm.force.quiz.configuration.properties.DifficultyScaleValidationProperties
 import fm.force.quiz.core.dto.PaginationQuery
-import fm.force.quiz.core.dto.PatchDifficultyScaleDTO
+import fm.force.quiz.core.dto.DifficultyScalePatchDTO
 import fm.force.quiz.core.dto.SortQuery
 import fm.force.quiz.core.exception.ValidationError
 import fm.force.quiz.factory.TestDataFactory
@@ -35,15 +35,15 @@ open class DifficultyScaleServiceTest(
     init {
         "should validate" {
             forall(
-                    row(PatchDifficultyScaleDTO()),
-                    row(PatchDifficultyScaleDTO(name = getRandomString(validationProps.minNameLength - 1))),
-                    row(PatchDifficultyScaleDTO(max = 0)),
-                    row(PatchDifficultyScaleDTO(max = validationProps.allowedMax, name = ""))
+                    row(DifficultyScalePatchDTO()),
+                    row(DifficultyScalePatchDTO(name = getRandomString(validationProps.minNameLength - 1))),
+                    row(DifficultyScalePatchDTO(max = 0)),
+                    row(DifficultyScalePatchDTO(max = validationProps.allowedMax, name = ""))
             ) {
                 shouldThrow<ValidationError> { difficultyScaleService.create(it) }
             }
 
-            val createDTO = PatchDifficultyScaleDTO(
+            val createDTO = DifficultyScalePatchDTO(
                     name = getRandomString(validationProps.maxNameLength),
                     max = validationProps.allowedMax
             )
@@ -64,7 +64,7 @@ open class DifficultyScaleServiceTest(
         }
 
         "should create" {
-            val createDTO = PatchDifficultyScaleDTO(
+            val createDTO = DifficultyScalePatchDTO(
                     name = getRandomString(validationProps.maxNameLength),
                     max = validationProps.allowedMax
             )
@@ -75,7 +75,7 @@ open class DifficultyScaleServiceTest(
 
         "should patch" {
             val scale = testDataFactory.getDifficultyScale(owner = user)
-            val patch = PatchDifficultyScaleDTO(
+            val patch = DifficultyScalePatchDTO(
                     name = getRandomString(validationProps.maxNameLength),
                     max = validationProps.allowedMax
             )

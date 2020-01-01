@@ -4,10 +4,7 @@ import am.ik.yavi.builder.ValidatorBuilder
 import am.ik.yavi.builder.konstraintOnGroup
 import fm.force.quiz.common.SpecificationBuilder
 import fm.force.quiz.configuration.properties.QuestionValidationProperties
-import fm.force.quiz.core.dto.PageDTO
-import fm.force.quiz.core.dto.PatchQuestionDTO
-import fm.force.quiz.core.dto.QuestionDTO
-import fm.force.quiz.core.dto.toDTO
+import fm.force.quiz.core.dto.*
 import fm.force.quiz.core.entity.Question
 import fm.force.quiz.core.entity.Question_
 import fm.force.quiz.core.repository.JpaAnswerRepository
@@ -33,43 +30,43 @@ class QuestionService(
         jpaQuestionRepository: JpaQuestionRepository,
         paginationService: PaginationService,
         sortingService: SortingService
-) : AbstractPaginatedCRUDService<Question, JpaQuestionRepository, PatchQuestionDTO, QuestionDTO>(
+) : AbstractPaginatedCRUDService<Question, JpaQuestionRepository, QuestionPatchDTO, QuestionFullDTO>(
         repository = jpaQuestionRepository,
         authenticationFacade = authenticationFacade,
         paginationService = paginationService,
         sortingService = sortingService
 ) {
 
-    override var dtoValidator = ValidatorBuilder.of<PatchQuestionDTO>()
+    override var dtoValidator = ValidatorBuilder.of<QuestionPatchDTO>()
             .konstraintOnGroup(CRUDConstraintGroup.CREATE) {
-                mandatory(PatchQuestionDTO::text)
-                mandatory(PatchQuestionDTO::answers)
-                mandatory(PatchQuestionDTO::correctAnswers)
-                optionalSubset(PatchQuestionDTO::answers, PatchQuestionDTO::correctAnswers)
+                mandatory(QuestionPatchDTO::text)
+                mandatory(QuestionPatchDTO::answers)
+                mandatory(QuestionPatchDTO::correctAnswers)
+                optionalSubset(QuestionPatchDTO::answers, QuestionPatchDTO::correctAnswers)
             }
 
-            .stringConstraint(PatchQuestionDTO::text, validationProps.minTextLength..Int.MAX_VALUE)
+            .stringConstraint(QuestionPatchDTO::text, validationProps.minTextLength..Int.MAX_VALUE)
             .fkListConstraint(
-                    PatchQuestionDTO::answers, jpaAnswerRepository,
+                    QuestionPatchDTO::answers, jpaAnswerRepository,
                     1..validationProps.maxAnswers,
                     getOwnerId = { authenticationFacade.user.id }
             )
             .fkListConstraint(
-                    PatchQuestionDTO::correctAnswers, jpaAnswerRepository,
+                    QuestionPatchDTO::correctAnswers, jpaAnswerRepository,
                     1..validationProps.maxAnswers,
                     getOwnerId = { authenticationFacade.user.id }
             )
             .fkListConstraint(
-                    PatchQuestionDTO::tags, jpaTagRepository,
+                    QuestionPatchDTO::tags, jpaTagRepository,
                     0..validationProps.maxTags,
                     getOwnerId = { authenticationFacade.user.id }
             )
             .fkListConstraint(
-                    PatchQuestionDTO::topics, jpaTopicRepository,
+                    QuestionPatchDTO::topics, jpaTopicRepository,
                     0..validationProps.maxTopics,
                     getOwnerId = { authenticationFacade.user.id }
             )
-            .intConstraint(PatchQuestionDTO::difficulty, 0..Int.MAX_VALUE)
+            .intConstraint(QuestionPatchDTO::difficulty, 0..Int.MAX_VALUE)
             .build()
 
     override var entityValidator = ValidatorBuilder.of<Question>()
@@ -86,7 +83,7 @@ class QuestionService(
             ?: mutableSetOf()
 
     @Transactional
-    override fun create(createDTO: PatchQuestionDTO): Question {
+    override fun create(createDTO: QuestionPatchDTO): Question {
         validateCreate(createDTO)
         // after validation text + answers are never null
         val question = with(createDTO) {
@@ -104,7 +101,7 @@ class QuestionService(
     }
 
     @Transactional
-    override fun patch(id: Long, patchDTO: PatchQuestionDTO): Question {
+    override fun patch(id: Long, patchDTO: QuestionPatchDTO): Question {
         validatePatch(patchDTO)
         val question = getInstance(id)
         val modifiedQuestion = with(patchDTO) {
@@ -131,6 +128,6 @@ class QuestionService(
                 .and(SpecificationBuilder.ciContains(needle, Question_.text))
     }
 
-    override fun serializePage(page: Page<Question>): PageDTO = page.toDTO { it.toDTO() }
-    override fun serializeEntity(entity: Question): QuestionDTO = entity.toDTO()
+    override fun serializePage(page: Page<Question>): PageDTO = page.toDTO { it.toFullDTO() }
+    override fun serializeEntity(entity: Question): QuestionFullDTO = entity.toFullDTO()
 }

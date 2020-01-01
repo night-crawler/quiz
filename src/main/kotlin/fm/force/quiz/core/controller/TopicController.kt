@@ -10,4 +10,4 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("topics")
 class TopicController(topicService: TopicService)
-    : AbstractCRUDController<Topic, JpaTopicRepository, PatchTopicDTO, TopicDTO>(topicService)
+    : AbstractCRUDController<Topic, JpaTopicRepository, TopicPatchDTO, TopicFullDTO>(topicService)

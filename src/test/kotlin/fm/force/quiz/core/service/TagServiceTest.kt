@@ -5,7 +5,7 @@ import fm.force.quiz.YamlPropertyLoaderFactory
 import fm.force.quiz.common.getRandomString
 import fm.force.quiz.configuration.properties.TagValidationProperties
 import fm.force.quiz.core.dto.PaginationQuery
-import fm.force.quiz.core.dto.PatchTagDTO
+import fm.force.quiz.core.dto.TagPatchDTO
 import fm.force.quiz.core.dto.SortQuery
 import fm.force.quiz.core.entity.Tag
 import fm.force.quiz.core.exception.NotFoundException
@@ -35,15 +35,15 @@ open class TagServiceTest(
     init {
         "should throw ValidationError on too short or too long tag names" {
             forall(
-                    row(PatchTagDTO(getRandomString(validationProps.maxTagLength + 1))),
-                    row(PatchTagDTO(getRandomString(validationProps.minTagLength - 1)))
+                    row(TagPatchDTO(getRandomString(validationProps.maxTagLength + 1))),
+                    row(TagPatchDTO(getRandomString(validationProps.minTagLength - 1)))
             ) {
                 shouldThrow<ValidationError> { tagService.create(it) }
             }
         }
 
         "should create a new tag" {
-            val tag = tagService.create(PatchTagDTO(getRandomString(validationProps.minTagLength)))
+            val tag = tagService.create(TagPatchDTO(getRandomString(validationProps.minTagLength)))
             tag.id shouldNotBe null
             tag.owner shouldBe user
         }

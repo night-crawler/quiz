@@ -4,7 +4,7 @@ import fm.force.quiz.TestConfiguration
 import fm.force.quiz.YamlPropertyLoaderFactory
 import fm.force.quiz.common.getRandomString
 import fm.force.quiz.configuration.properties.AnswerValidationProperties
-import fm.force.quiz.core.dto.CreateAnswerDTO
+import fm.force.quiz.core.dto.AnswerPatchDTO
 import fm.force.quiz.core.dto.PaginationQuery
 import fm.force.quiz.core.dto.SortQuery
 import fm.force.quiz.core.entity.Answer
@@ -42,7 +42,7 @@ open class AnswerServiceTest(
         }
 
         "should create an answer from dto" {
-            answerService.create(CreateAnswerDTO(getRandomString(validationProps.minAnswerLength)))
+            answerService.create(AnswerPatchDTO(getRandomString(validationProps.minAnswerLength)))
         }
 
         "should return a paginated response" {

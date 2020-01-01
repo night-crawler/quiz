@@ -4,10 +4,7 @@ import am.ik.yavi.builder.ValidatorBuilder
 import am.ik.yavi.builder.konstraintOnGroup
 import fm.force.quiz.common.SpecificationBuilder
 import fm.force.quiz.configuration.properties.QuizValidationProperties
-import fm.force.quiz.core.dto.PageDTO
-import fm.force.quiz.core.dto.PatchQuizDTO
-import fm.force.quiz.core.dto.QuizDTO
-import fm.force.quiz.core.dto.toDTO
+import fm.force.quiz.core.dto.*
 import fm.force.quiz.core.entity.Quiz
 import fm.force.quiz.core.entity.QuizQuestion
 import fm.force.quiz.core.entity.Quiz_
@@ -36,7 +33,7 @@ class QuizService(
         jpaQuizRepository: JpaQuizRepository,
         paginationService: PaginationService,
         sortingService: SortingService
-) : AbstractPaginatedCRUDService<Quiz, JpaQuizRepository, PatchQuizDTO, QuizDTO>(
+) : AbstractPaginatedCRUDService<Quiz, JpaQuizRepository, PatchQuizDTO, QuizFullDTO>(
         repository = jpaQuizRepository,
         authenticationFacade = authenticationFacade,
         paginationService = paginationService,
@@ -78,9 +75,9 @@ class QuizService(
                 .and(SpecificationBuilder.ciContains(needle, Quiz_.title))
     }
 
-    override fun serializePage(page: Page<Quiz>): PageDTO = page.toDTO { it.toDTO() }
+    override fun serializePage(page: Page<Quiz>): PageDTO = page.toDTO { it.toFullDTO() }
 
-    override fun serializeEntity(entity: Quiz): QuizDTO = entity.toDTO()
+    override fun serializeEntity(entity: Quiz): QuizFullDTO = entity.toFullDTO()
 
     private fun retrieveTopics(ids: Collection<Long>?) = ids?.let { jpaTopicRepository.findAllById(it).toMutableSet() }
             ?: mutableSetOf()

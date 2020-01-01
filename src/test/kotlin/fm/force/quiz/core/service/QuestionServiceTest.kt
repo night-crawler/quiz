@@ -3,7 +3,7 @@ package fm.force.quiz.core.service
 import fm.force.quiz.TestConfiguration
 import fm.force.quiz.YamlPropertyLoaderFactory
 import fm.force.quiz.core.dto.PaginationQuery
-import fm.force.quiz.core.dto.PatchQuestionDTO
+import fm.force.quiz.core.dto.QuestionPatchDTO
 import fm.force.quiz.core.dto.SortQuery
 import fm.force.quiz.core.entity.Answer
 import fm.force.quiz.core.entity.Tag
@@ -41,19 +41,19 @@ open class QuestionServiceTest(
     init {
         "should validate" {
             forall(
-                    row(PatchQuestionDTO("sample", setOf(1, 2), setOf(3, 4), setOf(5), setOf(6))),
-                    row(PatchQuestionDTO("", setOf(1, 22), setOf(1, 33), setOf(44), setOf(66))),
-                    row(PatchQuestionDTO("", emptySet(), emptySet(), emptySet(), emptySet()))
+                    row(QuestionPatchDTO("sample", setOf(1, 2), setOf(3, 4), setOf(5), setOf(6))),
+                    row(QuestionPatchDTO("", setOf(1, 22), setOf(1, 33), setOf(44), setOf(66))),
+                    row(QuestionPatchDTO("", emptySet(), emptySet(), emptySet(), emptySet()))
             ) {
                 shouldThrow<ValidationError> { questionService.validatePatch(it) }
             }
 
             forall(
-                    row(PatchQuestionDTO(
+                    row(QuestionPatchDTO(
                             text = "valid sample",
                             answers = setOf(answer.id), correctAnswers = setOf(answer.id),
                             tags = emptySet(), topics = emptySet())),
-                    row(PatchQuestionDTO(
+                    row(QuestionPatchDTO(
                             text = "valid sample",
                             answers = setOf(answer.id), correctAnswers = setOf(answer.id),
                             tags = setOf(tag.id), topics = setOf(topic.id)))
@@ -76,7 +76,7 @@ open class QuestionServiceTest(
             val answer = testDataFactory.getAnswer(owner = user)
             val question = testDataFactory.getQuestion(owner = user)
 
-            val patchDTO = PatchQuestionDTO(
+            val patchDTO = QuestionPatchDTO(
                     text = "new text",
                     answers = setOf(answer.id),
                     correctAnswers = setOf(answer.id),
