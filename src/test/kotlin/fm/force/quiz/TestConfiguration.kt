@@ -1,11 +1,9 @@
 package fm.force.quiz
 
-import fm.force.quiz.core.repository.CustomJpaRepositoryImpl
 import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.*
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 import org.springframework.jmx.support.RegistrationPolicy
 import org.springframework.test.context.ContextConfiguration
 
@@ -15,7 +13,8 @@ import org.springframework.test.context.ContextConfiguration
 // Maybe this one is a solution: @EnableMBeanExport(registration=RegistrationPolicy.IGNORE_EXISTING)
 @TestConfiguration
 @PropertySource("classpath:application-test.yaml", factory = YamlPropertyLoaderFactory::class)
-@EnableJpaRepositories(repositoryBaseClass = CustomJpaRepositoryImpl::class)
+// Since QuizApplication is annotated with EnableJpaRepositories it seems to be unnecessary
+//@EnableJpaRepositories(repositoryBaseClass = CustomJpaRepositoryImpl::class)
 @ComponentScans(
         ComponentScan("fm.force.quiz")
 )

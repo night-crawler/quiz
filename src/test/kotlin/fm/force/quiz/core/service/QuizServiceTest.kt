@@ -62,8 +62,7 @@ open class QuizServiceTest(
                     topics = setOf(topics.random().id, topics.random().id),
                     difficultyScale = scale.id
             )
-            val quiz = quizService.create(dto)
-            println(quiz.quizQuestions)
+            quizService.create(dto)
         }
 
         "should paginate" {
