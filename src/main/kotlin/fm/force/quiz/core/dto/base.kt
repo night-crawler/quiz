@@ -14,3 +14,7 @@ inline fun <T : BaseQuizEntity> Page<out T>.toDTO(serialize: (T) -> Any) = PageD
         isLast = isLast,
         content = content.map(serialize)
 )
+
+
+interface DTOMarker
+interface DTOSerializeMarker : DTOMarker

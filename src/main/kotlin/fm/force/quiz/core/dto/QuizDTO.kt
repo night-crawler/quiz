@@ -1,14 +1,16 @@
 package fm.force.quiz.core.dto
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer
 import fm.force.quiz.core.entity.Quiz
 
 data class QuizDTO(
-        val id: Long,
-        val owner: Long,
+        @JsonSerialize(using = ToStringSerializer::class) val id: Long,
+        @JsonSerialize(using = ToStringSerializer::class) val owner: Long,
         val tags: Collection<TagDTO>,
         val topics: Collection<TopicDTO>,
         val difficultyScale: DifficultyScaleDTO?
-)
+) : DTOSerializeMarker
 
 data class PatchQuizDTO(
         val title: String? = null,
@@ -16,7 +18,7 @@ data class PatchQuizDTO(
         val tags: Set<Long>? = null,
         val topics: Set<Long>? = null,
         val difficultyScale: Long? = null
-)
+) : DTOMarker
 
 
 fun Quiz.toDTO() = QuizDTO(

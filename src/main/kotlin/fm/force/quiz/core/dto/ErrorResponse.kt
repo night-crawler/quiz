@@ -56,18 +56,27 @@ data class ErrorResponse(
         fun of(ex: ConstraintViolationException): ErrorResponse {
             val specificMessage = ex.cause?.message ?: ""
             val groups = rxFieldWithValues.find(specificMessage)?.groups
-            val fieldName = groups?.get("fieldName")?.value
+            val commaSeparatedFieldNames = groups?.get("fieldName")?.value
             val value = groups?.get("value")?.value
 
-            if (!fieldName.isNullOrEmpty() && !value.isNullOrEmpty()) {
+            if (!commaSeparatedFieldNames.isNullOrEmpty() && !value.isNullOrEmpty()) {
+                // if the violation occurred on a multi-field constraint,
+                // there will a comma-separated list of the db fields involved
+
+                val errors = commaSeparatedFieldNames
+                        .split(",").map { it.trim() }.filter { it.isNotEmpty() }
+                        .map {
+                            FieldError(
+                                    fieldName = it,
+                                    message = "Entity with field name `$commaSeparatedFieldNames` exists: `$value`",
+                                    violatedValue = value
+                            )
+                        }
+
                 return ErrorResponse(
                         exception = ex.javaClass.simpleName,
                         type = Type.VALIDATION,
-                        errors = listOf(FieldError(
-                                fieldName = fieldName,
-                                message = "Entity with field name `$fieldName` exists: `$value`",
-                                violatedValue = value
-                        ))
+                        errors = errors
                 )
             }
 

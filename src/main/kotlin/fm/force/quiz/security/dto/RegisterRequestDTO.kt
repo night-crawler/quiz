@@ -5,7 +5,6 @@ import javax.validation.constraints.NotBlank
 import javax.validation.constraints.Size
 
 
-// TODO: how to get rid of magic numbers not using constants file?
 data class RegisterRequestDTO(
         @field:Email(message = "Email is mandatory")
         @field:Size(min = 8, max = 100)
