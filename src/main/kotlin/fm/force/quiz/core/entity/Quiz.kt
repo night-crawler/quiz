@@ -11,6 +11,7 @@ data class Quiz(
         var title: String,
 
         @OneToMany(mappedBy = "quiz")
+        @OrderBy("seq ASC")
         var quizQuestions: MutableSet<QuizQuestion> = mutableSetOf(),
 
         @ManyToMany(targetEntity = Tag::class, fetch = FetchType.LAZY)

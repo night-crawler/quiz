@@ -19,7 +19,7 @@ data class QuizFullDTO(
 
 data class PatchQuizDTO(
         val title: String? = null,
-        val questions: Set<Long>? = null,
+        val questions: Collection<Long>? = null,
         val tags: Set<Long>? = null,
         val topics: Set<Long>? = null,
         val difficultyScale: Long? = null
