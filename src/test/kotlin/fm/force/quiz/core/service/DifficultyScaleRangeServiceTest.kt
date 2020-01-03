@@ -5,22 +5,15 @@ import fm.force.quiz.core.dto.PaginationQuery
 import fm.force.quiz.core.dto.DifficultyScaleRangePatchDTO
 import fm.force.quiz.core.dto.SortQuery
 import fm.force.quiz.core.exception.ValidationError
-import fm.force.quiz.factory.TestDataFactory
-import fm.force.quiz.security.service.JwtUserDetailsFactoryService
 import io.kotlintest.data.forall
 import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.shouldThrow
 import io.kotlintest.tables.row
 
 open class DifficultyScaleRangeServiceTest(
-        testDataFactory: TestDataFactory,
-        jwtUserDetailsFactoryService: JwtUserDetailsFactoryService,
         service: DifficultyScaleRangeService,
         validationProps: DifficultyScaleRangeValidationProperties
-) : GenericCRUDServiceTest(
-        testDataFactory = testDataFactory,
-        jwtUserDetailsFactoryService = jwtUserDetailsFactoryService
-) {
+) : GenericCRUDServiceTest() {
 
     init {
         "should validate when creating a new instance" {

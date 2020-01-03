@@ -17,14 +17,9 @@ import io.kotlintest.shouldThrow
 import io.kotlintest.tables.row
 
 open class DifficultyScaleServiceTest(
-        testDataFactory: TestDataFactory,
-        jwtUserDetailsFactoryService: JwtUserDetailsFactoryService,
         difficultyScaleService: DifficultyScaleService,
         validationProps: DifficultyScaleValidationProperties
-) : GenericCRUDServiceTest(
-        testDataFactory = testDataFactory,
-        jwtUserDetailsFactoryService = jwtUserDetailsFactoryService
-) {
+) : GenericCRUDServiceTest() {
 
     init {
         "should validate" {

@@ -7,8 +7,6 @@ import fm.force.quiz.core.dto.PaginationQuery
 import fm.force.quiz.core.dto.SortQuery
 import fm.force.quiz.core.entity.Answer
 import fm.force.quiz.core.exception.ValidationError
-import fm.force.quiz.factory.TestDataFactory
-import fm.force.quiz.security.service.JwtUserDetailsFactoryService
 import io.kotlintest.data.forall
 import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.shouldThrow
@@ -17,13 +15,8 @@ import io.kotlintest.tables.row
 
 open class AnswerServiceTest(
         private val answerService: AnswerService,
-        validationProps: AnswerValidationProperties,
-        testDataFactory: TestDataFactory,
-        jwtUserDetailsFactoryService: JwtUserDetailsFactoryService
-) : GenericCRUDServiceTest(
-        testDataFactory = testDataFactory,
-        jwtUserDetailsFactoryService = jwtUserDetailsFactoryService
-) {
+        validationProps: AnswerValidationProperties
+) : GenericCRUDServiceTest() {
 
     init {
         "should validate" {

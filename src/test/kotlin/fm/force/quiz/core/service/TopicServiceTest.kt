@@ -7,19 +7,15 @@ import fm.force.quiz.core.dto.TopicPatchDTO
 import fm.force.quiz.core.dto.SortQuery
 import fm.force.quiz.core.exception.NotFoundException
 import fm.force.quiz.core.exception.ValidationError
-import fm.force.quiz.factory.TestDataFactory
-import fm.force.quiz.security.service.JwtUserDetailsFactoryService
 import io.kotlintest.data.forall
 import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.shouldThrow
 import io.kotlintest.tables.row
 
 class TopicServiceTest(
-        jwtUserDetailsFactoryService: JwtUserDetailsFactoryService,
-        testDataFactory: TestDataFactory,
         validationProps: TopicValidationProperties,
         topicService: TopicService
-) : GenericCRUDServiceTest(testDataFactory = testDataFactory, jwtUserDetailsFactoryService = jwtUserDetailsFactoryService) {
+) : GenericCRUDServiceTest() {
     init {
         "should validate topic title length" {
             forall(

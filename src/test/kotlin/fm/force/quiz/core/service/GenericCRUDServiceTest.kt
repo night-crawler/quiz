@@ -9,16 +9,21 @@ import fm.force.quiz.security.service.JwtUserDetailsFactoryService
 import io.kotlintest.TestCase
 import io.kotlintest.specs.StringSpec
 import org.mockito.Mockito
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.context.annotation.PropertySource
 import org.springframework.test.context.ContextConfiguration
 
 @PropertySource("classpath:application-test.yaml", factory = YamlPropertyLoaderFactory::class)
 @ContextConfiguration(classes = [TestConfiguration::class])
-abstract class GenericCRUDServiceTest(
-        val testDataFactory: TestDataFactory,
-        val jwtUserDetailsFactoryService: JwtUserDetailsFactoryService
-) : StringSpec() {
+abstract class GenericCRUDServiceTest : StringSpec() {
+
+    @Autowired
+    lateinit var testDataFactory: TestDataFactory
+
+    @Autowired
+    lateinit var jwtUserDetailsFactoryService: JwtUserDetailsFactoryService
+
     @MockBean
     lateinit var authFacade: AuthenticationFacade
     lateinit var user: User

@@ -9,8 +9,6 @@ import fm.force.quiz.core.entity.Tag
 import fm.force.quiz.core.exception.NotFoundException
 import fm.force.quiz.core.exception.ValidationError
 import fm.force.quiz.core.repository.JpaTagRepository
-import fm.force.quiz.factory.TestDataFactory
-import fm.force.quiz.security.service.JwtUserDetailsFactoryService
 import io.kotlintest.data.forall
 import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.shouldBe
@@ -19,12 +17,10 @@ import io.kotlintest.shouldThrow
 import io.kotlintest.tables.row
 
 open class TagServiceTest(
-        jwtUserDetailsFactoryService: JwtUserDetailsFactoryService,
-        testDataFactory: TestDataFactory,
         jpaTagRepository: JpaTagRepository,
         tagService: TagService,
         validationProps: TagValidationProperties
-) : GenericCRUDServiceTest(testDataFactory = testDataFactory, jwtUserDetailsFactoryService = jwtUserDetailsFactoryService) {
+) : GenericCRUDServiceTest() {
 
     init {
         "should throw ValidationError on too short or too long tag names" {

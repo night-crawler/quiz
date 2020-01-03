@@ -7,8 +7,6 @@ import fm.force.quiz.core.entity.Answer
 import fm.force.quiz.core.entity.Tag
 import fm.force.quiz.core.entity.Topic
 import fm.force.quiz.core.exception.ValidationError
-import fm.force.quiz.factory.TestDataFactory
-import fm.force.quiz.security.service.JwtUserDetailsFactoryService
 import io.kotlintest.TestCase
 import io.kotlintest.data.forall
 import io.kotlintest.matchers.collections.shouldHaveSize
@@ -16,11 +14,7 @@ import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.tables.row
 
-open class QuestionServiceTest(
-        testDataFactory: TestDataFactory,
-        jwtUserDetailsFactoryService: JwtUserDetailsFactoryService,
-        questionService: QuestionService
-) : GenericCRUDServiceTest(testDataFactory = testDataFactory, jwtUserDetailsFactoryService = jwtUserDetailsFactoryService) {
+open class QuestionServiceTest(questionService: QuestionService) : GenericCRUDServiceTest() {
     private lateinit var answer: Answer
     private lateinit var tag: Tag
     private lateinit var topic: Topic
