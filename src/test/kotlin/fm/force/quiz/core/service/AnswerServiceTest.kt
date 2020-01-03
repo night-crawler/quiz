@@ -1,7 +1,5 @@
 package fm.force.quiz.core.service
 
-import fm.force.quiz.TestConfiguration
-import fm.force.quiz.YamlPropertyLoaderFactory
 import fm.force.quiz.common.getRandomString
 import fm.force.quiz.configuration.properties.AnswerValidationProperties
 import fm.force.quiz.core.dto.AnswerPatchDTO
@@ -15,12 +13,8 @@ import io.kotlintest.data.forall
 import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.shouldThrow
 import io.kotlintest.tables.row
-import org.springframework.context.annotation.PropertySource
-import org.springframework.test.context.ContextConfiguration
 
 
-@PropertySource("classpath:application-test.yaml", factory = YamlPropertyLoaderFactory::class)
-@ContextConfiguration(classes = [TestConfiguration::class])
 open class AnswerServiceTest(
         private val answerService: AnswerService,
         validationProps: AnswerValidationProperties,

@@ -1,5 +1,7 @@
 package fm.force.quiz.core.service
 
+import fm.force.quiz.TestConfiguration
+import fm.force.quiz.YamlPropertyLoaderFactory
 import fm.force.quiz.factory.TestDataFactory
 import fm.force.quiz.security.entity.User
 import fm.force.quiz.security.service.AuthenticationFacade
@@ -8,7 +10,11 @@ import io.kotlintest.TestCase
 import io.kotlintest.specs.StringSpec
 import org.mockito.Mockito
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.context.annotation.PropertySource
+import org.springframework.test.context.ContextConfiguration
 
+@PropertySource("classpath:application-test.yaml", factory = YamlPropertyLoaderFactory::class)
+@ContextConfiguration(classes = [TestConfiguration::class])
 abstract class GenericCRUDServiceTest(
         val testDataFactory: TestDataFactory,
         val jwtUserDetailsFactoryService: JwtUserDetailsFactoryService

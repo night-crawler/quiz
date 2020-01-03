@@ -1,7 +1,5 @@
 package fm.force.quiz.core.service
 
-import fm.force.quiz.TestConfiguration
-import fm.force.quiz.YamlPropertyLoaderFactory
 import fm.force.quiz.configuration.properties.DifficultyScaleRangeValidationProperties
 import fm.force.quiz.core.dto.PaginationQuery
 import fm.force.quiz.core.dto.DifficultyScaleRangePatchDTO
@@ -13,11 +11,7 @@ import io.kotlintest.data.forall
 import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.shouldThrow
 import io.kotlintest.tables.row
-import org.springframework.context.annotation.PropertySource
-import org.springframework.test.context.ContextConfiguration
 
-@PropertySource("classpath:application-test.yaml", factory = YamlPropertyLoaderFactory::class)
-@ContextConfiguration(classes = [TestConfiguration::class])
 open class DifficultyScaleRangeServiceTest(
         testDataFactory: TestDataFactory,
         jwtUserDetailsFactoryService: JwtUserDetailsFactoryService,

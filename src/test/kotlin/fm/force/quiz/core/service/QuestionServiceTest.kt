@@ -1,7 +1,5 @@
 package fm.force.quiz.core.service
 
-import fm.force.quiz.TestConfiguration
-import fm.force.quiz.YamlPropertyLoaderFactory
 import fm.force.quiz.core.dto.PaginationQuery
 import fm.force.quiz.core.dto.QuestionPatchDTO
 import fm.force.quiz.core.dto.SortQuery
@@ -17,11 +15,7 @@ import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.tables.row
-import org.springframework.context.annotation.PropertySource
-import org.springframework.test.context.ContextConfiguration
 
-@PropertySource("classpath:application-test.yaml", factory = YamlPropertyLoaderFactory::class)
-@ContextConfiguration(classes = [TestConfiguration::class])
 open class QuestionServiceTest(
         testDataFactory: TestDataFactory,
         jwtUserDetailsFactoryService: JwtUserDetailsFactoryService,
