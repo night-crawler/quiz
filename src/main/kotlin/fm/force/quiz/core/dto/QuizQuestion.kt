@@ -14,6 +14,14 @@ data class QuizQuestionFullDTO(
         val updatedAt: Instant
 ) : DTOFullSerializationMarker
 
+
+data class QuizQuestionPatchDTO(
+        val id: Long? = null,
+        val quiz: Long? = null,
+        val question: Long? = null,
+        val seq: Int? = null
+)
+
 fun QuizQuestion.toFullDTO() = QuizQuestionFullDTO(
         id = id,
         owner = owner.id,

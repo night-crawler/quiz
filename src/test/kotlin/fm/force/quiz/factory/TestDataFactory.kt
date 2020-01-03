@@ -112,14 +112,19 @@ class TestDataFactory(
     fun getQuiz(
             owner: User = getUser(),
             title: String = getRandomString(16),
+            questions: MutableSet<Question> = (1..5).map { getQuestion(owner = owner) }.toMutableSet(),
             topics: MutableSet<Topic> = (1..5).map { getTopic(owner = owner) }.toMutableSet(),
             tags: MutableSet<Tag> = (1..5).map { getTag(owner = owner) }.toMutableSet(),
             difficultyScale: DifficultyScale? = getDifficultyScale(owner = owner)
-    ) = jpaQuizRepository.save(Quiz(
-            owner = owner,
-            title = title,
-            topics = topics,
-            tags = tags,
-            difficultyScale = difficultyScale
-    ))
+    ): Quiz {
+        val quiz = jpaQuizRepository.save(Quiz(
+                owner = owner,
+                title = title,
+                topics = topics,
+                tags = tags,
+                difficultyScale = difficultyScale
+        ))
+        quiz.quizQuestions = questions.map { getQuizQuestion(owner = owner, quiz = quiz) }.toMutableSet()
+        return jpaQuizRepository.save(quiz)
+    }
 }

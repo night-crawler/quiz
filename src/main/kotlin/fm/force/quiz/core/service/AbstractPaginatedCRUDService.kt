@@ -30,6 +30,8 @@ abstract class AbstractPaginatedCRUDService<EntType, RepoType, PatchType, DTOTyp
     @Autowired
     lateinit var paginationService: PaginationService
 
+    val ownerId: Long get() = authenticationFacade.user.id
+
     val emptySpecification = Specification<EntType> { _, _, _ -> null }
 
     open lateinit var entityValidator: Validator<EntType>

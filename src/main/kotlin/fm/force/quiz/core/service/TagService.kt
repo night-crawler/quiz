@@ -10,7 +10,6 @@ import fm.force.quiz.core.entity.Tag_
 import fm.force.quiz.core.exception.ValidationError
 import fm.force.quiz.core.repository.JpaTagRepository
 import fm.force.quiz.core.validator.stringConstraint
-import fm.force.quiz.security.service.AuthenticationFacade
 import org.springframework.data.domain.Page
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
@@ -20,8 +19,7 @@ import java.time.Instant
 @Service
 class TagService(
         validationProps: TagValidationProperties,
-        jpaTagRepository: JpaTagRepository,
-        authenticationFacade: AuthenticationFacade
+        jpaTagRepository: JpaTagRepository
 ) : AbstractPaginatedCRUDService<Tag, JpaTagRepository, TagPatchDTO, TagFullDTO>(
         repository = jpaTagRepository
 ) {

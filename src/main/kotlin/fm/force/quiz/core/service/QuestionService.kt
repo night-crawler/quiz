@@ -39,26 +39,10 @@ class QuestionService(
             }
 
             .stringConstraint(QuestionPatchDTO::text, validationProps.minTextLength..Int.MAX_VALUE)
-            .fkListConstraint(
-                    QuestionPatchDTO::answers, jpaAnswerRepository,
-                    1..validationProps.maxAnswers,
-                    getOwnerId = { authenticationFacade.user.id }
-            )
-            .fkListConstraint(
-                    QuestionPatchDTO::correctAnswers, jpaAnswerRepository,
-                    1..validationProps.maxAnswers,
-                    getOwnerId = { authenticationFacade.user.id }
-            )
-            .fkListConstraint(
-                    QuestionPatchDTO::tags, jpaTagRepository,
-                    0..validationProps.maxTags,
-                    getOwnerId = { authenticationFacade.user.id }
-            )
-            .fkListConstraint(
-                    QuestionPatchDTO::topics, jpaTopicRepository,
-                    0..validationProps.maxTopics,
-                    getOwnerId = { authenticationFacade.user.id }
-            )
+            .fkListConstraint(QuestionPatchDTO::answers, jpaAnswerRepository, 1..validationProps.maxAnswers, ::ownerId)
+            .fkListConstraint(QuestionPatchDTO::correctAnswers, jpaAnswerRepository, 1..validationProps.maxAnswers, ::ownerId)
+            .fkListConstraint(QuestionPatchDTO::tags, jpaTagRepository, 0..validationProps.maxTags, ::ownerId)
+            .fkListConstraint(QuestionPatchDTO::topics, jpaTopicRepository, 0..validationProps.maxTopics, ::ownerId)
             .intConstraint(QuestionPatchDTO::difficulty, 0..Int.MAX_VALUE)
             .build()
 

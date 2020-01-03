@@ -37,26 +37,10 @@ class QuizService(
                 mandatory(PatchQuizDTO::title)
             }
             .stringConstraint(PatchQuizDTO::title, validationProps.minTitleLength..validationProps.maxTitleLength)
-            .fkListConstraint(
-                    PatchQuizDTO::questions, jpaQuestionRepository,
-                    0..validationProps.maxQuestions,
-                    getOwnerId = { authenticationFacade.user.id }
-            )
-            .fkListConstraint(
-                    PatchQuizDTO::tags, jpaTagRepository,
-                    0..validationProps.maxTags,
-                    getOwnerId = { authenticationFacade.user.id }
-            )
-            .fkListConstraint(
-                    PatchQuizDTO::topics, jpaTopicRepository,
-                    0..validationProps.maxTopics,
-                    getOwnerId = { authenticationFacade.user.id }
-            )
-            .fkConstraint(
-                    PatchQuizDTO::difficultyScale,
-                    jpaDifficultyScaleRepository,
-                    getOwnerId = { authenticationFacade.user.id }
-            )
+            .fkListConstraint(PatchQuizDTO::questions, jpaQuestionRepository, 0..validationProps.maxQuestions, ::ownerId)
+            .fkListConstraint(PatchQuizDTO::tags, jpaTagRepository, 0..validationProps.maxTags, ::ownerId)
+            .fkListConstraint(PatchQuizDTO::topics, jpaTopicRepository, 0..validationProps.maxTopics, ::ownerId)
+            .fkConstraint(PatchQuizDTO::difficultyScale, jpaDifficultyScaleRepository, ::ownerId)
             .build()
 
     override fun buildSingleArgumentSearchSpec(needle: String?): Specification<Quiz> {
@@ -96,12 +80,14 @@ class QuizService(
             )
         }
         entity = repository.save(entity)
-        val quizQuestions = retrieveQuestions(createDTO.questions).mapIndexed { index, question -> QuizQuestion(
-                owner = authenticationFacade.user,
-                quiz = entity,
-                question = question,
-                seq = index
-        ) }
+        val quizQuestions = retrieveQuestions(createDTO.questions).mapIndexed { index, question ->
+            QuizQuestion(
+                    owner = authenticationFacade.user,
+                    quiz = entity,
+                    question = question,
+                    seq = index
+            )
+        }
         jpaQuizQuestionRepository.saveAll(quizQuestions)
         return entity
     }

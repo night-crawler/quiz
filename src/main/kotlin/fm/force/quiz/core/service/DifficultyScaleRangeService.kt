@@ -62,11 +62,7 @@ class DifficultyScaleRangeService(
             .intConstraint(DifficultyScaleRangePatchDTO::min, 0..validationProps.minUpper)
             .intConstraint(DifficultyScaleRangePatchDTO::max, 1..validationProps.maxUpper)
 
-            .fkConstraint(
-                    DifficultyScaleRangePatchDTO::difficultyScale,
-                    jpaDifficultyScaleRepository,
-                    getOwnerId = { authenticationFacade.user.id }
-            )
+            .fkConstraint(DifficultyScaleRangePatchDTO::difficultyScale, jpaDifficultyScaleRepository, ::ownerId)
             .build()
 
     override fun buildSingleArgumentSearchSpec(needle: String?): Specification<DifficultyScaleRange> {

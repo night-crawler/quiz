@@ -49,9 +49,6 @@ fun <T, I, K : Collection<I>?> ValidatorBuilder<T>.optionalSubset(
         }
     }
 
-    val q: Collection<Any> = listOf(1, "bla")
-    q.toSet()
-
     konstraintOnCondition(notNullCondition(sup)) {
         konstraintOnCondition(notNullCondition(sub)) {
             constraintOnTarget(predicate, sub.name, "", errorMessage)
@@ -114,7 +111,7 @@ fun <T, K : String?> ValidatorBuilder<T>.stringConstraint(
 fun <T, K : Int?> ValidatorBuilder<T>.intConstraint(
         property: KProperty1<T, K>,
         range: ClosedRange<Int>,
-        errorTemplate: String = "%s length must be in range [%d; %d]",
+        errorTemplate: String = "%s must be in range [%d; %d]",
         locale: Locale = Locale.ENGLISH,
         chain: ValidatorBuilder<T>.(ValidatorBuilder<T>) -> Unit = { }
 ): ValidatorBuilder<T> {
