@@ -16,7 +16,6 @@ import fm.force.quiz.core.validator.fkConstraint
 import fm.force.quiz.core.validator.intConstraint
 import fm.force.quiz.core.validator.mandatory
 import fm.force.quiz.core.validator.stringConstraint
-import fm.force.quiz.security.service.AuthenticationFacade
 import org.springframework.data.domain.Page
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
@@ -28,16 +27,10 @@ import javax.transaction.Transactional
 @Service
 class DifficultyScaleRangeService(
         private val jpaDifficultyScaleRepository: JpaDifficultyScaleRepository,
-        authenticationFacade: AuthenticationFacade,
         jpaDifficultyScaleRangeRepository: JpaDifficultyScaleRangeRepository,
-        paginationService: PaginationService,
-        sortingService: SortingService,
         validationProps: DifficultyScaleRangeValidationProperties
 ) : AbstractPaginatedCRUDService<DifficultyScaleRange, JpaDifficultyScaleRangeRepository, DifficultyScaleRangePatchDTO, DifficultyScaleRangeFullDTO>(
-        repository = jpaDifficultyScaleRangeRepository,
-        authenticationFacade = authenticationFacade,
-        paginationService = paginationService,
-        sortingService = sortingService
+        repository = jpaDifficultyScaleRangeRepository
 ) {
     private val msgCannotBeModified = "Cannot be modified"
     private val msgMaxMustBeLessThanMin = "Max must be less than min"

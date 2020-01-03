@@ -12,7 +12,6 @@ import fm.force.quiz.core.repository.JpaQuestionRepository
 import fm.force.quiz.core.repository.JpaTagRepository
 import fm.force.quiz.core.repository.JpaTopicRepository
 import fm.force.quiz.core.validator.*
-import fm.force.quiz.security.service.AuthenticationFacade
 import org.springframework.data.domain.Page
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
@@ -26,15 +25,9 @@ class QuestionService(
         private val jpaTagRepository: JpaTagRepository,
         private val jpaTopicRepository: JpaTopicRepository,
         validationProps: QuestionValidationProperties,
-        authenticationFacade: AuthenticationFacade,
-        jpaQuestionRepository: JpaQuestionRepository,
-        paginationService: PaginationService,
-        sortingService: SortingService
+        jpaQuestionRepository: JpaQuestionRepository
 ) : AbstractPaginatedCRUDService<Question, JpaQuestionRepository, QuestionPatchDTO, QuestionFullDTO>(
-        repository = jpaQuestionRepository,
-        authenticationFacade = authenticationFacade,
-        paginationService = paginationService,
-        sortingService = sortingService
+        repository = jpaQuestionRepository
 ) {
 
     override var dtoValidator = ValidatorBuilder.of<QuestionPatchDTO>()

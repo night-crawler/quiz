@@ -21,14 +21,9 @@ import java.time.Instant
 class TagService(
         validationProps: TagValidationProperties,
         jpaTagRepository: JpaTagRepository,
-        paginationService: PaginationService,
-        sortingService: SortingService,
         authenticationFacade: AuthenticationFacade
 ) : AbstractPaginatedCRUDService<Tag, JpaTagRepository, TagPatchDTO, TagFullDTO>(
-        repository = jpaTagRepository,
-        authenticationFacade = authenticationFacade,
-        paginationService = paginationService,
-        sortingService = sortingService
+        repository = jpaTagRepository
 ) {
     companion object {
         private val slugifier = Slugify()

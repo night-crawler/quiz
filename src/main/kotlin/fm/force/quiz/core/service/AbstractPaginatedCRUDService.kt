@@ -7,6 +7,7 @@ import fm.force.quiz.core.exception.ValidationError
 import fm.force.quiz.core.repository.CommonRepository
 import fm.force.quiz.core.repository.CustomJpaRepository
 import fm.force.quiz.security.service.AuthenticationFacade
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.jpa.domain.Specification
@@ -14,14 +15,20 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import javax.transaction.Transactional
 
 abstract class AbstractPaginatedCRUDService<EntType, RepoType, PatchType, DTOType : DTOSerializationMarker>(
-        val repository: RepoType,
-        val authenticationFacade: AuthenticationFacade,
-        private val paginationService: PaginationService,
-        private val sortingService: SortingService
+        val repository: RepoType
 )
         where RepoType : CustomJpaRepository<EntType, Long>,
               RepoType : CommonRepository<EntType>,
               RepoType : JpaSpecificationExecutor<EntType> {
+
+    @Autowired
+    lateinit var authenticationFacade: AuthenticationFacade
+
+    @Autowired
+    lateinit var sortingService: SortingService
+
+    @Autowired
+    lateinit var paginationService: PaginationService
 
     val emptySpecification = Specification<EntType> { _, _, _ -> null }
 

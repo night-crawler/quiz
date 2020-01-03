@@ -11,7 +11,6 @@ import fm.force.quiz.core.repository.JpaDifficultyScaleRepository
 import fm.force.quiz.core.validator.intConstraint
 import fm.force.quiz.core.validator.mandatory
 import fm.force.quiz.core.validator.stringConstraint
-import fm.force.quiz.security.service.AuthenticationFacade
 import org.springframework.data.domain.Page
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
@@ -19,16 +18,10 @@ import java.time.Instant
 
 @Service
 class DifficultyScaleService(
-        authenticationFacade: AuthenticationFacade,
         jpaDifficultyScaleRepository: JpaDifficultyScaleRepository,
-        paginationService: PaginationService,
-        sortingService: SortingService,
         validationProps: DifficultyScaleValidationProperties
 ) : AbstractPaginatedCRUDService<DifficultyScale, JpaDifficultyScaleRepository, DifficultyScalePatchDTO, DifficultyScaleFullDTO>(
-        repository = jpaDifficultyScaleRepository,
-        authenticationFacade = authenticationFacade,
-        paginationService = paginationService,
-        sortingService = sortingService
+        repository = jpaDifficultyScaleRepository
 ) {
     override var dtoValidator = ValidatorBuilder.of<DifficultyScalePatchDTO>()
             .konstraintOnGroup(CRUDConstraintGroup.CREATE) {

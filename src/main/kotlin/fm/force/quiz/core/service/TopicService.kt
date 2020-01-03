@@ -8,7 +8,6 @@ import fm.force.quiz.core.entity.Topic
 import fm.force.quiz.core.entity.Topic_
 import fm.force.quiz.core.repository.JpaTopicRepository
 import fm.force.quiz.core.validator.stringConstraint
-import fm.force.quiz.security.service.AuthenticationFacade
 import org.springframework.data.domain.Page
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
@@ -17,15 +16,9 @@ import java.time.Instant
 @Service
 class TopicService(
         validationProps: TopicValidationProperties,
-        jpaTopicRepository: JpaTopicRepository,
-        paginationService: PaginationService,
-        sortingService: SortingService,
-        authenticationFacade: AuthenticationFacade
+        jpaTopicRepository: JpaTopicRepository
 ) : AbstractPaginatedCRUDService<Topic, JpaTopicRepository, TopicPatchDTO, TopicFullDTO>(
-        repository = jpaTopicRepository,
-        authenticationFacade = authenticationFacade,
-        sortingService = sortingService,
-        paginationService = paginationService
+        repository = jpaTopicRepository
 ) {
     override var entityValidator = ValidatorBuilder.of<Topic>()
             .stringConstraint(Topic::title, validationProps.minTitleLength..validationProps.maxTitleLength)

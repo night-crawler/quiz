@@ -13,7 +13,6 @@ import fm.force.quiz.core.validator.fkConstraint
 import fm.force.quiz.core.validator.fkListConstraint
 import fm.force.quiz.core.validator.mandatory
 import fm.force.quiz.core.validator.stringConstraint
-import fm.force.quiz.security.service.AuthenticationFacade
 import org.springframework.data.domain.Page
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
@@ -29,15 +28,9 @@ class QuizService(
         private val jpaDifficultyScaleRepository: JpaDifficultyScaleRepository,
         private val jpaQuizQuestionRepository: JpaQuizQuestionRepository,
         validationProps: QuizValidationProperties,
-        authenticationFacade: AuthenticationFacade,
-        jpaQuizRepository: JpaQuizRepository,
-        paginationService: PaginationService,
-        sortingService: SortingService
+        jpaQuizRepository: JpaQuizRepository
 ) : AbstractPaginatedCRUDService<Quiz, JpaQuizRepository, PatchQuizDTO, QuizFullDTO>(
-        repository = jpaQuizRepository,
-        authenticationFacade = authenticationFacade,
-        paginationService = paginationService,
-        sortingService = sortingService
+        repository = jpaQuizRepository
 ) {
     override var dtoValidator = ValidatorBuilder.of<PatchQuizDTO>()
             .konstraintOnGroup(CRUDConstraintGroup.CREATE) {
