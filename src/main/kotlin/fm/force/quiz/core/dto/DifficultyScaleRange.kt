@@ -7,7 +7,7 @@ import java.time.Instant
 
 data class DifficultyScaleRangeFullDTO(
         @JsonSerialize(using = ToStringSerializer::class) val id: Long,
-        val difficultyScale: Long,
+        @JsonSerialize(using = ToStringSerializer::class) val difficultyScale: Long,
         val title: String,
         val min: Int,
         val max: Int,

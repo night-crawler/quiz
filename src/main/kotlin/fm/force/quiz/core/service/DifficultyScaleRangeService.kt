@@ -34,6 +34,7 @@ class DifficultyScaleRangeService(
 ) {
     private val msgCannotBeModified = "Cannot be modified"
     private val msgMaxMustBeLessThanMin = "Max must be less than min"
+    private val msgMustNotIntersect = "Ranges must not intersect"
 
     private val whenMinMaxSwapped = Predicate<DifficultyScaleRange> { it.min <= it.max }
     private val whenIntersects = Predicate<DifficultyScaleRange> {
@@ -42,7 +43,7 @@ class DifficultyScaleRangeService(
 
     override var entityValidator = ValidatorBuilder.of<DifficultyScaleRange>()
             .constraintOnTarget(whenMinMaxSwapped, "max", "", msgMaxMustBeLessThanMin)
-            .constraintOnTarget(whenIntersects, "max", "", msgMaxMustBeLessThanMin)
+            .constraintOnTarget(whenIntersects, "max", "", msgMustNotIntersect)
             .build()
 
     override var dtoValidator = ValidatorBuilder.of<DifficultyScaleRangePatchDTO>()
