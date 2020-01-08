@@ -3,12 +3,16 @@ package fm.force.quiz.core.repository
 import org.springframework.data.jpa.repository.support.JpaEntityInformation
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository
 import javax.persistence.EntityManager
+import javax.transaction.Transactional
 
-class CustomJpaRepositoryImpl<T, ID>(
+open class CustomJpaRepositoryImpl<T, ID>(
         val entityInformation: JpaEntityInformation<T, ID>,
         val entityManager: EntityManager
 ) : SimpleJpaRepository<T, ID>(entityInformation, entityManager), CustomJpaRepository<T, ID> {
-    override fun refresh(t: T) {
-        entityManager.refresh(t)
+    @Transactional
+    override fun refresh(t: T) : T {
+        val merged = entityManager.merge(t)
+        entityManager.refresh(merged)
+        return merged
     }
 }

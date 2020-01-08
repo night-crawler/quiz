@@ -12,7 +12,7 @@ data class Quiz(
 
         @OneToMany(mappedBy = "quiz")
         @OrderBy("seq ASC")
-        var quizQuestions: MutableSet<QuizQuestion> = mutableSetOf(),
+        var quizQuestions: MutableList<QuizQuestion> = mutableListOf(),
 
         @ManyToMany(targetEntity = Tag::class, fetch = FetchType.LAZY)
         @JoinTable(

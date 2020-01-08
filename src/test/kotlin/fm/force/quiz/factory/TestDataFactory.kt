@@ -1,5 +1,6 @@
 package fm.force.quiz.factory
 
+import fm.force.quiz.common.ObjectId
 import fm.force.quiz.common.getRandomString
 import fm.force.quiz.core.entity.*
 import fm.force.quiz.core.repository.*
@@ -68,7 +69,7 @@ class TestDataFactory(
     fun getDifficultyScale(
             owner: User = getUser(),
             name: String = getRandomString(16),
-            max: Int = Random.nextInt(Int.MAX_VALUE),
+            max: Int = Random.nextInt(Int.MAX_VALUE - 1),
             createNRandomRanges: Int = 5
     ) = jpaDifficultyScaleRepository.save(DifficultyScale(
             owner = owner,
@@ -85,7 +86,7 @@ class TestDataFactory(
             owner: User = getUser(),
             title: String = getRandomString(16),
             min: Int = 0,
-            max: Int = Random.nextInt(Int.MAX_VALUE),
+            max: Int = Random.nextInt(Int.MAX_VALUE - 1),
             difficultyScale: DifficultyScale = getDifficultyScale(owner = owner)
     ) = jpaDifficultyScaleRangeRepository.save(DifficultyScaleRange(
             owner = owner,
@@ -100,7 +101,7 @@ class TestDataFactory(
             owner: User = getUser(),
             quiz: Quiz = getQuiz(owner = owner),
             question: Question = getQuestion(owner = owner),
-            seq: Int = Random.nextInt(Int.MAX_VALUE)
+            seq: Int = Random.nextInt(Int.MAX_VALUE - 1)
     ) = jpaQuizQuestionRepository.save(QuizQuestion(
             owner = owner,
             quiz = quiz,
@@ -112,7 +113,7 @@ class TestDataFactory(
     fun getQuiz(
             owner: User = getUser(),
             title: String = getRandomString(16),
-            questions: MutableSet<Question> = (1..5).map { getQuestion(owner = owner) }.toMutableSet(),
+            questions: Collection<Question> = (1..5).map { getQuestion(owner = owner) },
             topics: MutableSet<Topic> = (1..5).map { getTopic(owner = owner) }.toMutableSet(),
             tags: MutableSet<Tag> = (1..5).map { getTag(owner = owner) }.toMutableSet(),
             difficultyScale: DifficultyScale? = getDifficultyScale(owner = owner)
@@ -124,7 +125,9 @@ class TestDataFactory(
                 tags = tags,
                 difficultyScale = difficultyScale
         ))
-        quiz.quizQuestions = questions.map { getQuizQuestion(owner = owner, quiz = quiz) }.toMutableSet()
+        quiz.quizQuestions = questions.mapIndexed { index, question ->
+            getQuizQuestion(owner = owner, quiz = quiz, seq = index, question = question)
+        }.toMutableList()
         return jpaQuizRepository.save(quiz)
     }
 }

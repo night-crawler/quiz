@@ -57,19 +57,20 @@ data class ErrorResponse(
             val specificMessage = ex.cause?.message ?: ""
             val groups = rxFieldWithValues.find(specificMessage)?.groups
             val commaSeparatedFieldNames = groups?.get("fieldName")?.value
-            val value = groups?.get("value")?.value
+            val commaSeparatedFieldValues = groups?.get("value")?.value
 
-            if (!commaSeparatedFieldNames.isNullOrEmpty() && !value.isNullOrEmpty()) {
+            if (!commaSeparatedFieldNames.isNullOrEmpty() && !commaSeparatedFieldValues.isNullOrEmpty()) {
                 // if the violation occurred on a multi-field constraint,
                 // there will a comma-separated list of the db fields involved
+                // like (quiz_id, question_id)=(27271725837328210, 27271726072212586)
 
                 val errors = commaSeparatedFieldNames
                         .split(",").map { it.trim() }.filter { it.isNotEmpty() }
                         .map {
                             FieldError(
                                     fieldName = it,
-                                    message = "Entity with field name `$commaSeparatedFieldNames` exists: `$value`",
-                                    violatedValue = value
+                                    message = "Entity with field name `$commaSeparatedFieldNames` exists: `$commaSeparatedFieldValues`",
+                                    violatedValue = commaSeparatedFieldValues
                             )
                         }
 

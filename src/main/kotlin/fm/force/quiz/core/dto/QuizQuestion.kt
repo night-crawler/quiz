@@ -16,10 +16,10 @@ data class QuizQuestionFullDTO(
 
 
 data class QuizQuestionPatchDTO(
-        val id: Long? = null,
-        val quiz: Long? = null,
-        val question: Long? = null,
-        val seq: Int? = null
+        var id: Long? = null,
+        var quiz: Long? = null,
+        var question: Long? = null,
+        var seq: Int? = null
 )
 
 fun QuizQuestion.toFullDTO() = QuizQuestionFullDTO(

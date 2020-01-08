@@ -65,13 +65,13 @@ fun <T, K : Long?, R> ValidatorBuilder<T>.fkConstraint(
         repository: CommonRepository<R>,
         getOwnerId: () -> Long,
         wrongFkTemplate: String = "%s must be positive",
-        doesNotExistErrorTemplate: String = "%s length must exist and belong to you",
+        doesNotExistErrorTemplate: String = "%s must exist and belong to you",
         locale: Locale = Locale.ENGLISH,
         chain: ValidatorBuilder<T>.(ValidatorBuilder<T>) -> Unit = { }
 ): ValidatorBuilder<T> {
     val msgWrongFk = wrongFkTemplate.format(locale, property.name)
     val msgDoesNotExist = doesNotExistErrorTemplate.format(locale, property.name)
-    val a = Predicate<T> {
+    val predicate = Predicate<T> {
         val value = property(it)
         if (value == null) true
         else repository.existsByIdAndOwnerId(value, getOwnerId())
@@ -81,7 +81,7 @@ fun <T, K : Long?, R> ValidatorBuilder<T>.fkConstraint(
         konstraint(property) {
             greaterThan(0).message(msgWrongFk)
         }
-        constraintOnTarget(a, property.name, "", msgDoesNotExist)
+        constraintOnTarget(predicate, property.name, "", msgDoesNotExist)
         chain(this)
     }
     return this
