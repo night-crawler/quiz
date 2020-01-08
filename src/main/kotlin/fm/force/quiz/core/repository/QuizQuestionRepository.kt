@@ -13,8 +13,18 @@ interface JpaQuizQuestionRepository : CustomJpaRepository<QuizQuestion, Long>, J
     fun countByQuizId(quizId: Long): Int
 
     @Modifying
-    @Query("update QuizQuestion q set q.seq = q.seq + :diff where q.quiz.id = :quizId and q.seq >= :seq")
-    fun updateSeqAfter(@Param("quizId") quizId: Long, @Param("seq") seq: Int, @Param("diff") diff: Int)
+    @Query("""
+        update QuizQuestion q 
+        set q.seq = q.seq + :diff 
+        where q.quiz.id = :quizId and 
+              q.seq between :seqFrom and :seqTo
+    """)
+    fun updateSeqBetween(
+            @Param("quizId") quizId: Long,
+            @Param("seqFrom") seqFrom: Int,
+            @Param("seqTo") seqTo: Int,
+            @Param("diff") diff: Int
+    )
 
     fun findAllByQuizIdOrderBySeq(quizId: Long): List<QuizQuestion>
 }

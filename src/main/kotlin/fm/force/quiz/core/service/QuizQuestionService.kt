@@ -14,7 +14,6 @@ import fm.force.quiz.core.validator.mandatory
 import org.springframework.data.domain.Page
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
-import java.lang.IllegalArgumentException
 import java.util.function.Predicate
 import javax.transaction.Transactional
 
@@ -55,7 +54,7 @@ class QuizQuestionService(
     override fun serializeEntity(entity: QuizQuestion): QuizQuestionFullDTO = entity.toFullDTO()
 
     private fun createInternal(quizId: Long, questionId: Long, seq: Int): QuizQuestion {
-        repository.updateSeqAfter(quizId, seq, 1)
+        repository.updateSeqBetween(quizId, seq, Int.MAX_VALUE, 1)
         val entity = QuizQuestion(
                 quiz = jpaQuizRepository.findById(quizId).get(),
                 question = jpaQuestionRepository.findById(questionId).get(),
@@ -81,29 +80,41 @@ class QuizQuestionService(
     @Transactional
     override fun delete(id: Long) {
         val current = getInstance(id)
-        repository.updateSeqAfter(current.quiz.id, current.seq, -1)
+        repository.updateSeqBetween(current.quiz.id, current.seq, Int.MAX_VALUE, -1)
         repository.delete(current)
     }
 
     @Transactional
     override fun patch(id: Long, patchDTO: QuizQuestionPatchDTO): QuizQuestion {
+        // Oh, Lord! I hate this off-by-one stuff :(
         validatePatch(patchDTO)
-        val seq = patchDTO.seq!!
+        var seqTo = patchDTO.seq!!
         val current = repository.findByIdAndOwner(id, authenticationFacade.user).orElseThrow {
             NotFoundException(id, QuizQuestion::class)
         }
-        val curSeq = current.seq
-        if (curSeq == seq) return current
+        val seqFrom = current.seq
+        if (seqFrom == seqTo)
+            return current
 
-        delete(current.id)
+        val count = repository.countByQuizId(current.quiz.id)
+        if (count == 1)
+            return current
 
-        val newSeq = when {
-            seq == -1 -> repository.countByQuizId(current.quiz.id)
-            seq > curSeq -> seq - 1
-            seq < curSeq -> seq
-            else -> throw IllegalArgumentException("Should never happen")
+        if (seqTo == -1)
+            seqTo = count - 1
+
+        if (seqTo > seqFrom) {
+            // in case of moving 1 -> 3 in [0 1 2 3 4]
+            // should not take the lower bound into account - it's being updated manually
+            repository.updateSeqBetween(current.quiz.id, seqFrom + 1, seqTo, -1)
+        } else {
+            // in case if moving 3 -> 1 in [0 1 2 3 4]
+            // reverse the range [1; 3]
+            // no need to touch current upper bound
+            repository.updateSeqBetween(current.quiz.id, seqTo, seqFrom - 1, 1)
         }
-        return createInternal(current.quiz.id, current.question.id, newSeq)
+        current.seq = seqTo
+        return repository.save(current)
     }
 
     override fun buildSingleArgumentSearchSpec(needle: String?): Specification<QuizQuestion> {

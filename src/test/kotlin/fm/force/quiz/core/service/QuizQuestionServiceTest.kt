@@ -105,49 +105,43 @@ open class QuizQuestionServiceTest(
 
             // 1 -> 3
             // 0 1 2 3 4
-            // 0   2 3 4
-            // 0   2 1 3 4
-            testPatch(quiz.id, 1, 3, 0, 2, 1, 3, 4)
+            // 0 2 3 4
+            // 0 2 3 1 4
+            testPatch(quiz.id, 1, 3, 0, 2, 3, 1, 4)
 
             // 2 -> 3
             // 0 1 2 3 4
-            // 0 1   3 4
-            // 0 1   2 3 4
-            testPatch(quiz.id, 2, 3, 0, 1, 2, 3, 4)
+            // 0 1 3 2 4
+            testPatch(quiz.id, 2, 3, 0, 1, 3, 2, 4)
 
             // 2 -> 1
             // 0 1 2 3 4
-            // 0 1   3 4
             // 0 2 1 3 4
             testPatch(quiz.id, 2, 1, 0, 2, 1, 3, 4)
 
             // 2 -> -1
             // 0 1 2 3 4
-            // 0 1   3 4
-            // 0 1   3 4 2
+            // 0 1 3 4 2
             testPatch(quiz.id, 2, -1, 0, 1, 3, 4, 2)
 
             // 4 -> 0
             // 0 1 2 3 4
-            // 0 1 2 3
             // 4 0 1 2 3
             testPatch(quiz.id, 4, 0, 4, 0, 1, 2, 3)
 
             // 0 -> 4
             // 0 1 2 3 4
-            //   1 2 3 4
-            //   1 2 3 0 4
-            testPatch(quiz.id, 0, 4, 1, 2, 3, 0, 4)
-
-            jpaQuizQuestionRepository.findAllByQuizIdOrderBySeq(quiz.id).map { it.seq } shouldBe (0..4).toList()
+            // 1 2 3 4 0
+            testPatch(quiz.id, 0, 4, 1, 2, 3, 4, 0)
         }
     }
 
     private fun testPatch(quizId: Long, from: Int, to: Int, vararg order: Int) {
         // get initial order of QuizQuestions
         var qqs = jpaQuizQuestionRepository.findAllByQuizIdOrderBySeq(quizId)
-
-        // remember question order because implementation may delete old records
+        // remember question ids as they were before
+        val originalQuestionOrder = qqs.map { it.question.id }
+        // remember *question* order because implementation may delete old records
         val expectedQuestionIds = order.map { qqs[it] }.map { it.question.id }
 
         // move the item
@@ -158,9 +152,14 @@ open class QuizQuestionServiceTest(
 
         // get question ids
         val actualQuestionIds = qqs.map { it.question.id }
+        val actualOrder = actualQuestionIds.map { originalQuestionOrder.indexOf(it) }
 
         // changes must reflect the desired item movement
+        println("Moving $from -> $to; expected order: ${order.joinToString()}; actual: ${actualOrder.joinToString()}")
         actualQuestionIds shouldBe expectedQuestionIds
+
+        // range must remain continuous
+        qqs.map { it.seq } shouldBe (order.indices).toList()
     }
 
 }
