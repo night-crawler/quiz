@@ -7,6 +7,8 @@ import fm.force.quiz.core.exception.ValidationError
 import fm.force.quiz.core.repository.CommonRepository
 import fm.force.quiz.core.repository.CustomJpaRepository
 import fm.force.quiz.security.service.AuthenticationFacade
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
@@ -20,6 +22,8 @@ abstract class AbstractPaginatedCRUDService<EntType, RepoType, PatchType, DTOTyp
         where RepoType : CustomJpaRepository<EntType, Long>,
               RepoType : CommonRepository<EntType>,
               RepoType : JpaSpecificationExecutor<EntType> {
+
+    val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     @Autowired
     lateinit var authenticationFacade: AuthenticationFacade
@@ -39,15 +43,24 @@ abstract class AbstractPaginatedCRUDService<EntType, RepoType, PatchType, DTOTyp
 
     open fun validateEntity(entity: EntType) = entityValidator
             .validate(entity)
-            .throwIfInvalid { ValidationError(it) }
+            .throwIfInvalid {
+                logger.debug("Entity validation failed: {}", entity)
+                ValidationError(it)
+            }
 
     open fun validatePatch(patchDTO: PatchType) = dtoValidator
             .validate(patchDTO, CRUDConstraintGroup.UPDATE)
-            .throwIfInvalid { ValidationError(it) }
+            .throwIfInvalid {
+                logger.debug("DTO validation failed: {}", patchDTO)
+                ValidationError(it)
+            }
 
     open fun validateCreate(createDTO: PatchType) = dtoValidator
             .validate(createDTO, CRUDConstraintGroup.CREATE)
-            .throwIfInvalid { ValidationError(it) }
+            .throwIfInvalid {
+                logger.debug("DTO validation failed: {}", createDTO)
+                ValidationError(it)
+            }
 
     abstract fun buildSingleArgumentSearchSpec(needle: String?): Specification<EntType>
     abstract fun serializePage(page: Page<EntType>): PageDTO

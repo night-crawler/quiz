@@ -4,6 +4,7 @@ import am.ik.yavi.builder.ValidatorBuilder
 import am.ik.yavi.builder.konstraint
 import am.ik.yavi.builder.konstraintOnCondition
 import am.ik.yavi.core.ConstraintCondition
+import fm.force.quiz.common.toCustomSet
 import fm.force.quiz.core.repository.CommonRepository
 import java.util.*
 import java.util.function.Predicate
@@ -143,7 +144,7 @@ fun <T, K : Collection<Long>?, R> ValidatorBuilder<T>.fkListConstraint(
     val whenSomeItemsDoNotExist = Predicate<T> {
         val value = property(it)
         if (value.isNullOrEmpty()) true
-        else repository.findOwnedIds(value, getOwnerId()).toSet() == value
+        else repository.findOwnedIds(value, getOwnerId()).toSet() == value.toCustomSet()
     }
 
     konstraintOnCondition(notNullCondition(property)) {

@@ -87,8 +87,9 @@ class QuizService(
                     question = question,
                     seq = index
             )
-        }
+        }.toMutableList()
         jpaQuizQuestionRepository.saveAll(quizQuestions)
+        entity.quizQuestions = quizQuestions
         return entity
     }
 

@@ -33,3 +33,6 @@ fun Long.mostSignificantBit(): Int {
 fun Long.maxSignificantValue(): Long {
     return (1L shl mostSignificantBit()) - 1
 }
+
+fun <T> Collection<T>?.toCustomSet() : Set<T> =
+        this?.map { it }?.toSet() ?: setOf()
