@@ -5,6 +5,7 @@ import fm.force.quiz.core.entity.Quiz
 import fm.force.quiz.core.repository.JpaQuizRepository
 import fm.force.quiz.core.service.QuizQuestionService
 import fm.force.quiz.core.service.QuizService
+import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -39,4 +40,11 @@ class QuizController(quizService: QuizService, private val quizQuestionService: 
         patchDTO.quiz = quizId
         return quizQuestionService.patch(quizQuestionId, patchDTO).toFullDTO()
     }
+
+    @DeleteMapping("{quizId}/quizQuestions/{quizQuestionId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun deleteQuizQuestion(
+            @PathVariable quizId: Long,
+            @PathVariable quizQuestionId: Long
+    ) = quizQuestionService.deleteByQuizAndId(quizId, quizQuestionId)
 }

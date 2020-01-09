@@ -3,6 +3,7 @@ package fm.force.quiz.core.service
 import am.ik.yavi.builder.ValidatorBuilder
 import am.ik.yavi.builder.konstraintOnGroup
 import fm.force.quiz.core.dto.*
+import fm.force.quiz.core.entity.Quiz
 import fm.force.quiz.core.entity.QuizQuestion
 import fm.force.quiz.core.exception.NotFoundException
 import fm.force.quiz.core.repository.JpaQuestionRepository
@@ -78,11 +79,19 @@ class QuizQuestionService(
     }
 
     @Transactional
-    override fun delete(id: Long) {
-        val current = getInstance(id)
-        repository.updateSeqBetween(current.quiz.id, current.seq, Int.MAX_VALUE, -1)
-        repository.delete(current)
+    override fun delete(id: Long) = deletePrivate(getInstance(id))
+
+    @Transactional
+    fun deleteByQuizAndId(quizId: Long, id: Long) = deletePrivate(getInstanceByQuizIdAndId(quizId, id))
+
+    private fun deletePrivate(instance: QuizQuestion) = with(repository) {
+        updateSeqBetween(instance.quiz.id, instance.seq, Int.MAX_VALUE, -1)
+        delete(instance)
     }
+
+    private fun getInstanceByQuizIdAndId(quizId: Long, id: Long) = repository
+            .getByQuizIdAndId(quizId, id)
+            .orElseThrow { NotFoundException(id, QuizQuestion::class) }
 
     @Transactional
     override fun patch(id: Long, patchDTO: QuizQuestionPatchDTO): QuizQuestion {

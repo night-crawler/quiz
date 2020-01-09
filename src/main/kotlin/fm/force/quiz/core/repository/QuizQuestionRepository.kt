@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
+import java.util.*
 
 
 @Repository
@@ -27,4 +28,5 @@ interface JpaQuizQuestionRepository : CustomJpaRepository<QuizQuestion, Long>, J
     )
 
     fun findAllByQuizIdOrderBySeq(quizId: Long): List<QuizQuestion>
+    fun getByQuizIdAndId(quizId: Long, id: Long): Optional<QuizQuestion>
 }
