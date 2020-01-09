@@ -1,4 +1,5 @@
 package fm.force.quiz.core.dto
+
 import org.springframework.data.domain.Sort
 
 data class PageDTO(

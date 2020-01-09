@@ -33,27 +33,27 @@ data class Quiz(
         @ManyToOne var difficultyScale: DifficultyScale? = null
 
 ) : BaseQuizEntity() {
-        override fun equals(other: Any?): Boolean {
-                if (this === other) return true
-                if (other !is Quiz) return false
-                if (!super.equals(other)) return false
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Quiz) return false
+        if (!super.equals(other)) return false
 
-                if (owner != other.owner) return false
-                if (title != other.title) return false
-                if (tags != other.tags) return false
-                if (topics != other.topics) return false
-                if (difficultyScale != other.difficultyScale) return false
+        if (owner != other.owner) return false
+        if (title != other.title) return false
+        if (tags != other.tags) return false
+        if (topics != other.topics) return false
+        if (difficultyScale != other.difficultyScale) return false
 
-                return true
-        }
+        return true
+    }
 
-        override fun hashCode(): Int {
-                var result = super.hashCode()
-                result = 31 * result + owner.hashCode()
-                result = 31 * result + title.hashCode()
-                result = 31 * result + tags.hashCode()
-                result = 31 * result + topics.hashCode()
-                result = 31 * result + (difficultyScale?.hashCode() ?: 0)
-                return result
-        }
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + owner.hashCode()
+        result = 31 * result + title.hashCode()
+        result = 31 * result + tags.hashCode()
+        result = 31 * result + topics.hashCode()
+        result = 31 * result + (difficultyScale?.hashCode() ?: 0)
+        return result
+    }
 }

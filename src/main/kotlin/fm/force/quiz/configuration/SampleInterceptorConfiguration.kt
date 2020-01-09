@@ -11,6 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 class SampleInterceptorConfiguration : WebMvcConfigurer {
     @Autowired
     lateinit var sampleInterceptor: SampleInterceptor
+
     override fun addInterceptors(registry: InterceptorRegistry) {
         registry.addInterceptor(sampleInterceptor)
     }

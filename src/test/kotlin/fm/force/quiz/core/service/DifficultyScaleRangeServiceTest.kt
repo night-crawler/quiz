@@ -1,8 +1,8 @@
 package fm.force.quiz.core.service
 
 import fm.force.quiz.configuration.properties.DifficultyScaleRangeValidationProperties
-import fm.force.quiz.core.dto.PaginationQuery
 import fm.force.quiz.core.dto.DifficultyScaleRangePatchDTO
+import fm.force.quiz.core.dto.PaginationQuery
 import fm.force.quiz.core.dto.SortQuery
 import fm.force.quiz.core.exception.ValidationError
 import io.kotlintest.data.forall

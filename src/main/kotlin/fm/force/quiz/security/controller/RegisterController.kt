@@ -15,6 +15,6 @@ class RegisterController(
     @PostMapping("register")
     @ResponseStatus(value = HttpStatus.CREATED)
     fun register(@Valid @RequestBody request: RegisterRequestDTO): RegisterResponseDTO {
-       return jwtUserDetailsService.register(request)
+        return jwtUserDetailsService.register(request)
     }
 }

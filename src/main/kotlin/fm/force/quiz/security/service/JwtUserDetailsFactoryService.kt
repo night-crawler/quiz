@@ -7,7 +7,7 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.stereotype.Component
 
 @Component
-@ConditionalOnMissingBean(type=["JwtUserDetailsFactoryService"])
+@ConditionalOnMissingBean(type = ["JwtUserDetailsFactoryService"])
 class JwtUserDetailsFactoryService {
     fun createUserDetails(): JwtUserDetails {
         return JwtUserDetails(

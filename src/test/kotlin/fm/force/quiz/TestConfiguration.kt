@@ -18,8 +18,8 @@ import org.springframework.test.context.ContextConfiguration
 @ComponentScans(
         ComponentScan("fm.force.quiz")
 )
-@ContextConfiguration(initializers=[ConfigFileApplicationContextInitializer::class])
-@EnableMBeanExport(registration= RegistrationPolicy.IGNORE_EXISTING)
+@ContextConfiguration(initializers = [ConfigFileApplicationContextInitializer::class])
+@EnableMBeanExport(registration = RegistrationPolicy.IGNORE_EXISTING)
 class TestConfiguration {
     companion object {
         @Bean

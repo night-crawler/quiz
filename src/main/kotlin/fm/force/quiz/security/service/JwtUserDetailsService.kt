@@ -36,10 +36,10 @@ class JwtUserDetailsService(
      * @throws UsernameNotFoundException if the user could not be found or the user has no
      * GrantedAuthority
      */
-    override fun loadUserByUsername(username: String?) : UserDetails =
-       jwtUserDetailsFactoryService.createUserDetails(getUser(username))
+    override fun loadUserByUsername(username: String?): UserDetails =
+            jwtUserDetailsFactoryService.createUserDetails(getUser(username))
 
-    fun getUser(username: String?) : User {
+    fun getUser(username: String?): User {
         username ?: throw UsernameNotFoundException("Null user names are not supported")
         return jpaUserRepository
                 .findByEmailOrUsername(username, username)

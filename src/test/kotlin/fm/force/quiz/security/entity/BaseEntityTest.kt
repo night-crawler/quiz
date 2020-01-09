@@ -1,7 +1,7 @@
 package fm.force.quiz.security.entity
 
 import io.kotlintest.matchers.string.shouldHaveMinLength
-import io.kotlintest.specs.*
+import io.kotlintest.specs.WordSpec
 
 
 class BaseEntityTest : WordSpec({

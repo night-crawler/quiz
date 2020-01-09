@@ -9,15 +9,15 @@
     </appender>
 
     <logger name="fm.force" additivity="false" level="TRACE">
-        <appender-ref ref="STDOUT" />
+        <appender-ref ref="STDOUT"/>
     </logger>
 
     <logger name="liquibase" additivity="false" level="WARN">
-        <appender-ref ref="STDOUT" />
+        <appender-ref ref="STDOUT"/>
     </logger>
 
     <logger name="org.hibernate" additivity="false" level="WARN">
-        <appender-ref ref="STDOUT" />
+        <appender-ref ref="STDOUT"/>
     </logger>
 
     <root level="INFO">

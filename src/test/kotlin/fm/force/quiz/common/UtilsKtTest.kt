@@ -2,7 +2,7 @@ package fm.force.quiz.common
 
 import io.kotlintest.matchers.string.shouldHaveLength
 import io.kotlintest.shouldBe
-import io.kotlintest.specs.*
+import io.kotlintest.specs.WordSpec
 
 
 open class UtilsKtTest : WordSpec({

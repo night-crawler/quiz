@@ -44,7 +44,8 @@ data class ErrorResponse(
                 ErrorMessage("${it.objectName}: ${it.defaultMessage ?: ""}")
             }
             val fieldErrors = ex.bindingResult.fieldErrors.map {
-                FieldError(fieldName = it.field, message = it.defaultMessage ?: "", violatedValue = it.rejectedValue.toString())
+                FieldError(fieldName = it.field, message = it.defaultMessage
+                        ?: "", violatedValue = it.rejectedValue.toString())
             }
             return ErrorResponse(
                     exception = ex.javaClass.simpleName,

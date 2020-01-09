@@ -3,7 +3,6 @@ package fm.force.quiz.core.service
 import am.ik.yavi.builder.ValidatorBuilder
 import am.ik.yavi.builder.konstraintOnGroup
 import fm.force.quiz.core.dto.*
-import fm.force.quiz.core.entity.Quiz
 import fm.force.quiz.core.entity.QuizQuestion
 import fm.force.quiz.core.exception.NotFoundException
 import fm.force.quiz.core.repository.JpaQuestionRepository

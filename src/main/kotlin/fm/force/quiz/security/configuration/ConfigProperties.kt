@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Configuration
 import java.time.Duration
 
 
-
 @Configuration
 @ConfigurationProperties(prefix = "force.security.jwt")
 class JwtConfigurationProperties {
@@ -24,6 +23,7 @@ class AuthConfigurationProperties {
             this.authority = authority
             this.anonymous = anonymous
         }
+
         lateinit var pattern: String
         var authority: String? = null
         var anonymous: Boolean = false
@@ -32,9 +32,10 @@ class AuthConfigurationProperties {
             return "AccessPattern(pattern='$pattern', authority='$authority', anonymous=$anonymous)"
         }
     }
+
     var access: List<AccessPattern> = listOf(
-            AccessPattern(pattern="/admin/**", authority = Role.PredefinedRoles.ADMIN.name),
-            AccessPattern(pattern="/auth/**", anonymous = true)
+            AccessPattern(pattern = "/admin/**", authority = Role.PredefinedRoles.ADMIN.name),
+            AccessPattern(pattern = "/auth/**", anonymous = true)
     )
 }
 

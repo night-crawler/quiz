@@ -2,12 +2,10 @@ package fm.force.quiz.core.service
 
 import fm.force.quiz.common.getRandomString
 import fm.force.quiz.configuration.properties.DifficultyScaleValidationProperties
-import fm.force.quiz.core.dto.PaginationQuery
 import fm.force.quiz.core.dto.DifficultyScalePatchDTO
+import fm.force.quiz.core.dto.PaginationQuery
 import fm.force.quiz.core.dto.SortQuery
 import fm.force.quiz.core.exception.ValidationError
-import fm.force.quiz.factory.TestDataFactory
-import fm.force.quiz.security.service.JwtUserDetailsFactoryService
 import io.kotlintest.data.forall
 import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.matchers.numerics.shouldBeGreaterThan

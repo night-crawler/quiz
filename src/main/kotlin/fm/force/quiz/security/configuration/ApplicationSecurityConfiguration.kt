@@ -1,7 +1,7 @@
 package fm.force.quiz.security.configuration
 
-import fm.force.quiz.security.service.JwtRequestAuthProviderService
 import fm.force.quiz.security.jwt.JwtConfigurer
+import fm.force.quiz.security.service.JwtRequestAuthProviderService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Configuration

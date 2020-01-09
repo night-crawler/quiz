@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails
 
 class JwtUserDetails(
         @get:JvmName("getAuthorities_")
-        var authorities:  Collection<GrantedAuthority> = listOf(),
+        var authorities: Collection<GrantedAuthority> = listOf(),
 
         @get:JvmName("getEnabled_")
         var enabled: Boolean = false,

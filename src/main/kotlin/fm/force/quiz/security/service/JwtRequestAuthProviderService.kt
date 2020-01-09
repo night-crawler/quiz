@@ -13,5 +13,5 @@ abstract class JwtRequestAuthProviderService {
     @Autowired
     private lateinit var jpaUserRepository: JpaUserRepository
 
-    abstract fun authorizeRequest(request: HttpServletRequest?) : Authentication
+    abstract fun authorizeRequest(request: HttpServletRequest?): Authentication
 }

@@ -23,7 +23,7 @@ fun Long.mostSignificantBit(): Int {
     var count = 0
     var n = this
 
-    while(n != 0L && n != -1L) {
+    while (n != 0L && n != -1L) {
         n = n shr 1
         count++
     }
@@ -34,5 +34,5 @@ fun Long.maxSignificantValue(): Long {
     return (1L shl mostSignificantBit()) - 1
 }
 
-fun <T> Collection<T>?.toCustomSet() : Set<T> =
+fun <T> Collection<T>?.toCustomSet(): Set<T> =
         this?.map { it }?.toSet() ?: setOf()

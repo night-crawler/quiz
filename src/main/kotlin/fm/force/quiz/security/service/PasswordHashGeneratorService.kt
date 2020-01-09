@@ -1,12 +1,12 @@
 package fm.force.quiz.security.service
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
-import org.springframework.stereotype.Service
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.stereotype.Service
 
 
 @Service
-@ConditionalOnMissingBean(type=["PasswordHashGeneratorService"])
+@ConditionalOnMissingBean(type = ["PasswordHashGeneratorService"])
 class PasswordHashGeneratorService(
         val passwordEncoder: PasswordEncoder
 ) {

@@ -10,5 +10,5 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 class QuizApplication
 
 fun main(args: Array<String>) {
-	runApplication<QuizApplication>(*args)
+    runApplication<QuizApplication>(*args)
 }

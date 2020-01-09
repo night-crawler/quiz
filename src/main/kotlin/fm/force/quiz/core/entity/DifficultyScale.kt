@@ -5,7 +5,7 @@ import javax.persistence.*
 
 @Entity
 @Table(
-        name="difficulty_scales",
+        name = "difficulty_scales",
         uniqueConstraints = [UniqueConstraint(columnNames = ["owner_id", "name"])]
 )
 data class DifficultyScale(
@@ -16,29 +16,29 @@ data class DifficultyScale(
 
         @OneToMany(mappedBy = "difficultyScale")
         val difficultyScaleRanges: MutableSet<DifficultyScaleRange> = mutableSetOf()
-): BaseQuizEntity() {
-        override fun equals(other: Any?): Boolean {
-                if (this === other) return true
-                if (other !is DifficultyScale) return false
-                if (!super.equals(other)) return false
+) : BaseQuizEntity() {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is DifficultyScale) return false
+        if (!super.equals(other)) return false
 
-                if (owner != other.owner) return false
-                if (name != other.name) return false
-                if (max != other.max) return false
+        if (owner != other.owner) return false
+        if (name != other.name) return false
+        if (max != other.max) return false
 
-                return true
-        }
+        return true
+    }
 
-        override fun hashCode(): Int {
-                var result = super.hashCode()
-                result = 31 * result + owner.hashCode()
-                result = 31 * result + name.hashCode()
-                result = 31 * result + max
-                return result
-        }
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + owner.hashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + max
+        return result
+    }
 
-        override fun toString(): String {
-                return "DifficultyScale(id=$id owner=${owner.id}, name='$name', max=$max)"
-        }
+    override fun toString(): String {
+        return "DifficultyScale(id=$id owner=${owner.id}, name='$name', max=$max)"
+    }
 
 }

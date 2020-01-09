@@ -1,13 +1,13 @@
 package fm.force.quiz.security.repository
 
+import fm.force.quiz.TestConfiguration
+import fm.force.quiz.YamlPropertyLoaderFactory
 import fm.force.quiz.security.entity.Role
 import fm.force.quiz.security.entity.User
 import io.kotlintest.Spec
 import io.kotlintest.matchers.collections.shouldContain
 import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.matchers.types.shouldNotBeNull
-import fm.force.quiz.TestConfiguration
-import fm.force.quiz.YamlPropertyLoaderFactory
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
 import org.springframework.context.annotation.PropertySource
@@ -81,7 +81,7 @@ open class UserRepositoryTest(
                 // also, we need to have an ability to find users with no roles at all
                 val weirdos = jpaUserRepository.findUserByRolesIsEmpty()
                 // it's probable we are running after some other tests
-                weirdos.map { it.username }.toSet() shouldContain("vasya")
+                weirdos.map { it.username }.toSet() shouldContain ("vasya")
             }
         }
     }

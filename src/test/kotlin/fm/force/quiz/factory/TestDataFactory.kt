@@ -1,6 +1,5 @@
 package fm.force.quiz.factory
 
-import fm.force.quiz.common.ObjectId
 import fm.force.quiz.common.getRandomString
 import fm.force.quiz.core.entity.*
 import fm.force.quiz.core.repository.*

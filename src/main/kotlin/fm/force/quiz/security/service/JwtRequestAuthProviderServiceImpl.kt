@@ -20,7 +20,7 @@ class JwtRequestAuthProviderServiceImpl(val jwtProviderService: JwtProviderServi
             (authHeader.isEmpty()) -> throw BadCredentialsException("Authorization header is empty")
             (authHeader.length <= bearer.length) -> throw BadCredentialsException("Authorization header is corrupted")
             (authHeader.substring(0, bearer.length).toLowerCase() != bearer)
-                -> throw BadCredentialsException("Authorization header must start with the `Bearer` keyword")
+            -> throw BadCredentialsException("Authorization header must start with the `Bearer` keyword")
         }
 
         val token = authHeader.substring(bearer.length)

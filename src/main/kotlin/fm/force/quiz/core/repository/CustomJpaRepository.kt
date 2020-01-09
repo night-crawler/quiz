@@ -6,7 +6,7 @@ import javax.transaction.Transactional
 
 
 @NoRepositoryBean
-interface CustomJpaRepository <T, ID> : JpaRepository<T, ID> {
+interface CustomJpaRepository<T, ID> : JpaRepository<T, ID> {
     @Transactional
-    fun refresh(t: T) : T
+    fun refresh(t: T): T
 }
