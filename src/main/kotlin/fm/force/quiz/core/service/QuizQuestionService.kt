@@ -78,7 +78,7 @@ class QuizQuestionService(
     }
 
     @Transactional
-    override fun delete(id: Long) = deletePrivate(getInstance(id))
+    override fun delete(id: Long) = deletePrivate(getOwnedInstance(id))
 
     @Transactional
     fun deleteByQuizAndId(quizId: Long, id: Long) = deletePrivate(getInstanceByQuizIdAndId(quizId, id))

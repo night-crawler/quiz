@@ -56,6 +56,8 @@ class QuizService(
 
     override fun serializeEntity(entity: Quiz): QuizFullDTO = entity.toFullDTO()
 
+    fun serializeEntityRestricted(entity: Quiz) = entity.toRestrictedDTO()
+
     private fun retrieveTopics(ids: Collection<Long>?) = ids?.let { jpaTopicRepository.findAllById(it).toMutableSet() }
             ?: mutableSetOf()
 
@@ -95,7 +97,7 @@ class QuizService(
 
     override fun patch(id: Long, patchDTO: PatchQuizDTO): Quiz {
         validatePatch(patchDTO)
-        val modified = getInstance(id).apply {
+        val modified = getOwnedInstance(id).apply {
             if (patchDTO.title != null) title = patchDTO.title
             if (patchDTO.topics != null) topics = retrieveTopics(patchDTO.topics)
             if (patchDTO.tags != null) tags = retrieveTags(patchDTO.tags)

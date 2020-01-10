@@ -8,7 +8,6 @@ import java.time.Instant
 
 data class QuestionFullDTO(
         @JsonSerialize(using = ToStringSerializer::class) val id: Long,
-        @JsonSerialize(using = ToStringSerializer::class) val owner: Long,
         val text: String,
         val answers: Collection<AnswerFullDTO>,
         val correctAnswers: Collection<AnswerFullDTO>,
@@ -18,6 +17,14 @@ data class QuestionFullDTO(
         val createdAt: Instant,
         val updatedAt: Instant
 ) : DTOFullSerializationMarker
+
+
+data class QuestionRestrictedDTO(
+        @JsonSerialize(using = ToStringSerializer::class) val id: Long,
+        val text: String,
+        val answers: Collection<AnswerRestrictedDTO>,
+        val difficulty: Int
+) : DTORestrictedSerializationMarker
 
 
 data class QuestionPatchDTO(
@@ -32,7 +39,6 @@ data class QuestionPatchDTO(
 
 fun Question.toFullDTO() = QuestionFullDTO(
         id = id,
-        owner = owner.id,
         text = text,
         answers = answers.map { it.toFullDTO() },
         correctAnswers = correctAnswers.map { it.toFullDTO() },
@@ -41,4 +47,12 @@ fun Question.toFullDTO() = QuestionFullDTO(
         difficulty = difficulty,
         createdAt = createdAt,
         updatedAt = updatedAt
+)
+
+
+fun Question.toRestrictedDTO() = QuestionRestrictedDTO(
+        id = id,
+        text = text,
+        answers = answers.map { it.toRestrictedDTO() },
+        difficulty = difficulty
 )

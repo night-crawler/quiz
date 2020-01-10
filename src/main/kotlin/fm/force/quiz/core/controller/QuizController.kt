@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.*
 class QuizController(quizService: QuizService, private val quizQuestionService: QuizQuestionService)
     : AbstractCRUDController<Quiz, JpaQuizRepository, PatchQuizDTO, QuizFullDTO>(quizService) {
 
+    @GetMapping("{quizId}/view")
+    fun getRestricted(@PathVariable quizId: Long) = service.getInstance(quizId).toRestrictedDTO()
+
     @RequestMapping("{quizId}/quizQuestions")
     @PostMapping
     fun createQuizQuestion(
@@ -27,9 +30,7 @@ class QuizController(quizService: QuizService, private val quizQuestionService: 
     fun getQuizQuestion(
             @PathVariable quizId: Long,
             @PathVariable quizQuestionId: Long
-    ): QuizQuestionFullDTO {
-        return quizQuestionService.getInstance(quizQuestionId).toFullDTO()
-    }
+    ) = quizQuestionService.getOwnedInstance(quizQuestionId).toFullDTO()
 
     @PatchMapping("{quizId}/quizQuestions/{quizQuestionId}")
     fun patchQuizQuestion(

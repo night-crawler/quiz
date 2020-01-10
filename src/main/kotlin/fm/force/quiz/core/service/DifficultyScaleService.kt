@@ -59,7 +59,7 @@ class DifficultyScaleService(
 
     override fun patch(id: Long, patchDTO: DifficultyScalePatchDTO): DifficultyScale {
         validatePatch(patchDTO)
-        val modified = getInstance(id).apply {
+        val modified = getOwnedInstance(id).apply {
             if (patchDTO.name != null) name = patchDTO.name
             if (patchDTO.max != null) max = patchDTO.max
             updatedAt = Instant.now()

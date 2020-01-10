@@ -45,7 +45,7 @@ class AnswerService(
     }
 
     override fun patch(id: Long, patchDTO: AnswerPatchDTO): Answer {
-        val answer = getInstance(id)
+        val answer = getOwnedInstance(id)
         answer.text = patchDTO.text
         answer.updatedAt = Instant.now()
         validateEntity(answer)

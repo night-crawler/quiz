@@ -15,6 +15,13 @@ data class DifficultyScaleRangeFullDTO(
         val updatedAt: Instant
 ) : DTOFullSerializationMarker
 
+data class DifficultyScaleRangeRestrictedDTO(
+        @JsonSerialize(using = ToStringSerializer::class) val id: Long,
+        val title: String,
+        val min: Int,
+        val max: Int
+) : DTORestrictedSerializationMarker
+
 data class DifficultyScaleRangePatchDTO(
         val difficultyScale: Long? = null,
         val title: String? = null,
@@ -30,4 +37,11 @@ fun DifficultyScaleRange.toFullDTO() = DifficultyScaleRangeFullDTO(
         max = max,
         createdAt = createdAt,
         updatedAt = updatedAt
+)
+
+fun DifficultyScaleRange.toRestrictedDTO() = DifficultyScaleRangeRestrictedDTO(
+        id = id,
+        title = title,
+        min = min,
+        max = max
 )

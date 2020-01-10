@@ -12,6 +12,11 @@ data class AnswerFullDTO(
         val updatedAt: Instant
 ) : DTOFullSerializationMarker
 
+data class AnswerRestrictedDTO(
+        @JsonSerialize(using = ToStringSerializer::class) val id: Long,
+        val text: String
+) : DTORestrictedSerializationMarker
+
 data class AnswerPatchDTO(val text: String) : DTOMarker
 
 fun Answer.toFullDTO() = AnswerFullDTO(
@@ -20,3 +25,5 @@ fun Answer.toFullDTO() = AnswerFullDTO(
         createdAt = createdAt,
         updatedAt = updatedAt
 )
+
+fun Answer.toRestrictedDTO() = AnswerRestrictedDTO(id = id, text = text)

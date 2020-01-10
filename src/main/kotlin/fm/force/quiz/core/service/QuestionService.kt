@@ -80,7 +80,7 @@ class QuestionService(
     @Transactional
     override fun patch(id: Long, patchDTO: QuestionPatchDTO): Question {
         validatePatch(patchDTO)
-        val question = getInstance(id)
+        val question = getOwnedInstance(id)
         val modifiedQuestion = with(patchDTO) {
             if (text != null) question.text = text
             if (answers != null) question.answers = retrieveAnswers(answers)

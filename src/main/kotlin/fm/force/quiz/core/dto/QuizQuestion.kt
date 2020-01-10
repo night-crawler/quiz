@@ -7,13 +7,17 @@ import java.time.Instant
 
 data class QuizQuestionFullDTO(
         @JsonSerialize(using = ToStringSerializer::class) val id: Long,
-        @JsonSerialize(using = ToStringSerializer::class) val owner: Long,
         val seq: Int,
         val question: QuestionFullDTO,
         val createdAt: Instant,
         val updatedAt: Instant
 ) : DTOFullSerializationMarker
 
+data class QuizQuestionRestrictedDTO(
+        @JsonSerialize(using = ToStringSerializer::class) val id: Long,
+        val seq: Int,
+        val question: QuestionRestrictedDTO
+) : DTORestrictedSerializationMarker
 
 data class QuizQuestionPatchDTO(
         var id: Long? = null,
@@ -24,9 +28,14 @@ data class QuizQuestionPatchDTO(
 
 fun QuizQuestion.toFullDTO() = QuizQuestionFullDTO(
         id = id,
-        owner = owner.id,
         seq = seq,
         question = question.toFullDTO(),
         createdAt = createdAt,
         updatedAt = updatedAt
+)
+
+fun QuizQuestion.toRestrictedDTO() = QuizQuestionRestrictedDTO(
+        id = id,
+        seq = seq,
+        question = question.toRestrictedDTO()
 )

@@ -7,7 +7,6 @@ import java.time.Instant
 
 data class QuizFullDTO(
         @JsonSerialize(using = ToStringSerializer::class) val id: Long,
-        @JsonSerialize(using = ToStringSerializer::class) val owner: Long,
         val title: String,
         val tags: Collection<TagFullDTO>,
         val topics: Collection<TopicFullDTO>,
@@ -26,9 +25,18 @@ data class PatchQuizDTO(
 ) : DTOMarker
 
 
+data class QuizRestrictedDTO(
+        @JsonSerialize(using = ToStringSerializer::class) val id: Long,
+        @JsonSerialize(using = ToStringSerializer::class) val owner: Long,
+        val title: String,
+        val tags: Collection<TagRestrictedDTO>,
+        val topics: Collection<TopicRestrictedDTO>,
+        val quizQuestions: Collection<QuizQuestionRestrictedDTO>,
+        val difficultyScale: DifficultyScaleRestrictedDTO?
+) : DTORestrictedSerializationMarker
+
 fun Quiz.toFullDTO() = QuizFullDTO(
         id = id,
-        owner = owner.id,
         title = title,
         tags = tags.map { it.toFullDTO() },
         topics = topics.map { it.toFullDTO() },
@@ -38,3 +46,12 @@ fun Quiz.toFullDTO() = QuizFullDTO(
         updatedAt = updatedAt
 )
 
+fun Quiz.toRestrictedDTO() = QuizRestrictedDTO(
+        id = id,
+        owner = owner.id,
+        title = title,
+        tags = tags.map { it.toRestrictedDTO() },
+        topics = topics.map { it.toRestrictedDTO() },
+        quizQuestions = quizQuestions.map { it.toRestrictedDTO() },
+        difficultyScale = difficultyScale?.toRestrictedDTO()
+)

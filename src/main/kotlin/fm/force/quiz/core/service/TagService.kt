@@ -65,7 +65,7 @@ class TagService(
     }
 
     override fun patch(id: Long, patchDTO: TagPatchDTO): Tag {
-        val tag = getInstance(id)
+        val tag = getOwnedInstance(id)
         tag.name = patchDTO.name
         tag.slug = slugify(patchDTO.name)
         tag.updatedAt = Instant.now()

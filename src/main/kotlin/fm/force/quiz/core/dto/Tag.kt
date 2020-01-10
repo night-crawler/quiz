@@ -13,6 +13,12 @@ data class TagFullDTO(
         val updatedAt: Instant
 ) : DTOFullSerializationMarker
 
+data class TagRestrictedDTO(
+        @JsonSerialize(using = ToStringSerializer::class) val id: Long,
+        val name: String,
+        val slug: String
+) : DTORestrictedSerializationMarker
+
 data class TagPatchDTO(val name: String) : DTOMarker
 
 fun Tag.toFullDTO() = TagFullDTO(
@@ -21,4 +27,10 @@ fun Tag.toFullDTO() = TagFullDTO(
         slug = slug,
         createdAt = createdAt,
         updatedAt = updatedAt
+)
+
+fun Tag.toRestrictedDTO() = TagRestrictedDTO(
+        id = id,
+        name = name,
+        slug = slug
 )

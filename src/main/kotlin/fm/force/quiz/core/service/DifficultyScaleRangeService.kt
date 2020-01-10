@@ -102,7 +102,7 @@ class DifficultyScaleRangeService(
     @Transactional
     override fun patch(id: Long, patchDTO: DifficultyScaleRangePatchDTO): DifficultyScaleRange {
         validatePatch(patchDTO)
-        val modified = getInstance(id).apply {
+        val modified = getOwnedInstance(id).apply {
             if (patchDTO.max != null) max = patchDTO.max
             if (patchDTO.min != null) min = patchDTO.min
             if (patchDTO.title != null) title = patchDTO.title

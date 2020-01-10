@@ -12,6 +12,11 @@ data class TopicFullDTO(
         val updatedAt: Instant
 ) : DTOFullSerializationMarker
 
+data class TopicRestrictedDTO(
+        @JsonSerialize(using = ToStringSerializer::class) val id: Long,
+        val title: String
+) : DTORestrictedSerializationMarker
+
 data class TopicPatchDTO(val title: String) : DTOMarker
 
 fun Topic.toFullDTO() = TopicFullDTO(
@@ -20,3 +25,5 @@ fun Topic.toFullDTO() = TopicFullDTO(
         createdAt = createdAt,
         updatedAt = updatedAt
 )
+
+fun Topic.toRestrictedDTO() = TopicRestrictedDTO(id = id, title = title)

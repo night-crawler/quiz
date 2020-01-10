@@ -43,7 +43,7 @@ class TopicService(
     }
 
     override fun patch(id: Long, patchDTO: TopicPatchDTO): Topic {
-        val topic = getInstance(id)
+        val topic = getOwnedInstance(id)
         topic.title = patchDTO.title
         topic.updatedAt = Instant.now()
         validateEntity(topic)

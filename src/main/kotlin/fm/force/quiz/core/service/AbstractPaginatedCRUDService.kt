@@ -70,8 +70,12 @@ abstract class AbstractPaginatedCRUDService<EntType, RepoType, PatchType, DTOTyp
     abstract fun serializeEntity(entity: EntType): DTOType
     abstract fun create(createDTO: PatchType): EntType
 
-    open fun getInstance(id: Long): EntType = repository
+    open fun getOwnedInstance(id: Long): EntType = repository
             .findByIdAndOwner(id, authenticationFacade.user)
+            .orElseThrow { NotFoundException(id, this::class) }
+
+    open fun getInstance(id: Long): EntType = repository
+            .findById(id)
             .orElseThrow { NotFoundException(id, this::class) }
 
     @Transactional
@@ -87,6 +91,6 @@ abstract class AbstractPaginatedCRUDService<EntType, RepoType, PatchType, DTOTyp
         return serializePage(page)
     }
 
-    open fun delete(id: Long) = getInstance(id).let { repository.delete(it) }
+    open fun delete(id: Long) = getOwnedInstance(id).let { repository.delete(it) }
     open fun patch(id: Long, patchDTO: PatchType): EntType = throw NotImplementedError("Patch method is not implemented")
 }

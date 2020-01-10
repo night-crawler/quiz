@@ -16,7 +16,7 @@ data class DifficultyScaleFullDTO(
 data class DifficultyScaleRestrictedDTO(
         val id: Long,
         val name: String,
-        val difficultyScaleRanges: Collection<DifficultyScaleRangeFullDTO>
+        val difficultyScaleRanges: Collection<DifficultyScaleRangeRestrictedDTO>
 ) : DTORestrictedSerializationMarker
 
 data class DifficultyScalePatchDTO(
@@ -30,4 +30,10 @@ fun DifficultyScale.toFullDTO() = DifficultyScaleFullDTO(
         difficultyScaleRanges = difficultyScaleRanges.map { it.toFullDTO() },
         createdAt = createdAt,
         updatedAt = updatedAt
+)
+
+fun DifficultyScale.toRestrictedDTO() = DifficultyScaleRestrictedDTO(
+        id = id,
+        name = name,
+        difficultyScaleRanges = difficultyScaleRanges.map { it.toRestrictedDTO() }
 )

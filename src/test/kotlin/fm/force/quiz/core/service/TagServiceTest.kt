@@ -56,8 +56,8 @@ open class TagServiceTest(
             val alienTag = jpaTagRepository.save(Tag(owner = alien, name = "charade", slug = "charade"))
             val ownTag = jpaTagRepository.save(Tag(owner = user, name = "all mine", slug = "all-mine"))
 
-            shouldThrow<NotFoundException> { tagService.getInstance(alienTag.id) }
-            tagService.getInstance(ownTag.id).id shouldNotBe null
+            shouldThrow<NotFoundException> { tagService.getOwnedInstance(alienTag.id) }
+            tagService.getOwnedInstance(ownTag.id).id shouldNotBe null
         }
 
         "should return paginated find responses" {
