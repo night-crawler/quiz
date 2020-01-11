@@ -36,8 +36,13 @@ open class AnswerServiceTest(
             (1..5).map { testDataFactory.getAnswer(owner = user, text = "some answer $it") }
             (1..5).map { testDataFactory.getAnswer(owner = alien, text = "never get this $it answer") }
 
-            val answerPage = answerService.find(PaginationQuery.default(), SortQuery.byIdDesc(), "answer")
+            var answerPage = answerService.find(PaginationQuery.default(), SortQuery.byIdDesc(), "answer")
             answerPage.content shouldHaveSize 5
+            testDataFactory.removeAllAnswers()
+
+            (1..5).map { testDataFactory.getAnswer(owner = alien, text = "never get this $it answer") }
+            answerPage = answerService.find(PaginationQuery.default(), SortQuery.byIdDesc(), null)
+            answerPage.content shouldHaveSize 0
         }
     }
 }

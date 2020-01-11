@@ -28,7 +28,7 @@ class TopicServiceTest(
 
         "users must access only their own topics" {
             shouldThrow<NotFoundException> {
-                topicService.getOwnedInstance(testDataFactory.getTopic(owner = alien).id)
+                topicService.getOwnedEntity(testDataFactory.getTopic(owner = alien).id)
             }
         }
 

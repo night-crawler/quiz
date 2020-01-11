@@ -25,12 +25,11 @@ class AnswerService(
             .build()
 
     override fun buildSingleArgumentSearchSpec(needle: String?): Specification<Answer> {
-        if (needle.isNullOrEmpty())
-            return emptySpecification
+        val ownerEquals = SpecificationBuilder.fk(authenticationFacade::user, Answer_.owner)
+        if (needle.isNullOrEmpty()) return ownerEquals
 
         return Specification
-                .where(SpecificationBuilder.fk(authenticationFacade::user, Answer_.owner))
-                .and(SpecificationBuilder.ciContains(needle, Answer_.text))
+                .where(ownerEquals).and(SpecificationBuilder.ciContains(needle, Answer_.text))
     }
 
     override fun serializePage(page: Page<Answer>): PageDTO = page.toDTO { it.toFullDTO() }
@@ -45,7 +44,7 @@ class AnswerService(
     }
 
     override fun patch(id: Long, patchDTO: AnswerPatchDTO): Answer {
-        val answer = getOwnedInstance(id)
+        val answer = getOwnedEntity(id)
         answer.text = patchDTO.text
         answer.updatedAt = Instant.now()
         validateEntity(answer)

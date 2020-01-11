@@ -34,16 +34,16 @@ class TopicService(
     }
 
     override fun buildSingleArgumentSearchSpec(needle: String?): Specification<Topic> {
+        val ownerEquals = SpecificationBuilder.fk(authenticationFacade::user, Topic_.owner)
         if (needle.isNullOrEmpty())
-            return emptySpecification
+            return ownerEquals
 
         return Specification
-                .where(SpecificationBuilder.fk(authenticationFacade::user, Topic_.owner))
-                .and(SpecificationBuilder.ciContains(needle, Topic_.title))
+                .where(ownerEquals).and(SpecificationBuilder.ciContains(needle, Topic_.title))
     }
 
     override fun patch(id: Long, patchDTO: TopicPatchDTO): Topic {
-        val topic = getOwnedInstance(id)
+        val topic = getOwnedEntity(id)
         topic.title = patchDTO.title
         topic.updatedAt = Instant.now()
         validateEntity(topic)

@@ -21,7 +21,7 @@ abstract class AbstractCRUDController<EntType, RepoType, PatchType, DTOType : DT
     open fun create(@RequestBody createDTO: PatchType): DTOType = service.serializeEntity(service.create(createDTO))
 
     @GetMapping("{instanceId}")
-    open fun get(@PathVariable instanceId: Long): DTOType = service.serializeEntity(service.getOwnedInstance(instanceId))
+    open fun get(@PathVariable instanceId: Long): DTOType = service.serializeEntity(service.getOwnedEntity(instanceId))
 
     @DeleteMapping("{instanceId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

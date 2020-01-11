@@ -16,7 +16,7 @@ data class QuizFullDTO(
         val updatedAt: Instant
 ) : DTOFullSerializationMarker
 
-data class PatchQuizDTO(
+data class QuizPatchDTO(
         val title: String? = null,
         val questions: Collection<Long>? = null,
         val tags: Set<Long>? = null,

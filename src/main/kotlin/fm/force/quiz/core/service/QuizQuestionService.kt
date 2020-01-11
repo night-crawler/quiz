@@ -8,7 +8,7 @@ import fm.force.quiz.core.exception.NotFoundException
 import fm.force.quiz.core.repository.JpaQuestionRepository
 import fm.force.quiz.core.repository.JpaQuizQuestionRepository
 import fm.force.quiz.core.repository.JpaQuizRepository
-import fm.force.quiz.core.validator.fkConstraint
+import fm.force.quiz.core.validator.ownedFkConstraint
 import fm.force.quiz.core.validator.intConstraint
 import fm.force.quiz.core.validator.mandatory
 import org.springframework.data.domain.Page
@@ -41,9 +41,9 @@ class QuizQuestionService(
             .konstraintOnGroup(CRUDConstraintGroup.UPDATE) {
                 mandatory(QuizQuestionPatchDTO::seq)
             }
-            .fkConstraint(QuizQuestionPatchDTO::id, jpaQuizQuestionRepository, ::ownerId)
-            .fkConstraint(QuizQuestionPatchDTO::question, jpaQuestionRepository, ::ownerId)
-            .fkConstraint(QuizQuestionPatchDTO::quiz, jpaQuizRepository, ::ownerId)
+            .ownedFkConstraint(QuizQuestionPatchDTO::id, jpaQuizQuestionRepository, ::ownerId)
+            .ownedFkConstraint(QuizQuestionPatchDTO::question, jpaQuestionRepository, ::ownerId)
+            .ownedFkConstraint(QuizQuestionPatchDTO::quiz, jpaQuizRepository, ::ownerId)
             .intConstraint(QuizQuestionPatchDTO::seq, -1..Int.MAX_VALUE) {
                 constraintOnTarget(seqTooBigPredicate, "seq", "", msgSeqTooBigPredicate)
             }
@@ -78,7 +78,7 @@ class QuizQuestionService(
     }
 
     @Transactional
-    override fun delete(id: Long) = deletePrivate(getOwnedInstance(id))
+    override fun delete(id: Long) = deletePrivate(getOwnedEntity(id))
 
     @Transactional
     fun deleteByQuizAndId(quizId: Long, id: Long) = deletePrivate(getInstanceByQuizIdAndId(quizId, id))

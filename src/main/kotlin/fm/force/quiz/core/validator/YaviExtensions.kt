@@ -6,15 +6,19 @@ import am.ik.yavi.builder.konstraintOnCondition
 import am.ik.yavi.core.ConstraintCondition
 import fm.force.quiz.common.toCustomSet
 import fm.force.quiz.core.repository.CommonRepository
+import org.springframework.data.jpa.repository.JpaRepository
+import java.time.Instant
 import java.util.*
 import java.util.function.Predicate
 import kotlin.reflect.KProperty1
 
-fun <T> notNullCondition(property: KProperty1<T, Any?>) = ConstraintCondition<T> { dto, _ -> property(dto) != null }
+
+fun <T> notNullCondition(property: KProperty1<T, Any?>) =
+        ConstraintCondition<T> { dto, _ -> property(dto) != null }
 
 
-fun <T, K : Any?> ValidatorBuilder<T>.mandatory(
-        property: KProperty1<T, K>,
+fun <T, E : Any?> ValidatorBuilder<T>.mandatory(
+        property: KProperty1<T, E>,
         errorTemplate: String = "%s must be present",
         locale: Locale = Locale.ENGLISH,
         chain: ValidatorBuilder<T>.(ValidatorBuilder<T>) -> Unit = { }
@@ -27,9 +31,9 @@ fun <T, K : Any?> ValidatorBuilder<T>.mandatory(
 }
 
 
-fun <T, I, K : Collection<I>?> ValidatorBuilder<T>.optionalSubset(
-        sup: KProperty1<T, K>,
-        sub: KProperty1<T, K>,
+fun <T, E, C : Collection<E>?> ValidatorBuilder<T>.optionalSubset(
+        sup: KProperty1<T, C>,
+        sub: KProperty1<T, C>,
 
         errorTemplate: String = "%s must be a subset of %s",
         locale: Locale = Locale.ENGLISH,
@@ -61,8 +65,8 @@ fun <T, I, K : Collection<I>?> ValidatorBuilder<T>.optionalSubset(
 }
 
 
-fun <T, K : Long?, R> ValidatorBuilder<T>.fkConstraint(
-        property: KProperty1<T, K>,
+fun <T, ID : Long?, R> ValidatorBuilder<T>.ownedFkConstraint(
+        property: KProperty1<T, ID>,
         repository: CommonRepository<R>,
         getOwnerId: () -> Long,
         wrongFkTemplate: String = "%s must be positive",
@@ -88,9 +92,30 @@ fun <T, K : Long?, R> ValidatorBuilder<T>.fkConstraint(
     return this
 }
 
+fun <T, R> ValidatorBuilder<T>.fkConstraint(
+        property: KProperty1<T, Long>,
+        repository: JpaRepository<R, Long>,
+        wrongFkTemplate: String = "%s must be positive",
+        doesNotExistErrorTemplate: String = "%s must exist",
+        locale: Locale = Locale.ENGLISH,
+        chain: ValidatorBuilder<T>.(ValidatorBuilder<T>) -> Unit = { }
+): ValidatorBuilder<T> {
+    val msgWrongFk = wrongFkTemplate.format(locale, property.name)
+    val msgDoesNotExist = doesNotExistErrorTemplate.format(locale, property.name)
 
-fun <T, K : String?> ValidatorBuilder<T>.stringConstraint(
-        property: KProperty1<T, K>,
+    val predicate = Predicate<T> { repository.existsById(property(it)) }
+
+    konstraint(property) {
+        greaterThan(0).message(msgWrongFk)
+    }
+    constraintOnTarget(predicate, property.name, "", msgDoesNotExist)
+    chain(this)
+
+    return this
+}
+
+fun <T, R : String?> ValidatorBuilder<T>.stringConstraint(
+        property: KProperty1<T, R>,
         range: ClosedRange<Int>,
         errorTemplate: String = "%s length must be in range [%d; %d]",
         locale: Locale = Locale.ENGLISH,
@@ -109,8 +134,8 @@ fun <T, K : String?> ValidatorBuilder<T>.stringConstraint(
 }
 
 
-fun <T, K : Int?> ValidatorBuilder<T>.intConstraint(
-        property: KProperty1<T, K>,
+fun <T, V : Int?> ValidatorBuilder<T>.intConstraint(
+        property: KProperty1<T, V>,
         range: ClosedRange<Int>,
         errorTemplate: String = "%s must be in range [%d; %d]",
         locale: Locale = Locale.ENGLISH,
@@ -128,8 +153,8 @@ fun <T, K : Int?> ValidatorBuilder<T>.intConstraint(
     return this
 }
 
-fun <T, K : Collection<Long>?, R> ValidatorBuilder<T>.fkListConstraint(
-        property: KProperty1<T, K>,
+fun <T, C : Collection<Long>?, R> ValidatorBuilder<T>.ownedFksConstraint(
+        property: KProperty1<T, C>,
         repository: CommonRepository<R>,
         range: ClosedRange<Int>,
         getOwnerId: () -> Long,
@@ -158,6 +183,29 @@ fun <T, K : Collection<Long>?, R> ValidatorBuilder<T>.fkListConstraint(
     }
     return this
 }
+
+
+fun <T, R: Instant?> ValidatorBuilder<T>.instantConstraint(
+        property: KProperty1<T, R>,
+        getStart: () -> Instant = Instant::now,
+        getEnd: () -> Instant = { Instant.MAX },
+        errorTemplate: String = "Instant value {1} of field {0} is illegal",
+        chain: ValidatorBuilder<T>.(ValidatorBuilder<T>) -> Unit = { }
+): ValidatorBuilder<T> {
+    val whenTimeIsBad = Predicate<T> {
+        val value = property(it)
+        if (value == null) true
+        else getStart() <= value && value <= getEnd()
+    }
+
+    konstraintOnCondition(notNullCondition(property)) {
+        constraintOnTarget(whenTimeIsBad, property.name, "custom.instant", errorTemplate)
+        chain(this)
+    }
+    return this
+}
+
+
 
 val fkValidator = ValidatorBuilder.of(Long::class.java)
         .constraint(Long::toLong, "") {

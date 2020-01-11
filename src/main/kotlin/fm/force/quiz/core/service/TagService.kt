@@ -29,11 +29,11 @@ class TagService(
     }
 
     override fun buildSingleArgumentSearchSpec(needle: String?): Specification<Tag> {
-        if (needle.isNullOrEmpty())
-            return emptySpecification
+        val ownerEquals = SpecificationBuilder.fk(authenticationFacade::user, Tag_.owner)
+        if (needle.isNullOrEmpty()) return ownerEquals
 
         return Specification
-                .where(SpecificationBuilder.fk(authenticationFacade::user, Tag_.owner))
+                .where(ownerEquals)
                 .and(Specification
                         .where(SpecificationBuilder.ciEquals(needle, Tag_.name))
                         .or(SpecificationBuilder.ciStartsWith(needle, Tag_.name))
@@ -65,7 +65,7 @@ class TagService(
     }
 
     override fun patch(id: Long, patchDTO: TagPatchDTO): Tag {
-        val tag = getOwnedInstance(id)
+        val tag = getOwnedEntity(id)
         tag.name = patchDTO.name
         tag.slug = slugify(patchDTO.name)
         tag.updatedAt = Instant.now()

@@ -6,15 +6,13 @@ import am.ik.yavi.builder.konstraintOnGroup
 import fm.force.quiz.common.SpecificationBuilder
 import fm.force.quiz.configuration.properties.DifficultyScaleRangeValidationProperties
 import fm.force.quiz.core.dto.*
-import fm.force.quiz.core.entity.DifficultyScale
 import fm.force.quiz.core.entity.DifficultyScaleRange
 import fm.force.quiz.core.entity.DifficultyScaleRange_
-import fm.force.quiz.core.exception.NotFoundException
 import fm.force.quiz.core.repository.JpaDifficultyScaleRangeRepository
 import fm.force.quiz.core.repository.JpaDifficultyScaleRepository
-import fm.force.quiz.core.validator.fkConstraint
 import fm.force.quiz.core.validator.intConstraint
 import fm.force.quiz.core.validator.mandatory
+import fm.force.quiz.core.validator.ownedFkConstraint
 import fm.force.quiz.core.validator.stringConstraint
 import org.springframework.data.domain.Page
 import org.springframework.data.jpa.domain.Specification
@@ -55,7 +53,7 @@ class DifficultyScaleRangeService(
             }
             .konstraintOnGroup(CRUDConstraintGroup.UPDATE) {
                 konstraint(DifficultyScaleRangePatchDTO::difficultyScale) {
-                    isNull().message(msgCannotBeModified)
+                    isNull.message(msgCannotBeModified)
                 }
             }
 
@@ -63,25 +61,20 @@ class DifficultyScaleRangeService(
             .intConstraint(DifficultyScaleRangePatchDTO::min, 0..validationProps.minUpper)
             .intConstraint(DifficultyScaleRangePatchDTO::max, 1..validationProps.maxUpper)
 
-            .fkConstraint(DifficultyScaleRangePatchDTO::difficultyScale, jpaDifficultyScaleRepository, ::ownerId)
+            .ownedFkConstraint(DifficultyScaleRangePatchDTO::difficultyScale, jpaDifficultyScaleRepository, ::ownerId)
             .build()
 
     override fun buildSingleArgumentSearchSpec(needle: String?): Specification<DifficultyScaleRange> {
-        if (needle.isNullOrEmpty())
-            return emptySpecification
+        val ownerEquals = SpecificationBuilder.fk(authenticationFacade::user, DifficultyScaleRange_.owner)
+        if (needle.isNullOrEmpty()) return ownerEquals
 
         return Specification
-                .where(SpecificationBuilder.fk(authenticationFacade::user, DifficultyScaleRange_.owner))
-                .and(SpecificationBuilder.ciContains(needle, DifficultyScaleRange_.title))
+                .where(ownerEquals).and(SpecificationBuilder.ciContains(needle, DifficultyScaleRange_.title))
     }
 
     override fun serializePage(page: Page<DifficultyScaleRange>): PageDTO = page.toDTO { it.toFullDTO() }
 
     override fun serializeEntity(entity: DifficultyScaleRange): DifficultyScaleRangeFullDTO = entity.toFullDTO()
-
-    fun retrieveDifficultyScale(id: Long): DifficultyScale = jpaDifficultyScaleRepository
-            .findByIdAndOwner(id, authenticationFacade.user)
-            .orElseThrow { NotFoundException(id, DifficultyScale::class) }
 
     @Transactional
     override fun create(createDTO: DifficultyScaleRangePatchDTO): DifficultyScaleRange {
@@ -89,7 +82,7 @@ class DifficultyScaleRangeService(
         val entity = with(createDTO) {
             DifficultyScaleRange(
                     owner = authenticationFacade.user,
-                    difficultyScale = retrieveDifficultyScale(difficultyScale!!),
+                    difficultyScale = jpaDifficultyScaleRepository.getEntity(difficultyScale!!),
                     title = title!!,
                     min = min!!,
                     max = max!!
@@ -102,7 +95,7 @@ class DifficultyScaleRangeService(
     @Transactional
     override fun patch(id: Long, patchDTO: DifficultyScaleRangePatchDTO): DifficultyScaleRange {
         validatePatch(patchDTO)
-        val modified = getOwnedInstance(id).apply {
+        val modified = getOwnedEntity(id).apply {
             if (patchDTO.max != null) max = patchDTO.max
             if (patchDTO.min != null) min = patchDTO.min
             if (patchDTO.title != null) title = patchDTO.title

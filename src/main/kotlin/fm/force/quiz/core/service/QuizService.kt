@@ -9,9 +9,9 @@ import fm.force.quiz.core.entity.Quiz
 import fm.force.quiz.core.entity.QuizQuestion
 import fm.force.quiz.core.entity.Quiz_
 import fm.force.quiz.core.repository.*
-import fm.force.quiz.core.validator.fkConstraint
-import fm.force.quiz.core.validator.fkListConstraint
 import fm.force.quiz.core.validator.mandatory
+import fm.force.quiz.core.validator.ownedFkConstraint
+import fm.force.quiz.core.validator.ownedFksConstraint
 import fm.force.quiz.core.validator.stringConstraint
 import org.springframework.data.domain.Page
 import org.springframework.data.jpa.domain.Specification
@@ -29,79 +29,67 @@ class QuizService(
         private val jpaQuizQuestionRepository: JpaQuizQuestionRepository,
         validationProps: QuizValidationProperties,
         jpaQuizRepository: JpaQuizRepository
-) : AbstractPaginatedCRUDService<Quiz, JpaQuizRepository, PatchQuizDTO, QuizFullDTO>(
+) : AbstractPaginatedCRUDService<Quiz, JpaQuizRepository, QuizPatchDTO, QuizFullDTO>(
         repository = jpaQuizRepository
 ) {
-    override var dtoValidator = ValidatorBuilder.of<PatchQuizDTO>()
+    override var dtoValidator = ValidatorBuilder.of<QuizPatchDTO>()
             .konstraintOnGroup(CRUDConstraintGroup.CREATE) {
-                mandatory(PatchQuizDTO::title)
+                mandatory(QuizPatchDTO::title)
             }
-            .stringConstraint(PatchQuizDTO::title, validationProps.minTitleLength..validationProps.maxTitleLength)
-            .fkListConstraint(PatchQuizDTO::questions, jpaQuestionRepository, 0..validationProps.maxQuestions, ::ownerId)
-            .fkListConstraint(PatchQuizDTO::tags, jpaTagRepository, 0..validationProps.maxTags, ::ownerId)
-            .fkListConstraint(PatchQuizDTO::topics, jpaTopicRepository, 0..validationProps.maxTopics, ::ownerId)
-            .fkConstraint(PatchQuizDTO::difficultyScale, jpaDifficultyScaleRepository, ::ownerId)
+            .stringConstraint(QuizPatchDTO::title, validationProps.minTitleLength..validationProps.maxTitleLength)
+            .ownedFksConstraint(QuizPatchDTO::questions, jpaQuestionRepository, 0..validationProps.maxQuestions, ::ownerId)
+            .ownedFksConstraint(QuizPatchDTO::tags, jpaTagRepository, 0..validationProps.maxTags, ::ownerId)
+            .ownedFksConstraint(QuizPatchDTO::topics, jpaTopicRepository, 0..validationProps.maxTopics, ::ownerId)
+            .ownedFkConstraint(QuizPatchDTO::difficultyScale, jpaDifficultyScaleRepository, ::ownerId)
             .build()
 
     override fun buildSingleArgumentSearchSpec(needle: String?): Specification<Quiz> {
-        if (needle.isNullOrEmpty())
-            return emptySpecification
+        val ownerEquals = SpecificationBuilder.fk(authenticationFacade::user, Quiz_.owner)
+        if (needle.isNullOrEmpty()) return ownerEquals
 
         return Specification
-                .where(SpecificationBuilder.fk(authenticationFacade::user, Quiz_.owner))
-                .and(SpecificationBuilder.ciContains(needle, Quiz_.title))
+                .where(ownerEquals).and(SpecificationBuilder.ciContains(needle, Quiz_.title))
     }
 
     override fun serializePage(page: Page<Quiz>): PageDTO = page.toDTO { it.toFullDTO() }
 
     override fun serializeEntity(entity: Quiz): QuizFullDTO = entity.toFullDTO()
 
-    fun serializeEntityRestricted(entity: Quiz) = entity.toRestrictedDTO()
-
-    private fun retrieveTopics(ids: Collection<Long>?) = ids?.let { jpaTopicRepository.findAllById(it).toMutableSet() }
-            ?: mutableSetOf()
-
-    private fun retrieveTags(ids: Collection<Long>?) = ids?.let { jpaTagRepository.findAllById(it).toMutableSet() }
-            ?: mutableSetOf()
-
-    private fun retrieveQuestions(ids: Collection<Long>?) = ids?.let { jpaQuestionRepository.findAllById(it).toMutableSet() }
-            ?: mutableSetOf()
-
-    private fun retrieveDifficultyScale(id: Long?) = id?.let { jpaDifficultyScaleRepository.findById(id).orElse(null) }
-
     @Transactional
-    override fun create(createDTO: PatchQuizDTO): Quiz {
+    override fun create(createDTO: QuizPatchDTO): Quiz {
         validateCreate(createDTO)
         var entity = with(createDTO) {
             Quiz(
                     owner = authenticationFacade.user,
                     title = title!!,
-                    topics = retrieveTopics(topics),
-                    tags = retrieveTags(tags),
-                    difficultyScale = retrieveDifficultyScale(difficultyScale)
+                    topics = jpaTopicRepository.findEntitiesById(topics).toMutableSet(),
+                    tags = jpaTagRepository.findEntitiesById(tags).toMutableSet(),
+                    difficultyScale = difficultyScale?.let { jpaDifficultyScaleRepository.getEntity(it) }
             )
         }
         entity = repository.save(entity)
-        val quizQuestions = retrieveQuestions(createDTO.questions).mapIndexed { index, question ->
-            QuizQuestion(
-                    owner = authenticationFacade.user,
-                    quiz = entity,
-                    question = question,
-                    seq = index
-            )
-        }.toMutableList()
+        val quizQuestions = jpaQuestionRepository
+                .findEntitiesById(createDTO.questions)
+                .mapIndexed { index, question ->
+                    QuizQuestion(
+                            owner = authenticationFacade.user,
+                            quiz = entity,
+                            question = question,
+                            seq = index
+                    )
+                }.toMutableList()
         jpaQuizQuestionRepository.saveAll(quizQuestions)
         entity.quizQuestions = quizQuestions
         return entity
     }
 
-    override fun patch(id: Long, patchDTO: PatchQuizDTO): Quiz {
+    override fun patch(id: Long, patchDTO: QuizPatchDTO): Quiz {
         validatePatch(patchDTO)
-        val modified = getOwnedInstance(id).apply {
+        val modified = getOwnedEntity(id).apply {
             if (patchDTO.title != null) title = patchDTO.title
-            if (patchDTO.topics != null) topics = retrieveTopics(patchDTO.topics)
-            if (patchDTO.tags != null) tags = retrieveTags(patchDTO.tags)
-            if (patchDTO.difficultyScale != null) difficultyScale = retrieveDifficultyScale(patchDTO.difficultyScale)
+            if (patchDTO.topics != null) topics = jpaTopicRepository.findEntitiesById(patchDTO.topics).toMutableSet()
+            if (patchDTO.tags != null) tags = jpaTagRepository.findEntitiesById(patchDTO.tags).toMutableSet()
+            if (patchDTO.difficultyScale != null) difficultyScale = jpaDifficultyScaleRepository.getEntity(patchDTO.difficultyScale)
             updatedAt = Instant.now()
         }
         return repository.save(modified)

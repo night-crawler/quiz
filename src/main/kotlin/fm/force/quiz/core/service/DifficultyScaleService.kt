@@ -33,11 +33,11 @@ class DifficultyScaleService(
             .build()
 
     override fun buildSingleArgumentSearchSpec(needle: String?): Specification<DifficultyScale> {
-        if (needle.isNullOrEmpty())
-            return emptySpecification
+        val ownerEquals = SpecificationBuilder.fk(authenticationFacade::user, DifficultyScale_.owner)
+        if (needle.isNullOrEmpty()) return ownerEquals
 
         return Specification
-                .where(SpecificationBuilder.fk(authenticationFacade::user, DifficultyScale_.owner))
+                .where(ownerEquals)
                 .and(SpecificationBuilder.ciContains(needle, DifficultyScale_.name))
     }
 
@@ -59,7 +59,7 @@ class DifficultyScaleService(
 
     override fun patch(id: Long, patchDTO: DifficultyScalePatchDTO): DifficultyScale {
         validatePatch(patchDTO)
-        val modified = getOwnedInstance(id).apply {
+        val modified = getOwnedEntity(id).apply {
             if (patchDTO.name != null) name = patchDTO.name
             if (patchDTO.max != null) max = patchDTO.max
             updatedAt = Instant.now()

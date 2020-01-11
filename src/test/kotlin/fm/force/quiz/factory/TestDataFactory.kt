@@ -6,6 +6,8 @@ import fm.force.quiz.core.repository.*
 import fm.force.quiz.security.entity.User
 import fm.force.quiz.security.repository.JpaUserRepository
 import org.springframework.stereotype.Service
+import java.time.Duration
+import java.time.Instant
 import javax.transaction.Transactional
 import kotlin.random.Random
 
@@ -19,7 +21,8 @@ class TestDataFactory(
         private val jpaDifficultyScaleRepository: JpaDifficultyScaleRepository,
         private val jpaDifficultyScaleRangeRepository: JpaDifficultyScaleRangeRepository,
         private val jpaQuizRepository: JpaQuizRepository,
-        private val jpaQuizQuestionRepository: JpaQuizQuestionRepository
+        private val jpaQuizQuestionRepository: JpaQuizQuestionRepository,
+        private val jpaQuizSessionRepository: JpaQuizSessionRepository
 ) {
     @Transactional
     fun getUser(
@@ -129,4 +132,28 @@ class TestDataFactory(
         }.toMutableList()
         return jpaQuizRepository.save(quiz)
     }
+
+    @Transactional
+    fun getQuizSession(
+            owner: User = getUser(),
+            quiz: Quiz = getQuiz(owner = owner),
+            isCancelled: Boolean = false,
+            isCompleted: Boolean = false,
+            cancelledAt: Instant? = if (isCancelled) Instant.now() else null,
+            completedAt: Instant? = if (isCompleted) Instant.now() else null,
+            difficultyScale: DifficultyScale? = getDifficultyScale(owner = owner),
+            validTill: Instant = Instant.now() + Duration.ofDays(1)
+    ) = jpaQuizSessionRepository.save(QuizSession(
+            owner = owner,
+            quiz = quiz,
+            validTill = validTill,
+            isCancelled = isCancelled,
+            isCompleted = isCompleted,
+            cancelledAt = cancelledAt,
+            completedAt = completedAt,
+            difficultyScale = difficultyScale
+    ))
+
+    @Transactional
+    fun removeAllAnswers() = jpaAnswerRepository.deleteAll()
 }

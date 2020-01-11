@@ -3,7 +3,7 @@ package fm.force.quiz.core.service
 import fm.force.quiz.common.getRandomString
 import fm.force.quiz.configuration.properties.QuizValidationProperties
 import fm.force.quiz.core.dto.PaginationQuery
-import fm.force.quiz.core.dto.PatchQuizDTO
+import fm.force.quiz.core.dto.QuizPatchDTO
 import fm.force.quiz.core.dto.SortQuery
 import fm.force.quiz.core.exception.ValidationError
 import io.kotlintest.data.forall
@@ -21,10 +21,10 @@ open class QuizServiceTest(
     init {
         "should validate" {
             forall(
-                    row(PatchQuizDTO()),
-                    row(PatchQuizDTO(title = "")),
-                    row(PatchQuizDTO(title = getRandomString(validationProps.minTitleLength), topics = setOf(1, 2))),
-                    row(PatchQuizDTO(
+                    row(QuizPatchDTO()),
+                    row(QuizPatchDTO(title = "")),
+                    row(QuizPatchDTO(title = getRandomString(validationProps.minTitleLength), topics = setOf(1, 2))),
+                    row(QuizPatchDTO(
                             title = getRandomString(validationProps.minTitleLength),
                             questions = setOf(1, 3),
                             tags = setOf(1, 2),
@@ -42,7 +42,7 @@ open class QuizServiceTest(
             val topics = questions.map { it.topics }.flatten()
             val scale = testDataFactory.getDifficultyScale(owner = user)
 
-            val dto = PatchQuizDTO(
+            val dto = QuizPatchDTO(
                     title = getRandomString(validationProps.minTitleLength),
                     questions = questions.map { it.id }.toSet(),
                     tags = setOf(tags.random().id, tags.random().id),
@@ -65,7 +65,7 @@ open class QuizServiceTest(
 
         "should patch" {
             val quiz = testDataFactory.getQuiz(owner = user)
-            val patch = PatchQuizDTO(
+            val patch = QuizPatchDTO(
                     title = "sample!",
                     questions = setOf(),
                     tags = setOf(),

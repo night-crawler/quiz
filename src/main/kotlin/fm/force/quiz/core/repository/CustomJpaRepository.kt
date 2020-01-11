@@ -9,4 +9,8 @@ import javax.transaction.Transactional
 interface CustomJpaRepository<T, ID> : JpaRepository<T, ID> {
     @Transactional
     fun refresh(t: T): T
+
+    fun getEntity(id: ID): T
+
+    fun findEntitiesById(ids: Iterable<ID>?) : List<T>
 }

@@ -39,8 +39,6 @@ abstract class AbstractPaginatedCRUDService<EntType, RepoType, PatchType, DTOTyp
 
     val ownerId: Long get() = authenticationFacade.user.id
 
-    val emptySpecification = Specification<EntType> { _, _, _ -> null }
-
     open lateinit var entityValidator: Validator<EntType>
     open lateinit var dtoValidator: Validator<PatchType>
 
@@ -65,16 +63,16 @@ abstract class AbstractPaginatedCRUDService<EntType, RepoType, PatchType, DTOTyp
                 ValidationError(it)
             }
 
-    abstract fun buildSingleArgumentSearchSpec(needle: String?): Specification<EntType>
+    open fun buildSingleArgumentSearchSpec(needle: String?): Specification<EntType> = throw NotImplementedError()
     abstract fun serializePage(page: Page<EntType>): PageDTO
     abstract fun serializeEntity(entity: EntType): DTOType
     abstract fun create(createDTO: PatchType): EntType
 
-    open fun getOwnedInstance(id: Long): EntType = repository
+    open fun getOwnedEntity(id: Long): EntType = repository
             .findByIdAndOwner(id, authenticationFacade.user)
             .orElseThrow { NotFoundException(id, this::class) }
 
-    open fun getInstance(id: Long): EntType = repository
+    open fun getEntity(id: Long): EntType = repository
             .findById(id)
             .orElseThrow { NotFoundException(id, this::class) }
 
@@ -91,6 +89,6 @@ abstract class AbstractPaginatedCRUDService<EntType, RepoType, PatchType, DTOTyp
         return serializePage(page)
     }
 
-    open fun delete(id: Long) = getOwnedInstance(id).let { repository.delete(it) }
+    open fun delete(id: Long) = getOwnedEntity(id).let { repository.delete(it) }
     open fun patch(id: Long, patchDTO: PatchType): EntType = throw NotImplementedError("Patch method is not implemented")
 }
