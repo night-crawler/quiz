@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class AuthenticationFacade(
-        private val jwtUserDetailsService: JwtUserDetailsService
+        private val jwtAuthService: JwtAuthService
 ) {
     val principal
         get() =
@@ -14,7 +14,7 @@ class AuthenticationFacade(
 
     val jwtUserDetails
         get() =
-            jwtUserDetailsService.loadUserByUsername(principal.username) as JwtUserDetails
+            jwtAuthService.loadUserByUsername(principal.username) as JwtUserDetails
 
-    val user get() = jwtUserDetailsService.getUser(principal.username)
+    val user get() = jwtAuthService.getUser(principal.username)
 }

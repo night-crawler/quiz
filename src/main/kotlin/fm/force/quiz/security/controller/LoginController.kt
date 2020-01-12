@@ -1,8 +1,7 @@
 package fm.force.quiz.security.controller
 
-import fm.force.quiz.security.dto.JwtResponseDTO
 import fm.force.quiz.security.dto.LoginRequestDTO
-import fm.force.quiz.security.service.JwtUserDetailsService
+import fm.force.quiz.security.service.JwtAuthService
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -14,11 +13,9 @@ import javax.validation.Valid
 @Transactional
 @RequestMapping("/auth/login")
 class LoginController(
-        val jwtUserDetailsService: JwtUserDetailsService
+        val jwtAuthService: JwtAuthService
 ) {
 
     @PostMapping
-    fun login(@Valid @RequestBody request: LoginRequestDTO): JwtResponseDTO {
-        return jwtUserDetailsService.login(request)
-    }
+    fun login(@Valid @RequestBody request: LoginRequestDTO) = jwtAuthService.authenticate(request)
 }

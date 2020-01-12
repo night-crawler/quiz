@@ -17,7 +17,7 @@ import java.util.*
 class JwtProviderService(
         private val config: JwtConfigurationProperties
 ) {
-    val logger: Logger = LoggerFactory.getLogger(this::class.java)
+    private val logger: Logger = LoggerFactory.getLogger(this::class.java)
     private val key: Key = Keys.hmacShaKeyFor(config.secret.toByteArray())
 
     fun issue(jwtUserDetails: JwtUserDetails, now: Date = Date()): String {
@@ -63,7 +63,6 @@ class JwtProviderService(
         null
     }
 
-    // TODO: obviously, there's a need to implement custom serializer & deserializer
     fun safeExtractAuthoritiesFromRoles(mayBeRoles: Any?): List<GrantedAuthority> {
         val roles = mayBeRoles as? Collection<*>
         return roles?.map { GrantedAuthority { it.toString() } } ?: listOf()

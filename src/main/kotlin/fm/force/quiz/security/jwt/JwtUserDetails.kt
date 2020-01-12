@@ -27,59 +27,13 @@ class JwtUserDetails(
         var accountNonLocked: Boolean = false,
 
         var id: Long? = null) : UserDetails {
-    /**
-     * Returns the authorities granted to the user. Cannot return `null`.
-     *
-     * @return the authorities, sorted by natural key (never `null`)
-     */
+
     override fun getAuthorities() = authorities
-
-    /**
-     * Indicates whether the user is enabled or disabled. A disabled user cannot be
-     * authenticated.
-     *
-     * @return `true` if the user is enabled, `false` otherwise
-     */
     override fun isEnabled() = enabled
-
-    /**
-     * Returns the username used to authenticate the user. Cannot return `null`.
-     *
-     * @return the username (never `null`)
-     */
     override fun getUsername() = username
-
-    /**
-     * Indicates whether the user's credentials (password) has expired. Expired
-     * credentials prevent authentication.
-     *
-     * @return `true` if the user's credentials are valid (ie non-expired),
-     * `false` if no longer valid (ie expired)
-     */
     override fun isCredentialsNonExpired() = credentialsNonExpired
-
-    /**
-     * Returns the password used to authenticate the user.
-     *
-     * @return the password
-     */
     override fun getPassword() = password
-
-    /**
-     * Indicates whether the user's account has expired. An expired account cannot be
-     * authenticated.
-     *
-     * @return `true` if the user's account is valid (ie non-expired),
-     * `false` if no longer valid (ie expired)
-     */
     override fun isAccountNonExpired() = accountNonExpired
-
-    /**
-     * Indicates whether the user is locked or unlocked. A locked user cannot be
-     * authenticated.
-     *
-     * @return `true` if the user is not locked, `false` otherwise
-     */
     override fun isAccountNonLocked() = accountNonLocked
 
     fun isUsable() = isAccountNonExpired && isAccountNonLocked && isCredentialsNonExpired && isEnabled

@@ -5,7 +5,7 @@ import fm.force.quiz.YamlPropertyLoaderFactory
 import fm.force.quiz.factory.TestDataFactory
 import fm.force.quiz.security.entity.User
 import fm.force.quiz.security.service.AuthenticationFacade
-import fm.force.quiz.security.service.JwtUserDetailsFactoryService
+import fm.force.quiz.security.service.JwtUserDetailsMapper
 import io.kotlintest.TestCase
 import io.kotlintest.specs.StringSpec
 import org.mockito.Mockito
@@ -22,7 +22,7 @@ abstract class AbstractCRUDServiceTest : StringSpec() {
     lateinit var testDataFactory: TestDataFactory
 
     @Autowired
-    lateinit var jwtUserDetailsFactoryService: JwtUserDetailsFactoryService
+    lateinit var jwtUserDetailsMapper: JwtUserDetailsMapper
 
     @MockBean
     lateinit var authFacade: AuthenticationFacade
@@ -33,7 +33,7 @@ abstract class AbstractCRUDServiceTest : StringSpec() {
         user = testDataFactory.getUser()
         alien = testDataFactory.getUser()
 
-        Mockito.`when`(authFacade.principal).thenReturn(jwtUserDetailsFactoryService.createUserDetails(user))
+        Mockito.`when`(authFacade.principal).thenReturn(jwtUserDetailsMapper.fromUser(user))
         Mockito.`when`(authFacade.user).thenReturn(user)
     }
 }

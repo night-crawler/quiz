@@ -18,8 +18,8 @@ import java.util.*
 open class JwtProviderServiceTest(
         private val jwtProviderService: JwtProviderService
 ) : WordSpec() {
-    private val jwtUserDetailsFactory = JwtUserDetailsFactoryService()
-    private val randomUserDetails: JwtUserDetails get() = jwtUserDetailsFactory.createUserDetails(randomUser)
+    private val jwtUserDetailsFactory = JwtUserDetailsMapper()
+    private val randomUserDetails: JwtUserDetails get() = jwtUserDetailsFactory.fromUser(randomUser)
     private val randomUser
         get() = User(
                 username = "username-${getRandomString()}",
@@ -30,7 +30,7 @@ open class JwtProviderServiceTest(
     init {
         "JwtTokenProvider" should {
             "issue jwt tokens with empty roles" {
-                val userDetails = jwtUserDetailsFactory.createUserDetails().apply {
+                val userDetails = jwtUserDetailsFactory.fromEmpty().apply {
                     username = "sample@example.com"
                     password = "password"
                 }

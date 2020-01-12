@@ -14,8 +14,8 @@ import javax.validation.Validator
 
 
 @ContextConfiguration(classes = [TestConfiguration::class])
-open class JwtUserDetailsServiceTest(
-        private val service: JwtUserDetailsService,
+open class JwtAuthServiceTest(
+        private val service: JwtAuthService,
         private val validator: Validator
 ) : StringSpec() {
     init {

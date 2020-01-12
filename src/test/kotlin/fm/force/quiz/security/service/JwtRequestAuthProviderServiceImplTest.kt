@@ -10,12 +10,12 @@ open class JwtRequestAuthProviderServiceImplTest(
         private val jwtRequestAuthProviderService: JwtRequestAuthProviderService,
         private val jwtProviderService: JwtProviderService
 ) : WordSpec() {
-    private val jwtUserDetailsFactory = JwtUserDetailsFactoryService()
+    private val jwtUserDetailsFactory = JwtUserDetailsMapper()
 
     init {
         "JwtRequestAuthProviderService" should {
             "check stuff" {
-                val details = jwtUserDetailsFactory.createUserDetails().apply {
+                val details = jwtUserDetailsFactory.fromEmpty().apply {
                     username = "example"
                 }
                 val token = jwtProviderService.issue(details)
