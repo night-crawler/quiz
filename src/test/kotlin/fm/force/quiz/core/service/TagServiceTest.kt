@@ -20,7 +20,7 @@ open class TagServiceTest(
         jpaTagRepository: JpaTagRepository,
         tagService: TagService,
         validationProps: TagValidationProperties
-) : GenericCRUDServiceTest() {
+) : AbstractCRUDServiceTest() {
 
     init {
         "should throw ValidationError on too short or too long tag names" {

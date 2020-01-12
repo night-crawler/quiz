@@ -4,7 +4,7 @@ import fm.force.quiz.core.dto.QuizQuestionPatchDTO
 import fm.force.quiz.core.entity.QuizQuestion
 import fm.force.quiz.core.exception.ValidationError
 import fm.force.quiz.core.repository.JpaQuizQuestionRepository
-import fm.force.quiz.core.service.GenericCRUDServiceTest
+import fm.force.quiz.core.service.AbstractCRUDServiceTest
 import fm.force.quiz.core.service.QuizQuestionService
 import io.kotlintest.data.forall
 import io.kotlintest.shouldBe
@@ -15,7 +15,7 @@ import org.springframework.dao.DataIntegrityViolationException
 open class QuizQuestionServiceTest(
         private val service: QuizQuestionService,
         private val jpaQuizQuestionRepository: JpaQuizQuestionRepository
-) : GenericCRUDServiceTest() {
+) : AbstractCRUDServiceTest() {
 
     init {
         "should validate" {

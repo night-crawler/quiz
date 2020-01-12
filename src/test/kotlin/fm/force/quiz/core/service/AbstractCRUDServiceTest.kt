@@ -16,7 +16,7 @@ import org.springframework.test.context.ContextConfiguration
 
 @PropertySource("classpath:application-test.yaml", factory = YamlPropertyLoaderFactory::class)
 @ContextConfiguration(classes = [TestConfiguration::class])
-abstract class GenericCRUDServiceTest : StringSpec() {
+abstract class AbstractCRUDServiceTest : StringSpec() {
 
     @Autowired
     lateinit var testDataFactory: TestDataFactory

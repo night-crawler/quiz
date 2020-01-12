@@ -16,7 +16,7 @@ import io.kotlintest.tables.row
 open class QuizServiceTest(
         validationProps: QuizValidationProperties,
         quizService: QuizService
-) : GenericCRUDServiceTest() {
+) : AbstractCRUDServiceTest() {
 
     init {
         "should validate" {

@@ -14,7 +14,7 @@ import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.tables.row
 
-open class QuestionServiceTest(questionService: QuestionService) : GenericCRUDServiceTest() {
+open class QuestionServiceTest(questionService: QuestionService) : AbstractCRUDServiceTest() {
     private lateinit var answer: Answer
     private lateinit var tag: Tag
     private lateinit var topic: Topic

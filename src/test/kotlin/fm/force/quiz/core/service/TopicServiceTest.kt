@@ -15,7 +15,7 @@ import io.kotlintest.tables.row
 class TopicServiceTest(
         validationProps: TopicValidationProperties,
         topicService: TopicService
-) : GenericCRUDServiceTest() {
+) : AbstractCRUDServiceTest() {
     init {
         "should validate topic title length" {
             forall(

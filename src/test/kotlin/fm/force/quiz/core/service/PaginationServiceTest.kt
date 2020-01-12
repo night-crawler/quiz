@@ -12,7 +12,7 @@ import io.kotlintest.tables.row
 open class PaginationServiceTest(
         private val paginationService: PaginationService,
         private val props: PaginationValidationProperties
-) : GenericCRUDServiceTest() {
+) : AbstractCRUDServiceTest() {
 
     init {
         "page validation exceptions" {

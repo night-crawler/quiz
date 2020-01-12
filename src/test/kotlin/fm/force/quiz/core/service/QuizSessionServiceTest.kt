@@ -3,7 +3,7 @@ package io.kotlintest.provided.fm.force.quiz.core.service
 import fm.force.quiz.core.dto.*
 import fm.force.quiz.core.exception.NotFoundException
 import fm.force.quiz.core.exception.ValidationError
-import fm.force.quiz.core.service.GenericCRUDServiceTest
+import fm.force.quiz.core.service.AbstractCRUDServiceTest
 import fm.force.quiz.core.service.QuizSessionService
 import io.kotlintest.data.forall
 import io.kotlintest.matchers.collections.shouldHaveSize
@@ -14,7 +14,7 @@ import io.kotlintest.tables.row
 import java.time.Duration
 import java.time.Instant
 
-open class QuizSessionServiceTest(service: QuizSessionService) : GenericCRUDServiceTest() {
+open class QuizSessionServiceTest(service: QuizSessionService) : AbstractCRUDServiceTest() {
 
     init {
         "should validate create" {

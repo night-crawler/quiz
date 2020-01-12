@@ -17,7 +17,7 @@ import io.kotlintest.tables.row
 open class DifficultyScaleServiceTest(
         difficultyScaleService: DifficultyScaleService,
         validationProps: DifficultyScaleValidationProperties
-) : GenericCRUDServiceTest() {
+) : AbstractCRUDServiceTest() {
 
     init {
         "should validate" {

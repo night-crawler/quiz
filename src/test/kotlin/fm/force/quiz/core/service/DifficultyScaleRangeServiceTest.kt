@@ -13,7 +13,7 @@ import io.kotlintest.tables.row
 open class DifficultyScaleRangeServiceTest(
         service: DifficultyScaleRangeService,
         validationProps: DifficultyScaleRangeValidationProperties
-) : GenericCRUDServiceTest() {
+) : AbstractCRUDServiceTest() {
 
     init {
         "should validate when creating a new instance" {
