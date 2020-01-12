@@ -5,6 +5,7 @@ import fm.force.quiz.TestConfiguration
 import fm.force.quiz.YamlPropertyLoaderFactory
 import fm.force.quiz.security.configuration.PasswordConfigurationProperties
 import fm.force.quiz.security.dto.LoginRequestDTO
+import fm.force.quiz.security.dto.RegisterRequestDTO
 import io.kotlintest.specs.WordSpec
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -23,7 +24,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 @PropertySource("classpath:application-test.yaml", factory = YamlPropertyLoaderFactory::class)
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-class LoginControllerTest(
+class AuthControllersTest(
         private val mockMvc: MockMvc,
         private val passwordConfigurationProperties: PasswordConfigurationProperties
 ) : WordSpec() {
@@ -38,6 +39,25 @@ class LoginControllerTest(
     fun performPost(uri: String, dto: Any) = this.performPost(uri, mapper.writeValueAsString(dto))
 
     init {
+        "POST /auth/register" should {
+            "register a new user" {
+                val data = RegisterRequestDTO("user-sample001@example.com", "samplesample")
+                performPost("/auth/register", data)
+                        .andExpect(status().isCreated)
+                        .andDo(print())
+
+                performPost("/auth/register", data)
+                        .andExpect(status().isConflict)
+                        .andDo(print())
+            }
+
+            "ensure validation is working" {
+                performPost("/auth/register", """{"email": "", "password": ""}""")
+                        .andExpect(status().isBadRequest)
+                        .andDo(print())
+            }
+        }
+
         "POST /auth/login" should {
             "fail because profile was not activated by default" {
                 val failCreds = LoginRequestDTO("user-fail@example.com", "samplesample")

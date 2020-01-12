@@ -63,17 +63,19 @@ class QuizSessionService(
 
         var spec = Specification.where(ownerEquals)
 
-        if (search.quiz != null)
-            spec = spec.and(SpecificationBuilder.fk({ jpaQuizRepository.getEntity((search.quiz)) }, QuizSession_.quiz))
+        with(SpecificationBuilder) {
+            if (search.quiz != null)
+                spec = spec.and(fk({ jpaQuizRepository.getEntity((search.quiz)) }, QuizSession_.quiz))
 
-        if (search.difficultyScale != null)
-            spec = spec.and(SpecificationBuilder.fk({ jpaDifficultyScaleRepository.getEntity((search.difficultyScale)) }, QuizSession_.difficultyScale))
+            if (search.difficultyScale != null)
+                spec = spec.and(fk({ jpaDifficultyScaleRepository.getEntity((search.difficultyScale)) }, QuizSession_.difficultyScale))
 
-        if (search.isCancelled != null)
-            spec = spec.and(SpecificationBuilder.equals(search.isCancelled, QuizSession_.isCancelled))
+            if (search.isCancelled != null)
+                spec = spec.and(equals(search.isCancelled, QuizSession_.isCancelled))
 
-        if (search.isCompleted != null)
-            spec = spec.and(SpecificationBuilder.equals(search.isCompleted, QuizSession_.isCompleted))
+            if (search.isCompleted != null)
+                spec = spec.and(equals(search.isCompleted, QuizSession_.isCompleted))
+        }
 
         return spec
     }
