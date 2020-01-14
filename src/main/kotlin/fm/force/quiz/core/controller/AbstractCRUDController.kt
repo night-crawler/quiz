@@ -18,6 +18,7 @@ abstract class AbstractCRUDController<EntType, RepoType, PatchType, DTOType : DT
               RepoType : CommonRepository<EntType>,
               RepoType : JpaSpecificationExecutor<EntType> {
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     open fun create(@RequestBody createDTO: PatchType): DTOType = service.serializeEntity(service.create(createDTO))
 
     @GetMapping("{instanceId}")
