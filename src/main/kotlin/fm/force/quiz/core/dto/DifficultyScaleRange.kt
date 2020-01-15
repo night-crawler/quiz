@@ -29,6 +29,11 @@ data class DifficultyScaleRangePatchDTO(
         val max: Int? = null
 ) : DTOMarker
 
+data class DifficultyScaleRangeSearchDTO(
+        val difficultyScale: Long? = null,
+        val title: String? = null
+) : DTOSearchMarker
+
 fun DifficultyScaleRange.toFullDTO() = DifficultyScaleRangeFullDTO(
         id = id,
         difficultyScale = difficultyScale.id,

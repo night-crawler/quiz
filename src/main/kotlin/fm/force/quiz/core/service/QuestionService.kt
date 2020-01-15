@@ -26,7 +26,7 @@ class QuestionService(
         private val jpaTopicRepository: JpaTopicRepository,
         validationProps: QuestionValidationProperties,
         jpaQuestionRepository: JpaQuestionRepository
-) : AbstractPaginatedCRUDService<Question, JpaQuestionRepository, QuestionPatchDTO, QuestionFullDTO>(
+) : AbstractPaginatedCRUDService<Question, JpaQuestionRepository, QuestionPatchDTO, QuestionFullDTO, SearchQueryDTO>(
         repository = jpaQuestionRepository
 ) {
 
@@ -87,8 +87,9 @@ class QuestionService(
         return repository.save(modifiedQuestion)
     }
 
-    override fun buildSingleArgumentSearchSpec(needle: String?): Specification<Question> {
+    override fun buildSearchSpec(search: SearchQueryDTO?): Specification<Question> {
         val ownerEquals = SpecificationBuilder.fk(authenticationFacade::user, Question_.owner)
+        val needle = search?.query
         if (needle.isNullOrEmpty()) return ownerEquals
 
         return Specification

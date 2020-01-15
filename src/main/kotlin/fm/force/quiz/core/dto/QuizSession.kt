@@ -29,7 +29,7 @@ data class QuizSessionSearchDTO(
         val difficultyScale: Long? = null,
         val isCompleted: Boolean? = null,
         val isCancelled: Boolean? = null
-)
+) : DTOSearchMarker
 
 
 fun QuizSession.toFullDTO() = QuizSessionFullDTO(

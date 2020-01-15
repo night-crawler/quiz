@@ -4,6 +4,7 @@ import fm.force.quiz.common.getRandomString
 import fm.force.quiz.configuration.properties.QuizValidationProperties
 import fm.force.quiz.core.dto.PaginationQuery
 import fm.force.quiz.core.dto.QuizPatchDTO
+import fm.force.quiz.core.dto.SearchQueryDTO
 import fm.force.quiz.core.dto.SortQuery
 import fm.force.quiz.core.exception.ValidationError
 import io.kotlintest.data.forall
@@ -58,7 +59,7 @@ open class QuizServiceTest(
             val page = quizService.find(
                     PaginationQuery.default(),
                     SortQuery.byIdDesc(),
-                    "exciTINg"
+                    SearchQueryDTO("exciTINg")
             )
             page.content shouldHaveSize 5
         }

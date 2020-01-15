@@ -24,7 +24,11 @@ data class QuizQuestionPatchDTO(
         var quiz: Long? = null,
         var question: Long? = null,
         var seq: Int? = null
-)
+) : DTOSerializationMarker
+
+data class QuizQuestionSearchDTO(
+        val quiz: Long
+) : DTOSearchMarker
 
 fun QuizQuestion.toFullDTO() = QuizQuestionFullDTO(
         id = id,

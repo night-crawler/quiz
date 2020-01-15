@@ -1,9 +1,6 @@
 package fm.force.quiz.core.controller
 
-import fm.force.quiz.core.dto.DTOSerializationMarker
-import fm.force.quiz.core.dto.PageDTO
-import fm.force.quiz.core.dto.PaginationQuery
-import fm.force.quiz.core.dto.SortQuery
+import fm.force.quiz.core.dto.*
 import fm.force.quiz.core.repository.CommonRepository
 import fm.force.quiz.core.repository.CustomJpaRepository
 import fm.force.quiz.core.service.AbstractPaginatedCRUDService
@@ -11,12 +8,14 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 
-abstract class AbstractCRUDController<EntType, RepoType, PatchType, DTOType : DTOSerializationMarker>(
-        val service: AbstractPaginatedCRUDService<EntType, RepoType, PatchType, DTOType>
+abstract class AbstractCRUDController<EntType, RepoType, PatchType, DTOType, SearchType>(
+        val service: AbstractPaginatedCRUDService<EntType, RepoType, PatchType, DTOType, SearchType>
 )
         where RepoType : CustomJpaRepository<EntType, Long>,
               RepoType : CommonRepository<EntType>,
-              RepoType : JpaSpecificationExecutor<EntType> {
+              RepoType : JpaSpecificationExecutor<EntType>,
+              DTOType: DTOSerializationMarker,
+              SearchType: DTOSearchMarker {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     open fun create(@RequestBody createDTO: PatchType): DTOType = service.serializeEntity(service.create(createDTO))
@@ -36,6 +35,6 @@ abstract class AbstractCRUDController<EntType, RepoType, PatchType, DTOType : DT
     open fun find(
             paginationQuery: PaginationQuery,
             sortQuery: SortQuery,
-            @RequestParam("query") query: String?
-    ): PageDTO = service.find(paginationQuery, sortQuery, query)
+            search: SearchType
+    ): PageDTO = service.find(paginationQuery, sortQuery, search)
 }

@@ -1,10 +1,7 @@
 package fm.force.quiz.core.service
 
 import am.ik.yavi.core.Validator
-import fm.force.quiz.core.dto.DTOSerializationMarker
-import fm.force.quiz.core.dto.PageDTO
-import fm.force.quiz.core.dto.PaginationQuery
-import fm.force.quiz.core.dto.SortQuery
+import fm.force.quiz.core.dto.*
 import fm.force.quiz.core.exception.NotFoundException
 import fm.force.quiz.core.exception.ValidationError
 import fm.force.quiz.core.repository.CommonRepository
@@ -19,13 +16,14 @@ import org.springframework.data.jpa.domain.Specification
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import javax.transaction.Transactional
 
-abstract class AbstractPaginatedCRUDService<EntType, RepoType, PatchType, DTOType : DTOSerializationMarker>(
+abstract class AbstractPaginatedCRUDService<EntType, RepoType, PatchType, DTOType, SearchType>(
         val repository: RepoType
 )
         where RepoType : CustomJpaRepository<EntType, Long>,
               RepoType : CommonRepository<EntType>,
-              RepoType : JpaSpecificationExecutor<EntType> {
-
+              RepoType : JpaSpecificationExecutor<EntType>,
+              DTOType: DTOSerializationMarker,
+              SearchType: DTOSearchMarker {
     val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     @Autowired
@@ -63,7 +61,7 @@ abstract class AbstractPaginatedCRUDService<EntType, RepoType, PatchType, DTOTyp
                 ValidationError(it)
             }
 
-    open fun buildSingleArgumentSearchSpec(needle: String?): Specification<EntType> = throw NotImplementedError()
+    open fun buildSearchSpec(search: SearchType?): Specification<EntType> = throw NotImplementedError()
     abstract fun serializePage(page: Page<EntType>): PageDTO
     abstract fun serializeEntity(entity: EntType): DTOType
     abstract fun create(createDTO: PatchType): EntType
@@ -80,12 +78,12 @@ abstract class AbstractPaginatedCRUDService<EntType, RepoType, PatchType, DTOTyp
     open fun find(
             paginationQuery: PaginationQuery,
             sortQuery: SortQuery,
-            query: String?
+            search: SearchType?
     ): PageDTO {
         val pagination = paginationService.getPagination(paginationQuery)
         val sorting = sortingService.getSorting(sortQuery)
         val pageRequest = PageRequest.of(pagination.page, pagination.pageSize, sorting)
-        val page = repository.findAll(buildSingleArgumentSearchSpec(query), pageRequest)
+        val page = repository.findAll(buildSearchSpec(search), pageRequest)
         return serializePage(page)
     }
 

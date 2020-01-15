@@ -26,7 +26,7 @@ class QuizSessionService(
         private val jpaQuizRepository: JpaQuizRepository,
         private val jpaDifficultyScaleRepository: JpaDifficultyScaleRepository,
         jpaQuizSessionRepository: JpaQuizSessionRepository
-) : AbstractPaginatedCRUDService<QuizSession, JpaQuizSessionRepository, QuizSessionPatchDTO, QuizSessionFullDTO>(jpaQuizSessionRepository) {
+) : AbstractPaginatedCRUDService<QuizSession, JpaQuizSessionRepository, QuizSessionPatchDTO, QuizSessionFullDTO, QuizSessionSearchDTO>(jpaQuizSessionRepository) {
 
     override var dtoValidator = ValidatorBuilder.of<QuizSessionPatchDTO>()
             .fkConstraint(QuizSessionPatchDTO::quiz, jpaQuizRepository)
@@ -57,7 +57,7 @@ class QuizSessionService(
         return repository.save(entity)
     }
 
-    fun buildSearchSpec(search: QuizSessionSearchDTO?): Specification<QuizSession> {
+    override fun buildSearchSpec(search: QuizSessionSearchDTO?): Specification<QuizSession> {
         val ownerEquals = SpecificationBuilder.fk(authenticationFacade::user, QuizSession_.owner)
         if (search == null) return ownerEquals
 
@@ -78,19 +78,6 @@ class QuizSessionService(
         }
 
         return spec
-    }
-
-    @Transactional
-    fun find(
-            paginationQuery: PaginationQuery,
-            sortQuery: SortQuery,
-            search: QuizSessionSearchDTO?
-    ): PageDTO {
-        val pagination = paginationService.getPagination(paginationQuery)
-        val sorting = sortingService.getSorting(sortQuery)
-        val pageRequest = PageRequest.of(pagination.page, pagination.pageSize, sorting)
-        val page = repository.findAll(buildSearchSpec(search), pageRequest)
-        return serializePage(page)
     }
 
     override fun serializePage(page: Page<QuizSession>): PageDTO = page.toDTO { it.toFullDTO() }

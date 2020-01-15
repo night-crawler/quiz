@@ -17,19 +17,20 @@ import java.time.Instant
 class AnswerService(
         jpaAnswerRepository: JpaAnswerRepository,
         validationProps: AnswerValidationProperties
-) : AbstractPaginatedCRUDService<Answer, JpaAnswerRepository, AnswerPatchDTO, AnswerFullDTO>(
+) : AbstractPaginatedCRUDService<Answer, JpaAnswerRepository, AnswerPatchDTO, AnswerFullDTO, SearchQueryDTO>(
         repository = jpaAnswerRepository
 ) {
     override var entityValidator = ValidatorBuilder.of<Answer>()
             .stringConstraint(Answer::text, validationProps.minAnswerLength..validationProps.maxAnswerLength)
             .build()
 
-    override fun buildSingleArgumentSearchSpec(needle: String?): Specification<Answer> {
+    override fun buildSearchSpec(search: SearchQueryDTO?): Specification<Answer> {
         val ownerEquals = SpecificationBuilder.fk(authenticationFacade::user, Answer_.owner)
+        val needle = search?.query
         if (needle.isNullOrEmpty()) return ownerEquals
 
         return Specification
-                .where(ownerEquals).and(SpecificationBuilder.ciContains(needle, Answer_.text))
+                .where(ownerEquals).and(SpecificationBuilder.ciContains(search.query, Answer_.text))
     }
 
     override fun serializePage(page: Page<Answer>): PageDTO = page.toDTO { it.toFullDTO() }

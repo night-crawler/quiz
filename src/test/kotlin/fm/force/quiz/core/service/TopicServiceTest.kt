@@ -3,6 +3,7 @@ package fm.force.quiz.core.service
 import fm.force.quiz.common.getRandomString
 import fm.force.quiz.configuration.properties.TopicValidationProperties
 import fm.force.quiz.core.dto.PaginationQuery
+import fm.force.quiz.core.dto.SearchQueryDTO
 import fm.force.quiz.core.dto.SortQuery
 import fm.force.quiz.core.dto.TopicPatchDTO
 import fm.force.quiz.core.exception.NotFoundException
@@ -39,7 +40,7 @@ class TopicServiceTest(
             val page = topicService.find(
                     PaginationQuery.default(),
                     SortQuery.byIdDesc(),
-                    "conT"
+                    SearchQueryDTO("conT")
             )
             page.content shouldHaveSize 5
         }

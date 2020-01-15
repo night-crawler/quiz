@@ -11,13 +11,24 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("quizzes")
 class QuizController(quizService: QuizService, private val quizQuestionService: QuizQuestionService)
-    : AbstractCRUDController<Quiz, JpaQuizRepository, QuizPatchDTO, QuizFullDTO>(quizService) {
+    : AbstractCRUDController<Quiz, JpaQuizRepository, QuizPatchDTO, QuizFullDTO, SearchQueryDTO>(quizService) {
 
     @GetMapping("{quizId}/view")
     fun getRestricted(@PathVariable quizId: Long) = service.getEntity(quizId).toRestrictedDTO()
 
-    @RequestMapping("{quizId}/quizQuestions")
-    @PostMapping
+    @GetMapping("{quizId}/quizQuestions")
+    fun findQuizQuestions(
+            @PathVariable quizId: Long,
+            paginationQuery: PaginationQuery,
+            sortQuery: SortQuery
+    ) = quizQuestionService.find(
+            paginationQuery,
+            sortQuery,
+            QuizQuestionSearchDTO(quizId)
+    )
+
+    @PostMapping("{quizId}/quizQuestions")
+    @ResponseStatus(HttpStatus.CREATED)
     fun createQuizQuestion(
             @PathVariable quizId: Long,
             @RequestBody createDTO: QuizQuestionPatchDTO

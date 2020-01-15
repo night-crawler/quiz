@@ -27,16 +27,19 @@ class DifficultyScaleRangeService(
         private val jpaDifficultyScaleRepository: JpaDifficultyScaleRepository,
         jpaDifficultyScaleRangeRepository: JpaDifficultyScaleRangeRepository,
         validationProps: DifficultyScaleRangeValidationProperties
-) : AbstractPaginatedCRUDService<DifficultyScaleRange, JpaDifficultyScaleRangeRepository, DifficultyScaleRangePatchDTO, DifficultyScaleRangeFullDTO>(
-        repository = jpaDifficultyScaleRangeRepository
-) {
+) : AbstractPaginatedCRUDService<
+        DifficultyScaleRange,
+        JpaDifficultyScaleRangeRepository,
+        DifficultyScaleRangePatchDTO,
+        DifficultyScaleRangeFullDTO,
+        DifficultyScaleRangeSearchDTO>(repository = jpaDifficultyScaleRangeRepository) {
     private val msgCannotBeModified = "Cannot be modified"
     private val msgMaxMustBeLessThanMin = "Max must be less than min"
     private val msgMustNotIntersect = "Ranges must not intersect"
 
     private val whenMinMaxSwapped = Predicate<DifficultyScaleRange> { it.min <= it.max }
     private val whenIntersects = Predicate<DifficultyScaleRange> {
-        repository.findIntersecting(it.difficultyScale.id, it.min, it.max).isEmpty()
+        repository.findIntersecting(it.difficultyScale.id, it.min, it.max, it.id).isEmpty()
     }
 
     override var entityValidator = ValidatorBuilder.of<DifficultyScaleRange>()
@@ -64,12 +67,21 @@ class DifficultyScaleRangeService(
             .ownedFkConstraint(DifficultyScaleRangePatchDTO::difficultyScale, jpaDifficultyScaleRepository, ::ownerId)
             .build()
 
-    override fun buildSingleArgumentSearchSpec(needle: String?): Specification<DifficultyScaleRange> {
+    override fun buildSearchSpec(search: DifficultyScaleRangeSearchDTO?): Specification<DifficultyScaleRange> {
         val ownerEquals = SpecificationBuilder.fk(authenticationFacade::user, DifficultyScaleRange_.owner)
-        if (needle.isNullOrEmpty()) return ownerEquals
+        if (search == null) return ownerEquals
 
-        return Specification
-                .where(ownerEquals).and(SpecificationBuilder.ciContains(needle, DifficultyScaleRange_.title))
+        var spec = Specification.where(ownerEquals)
+
+        with(SpecificationBuilder) {
+            if (search.difficultyScale != null)
+                spec = spec.and(fk({ jpaDifficultyScaleRepository.getEntity(search.difficultyScale) }, DifficultyScaleRange_.difficultyScale))
+            if (search.title != null) {
+                spec = spec.and(ciContains(search.title, DifficultyScaleRange_.title))
+            }
+        }
+
+        return spec
     }
 
     override fun serializePage(page: Page<DifficultyScaleRange>): PageDTO = page.toDTO { it.toFullDTO() }

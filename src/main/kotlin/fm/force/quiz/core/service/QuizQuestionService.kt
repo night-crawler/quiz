@@ -2,8 +2,11 @@ package fm.force.quiz.core.service
 
 import am.ik.yavi.builder.ValidatorBuilder
 import am.ik.yavi.builder.konstraintOnGroup
+import fm.force.quiz.common.SpecificationBuilder
 import fm.force.quiz.core.dto.*
+import fm.force.quiz.core.entity.Question_
 import fm.force.quiz.core.entity.QuizQuestion
+import fm.force.quiz.core.entity.QuizQuestion_
 import fm.force.quiz.core.exception.NotFoundException
 import fm.force.quiz.core.repository.JpaQuestionRepository
 import fm.force.quiz.core.repository.JpaQuizQuestionRepository
@@ -23,7 +26,7 @@ class QuizQuestionService(
         jpaQuizQuestionRepository: JpaQuizQuestionRepository,
         private val jpaQuizRepository: JpaQuizRepository,
         private val jpaQuestionRepository: JpaQuestionRepository
-) : AbstractPaginatedCRUDService<QuizQuestion, JpaQuizQuestionRepository, QuizQuestionPatchDTO, QuizQuestionFullDTO>(
+) : AbstractPaginatedCRUDService<QuizQuestion, JpaQuizQuestionRepository, QuizQuestionPatchDTO, QuizQuestionFullDTO, QuizQuestionSearchDTO>(
         jpaQuizQuestionRepository
 ) {
     private val msgSeqTooBigPredicate = "Sequence number is too big"
@@ -78,6 +81,12 @@ class QuizQuestionService(
     }
 
     @Transactional
+    override fun buildSearchSpec(search: QuizQuestionSearchDTO?): Specification<QuizQuestion> {
+        val ownerEquals = SpecificationBuilder.fk(authenticationFacade::user, QuizQuestion_.owner)
+        return Specification.where(ownerEquals)
+    }
+
+    @Transactional
     override fun delete(id: Long) = deletePrivate(getOwnedEntity(id))
 
     @Transactional
@@ -123,9 +132,5 @@ class QuizQuestionService(
         }
         current.seq = seqTo
         return repository.save(current)
-    }
-
-    override fun buildSingleArgumentSearchSpec(needle: String?): Specification<QuizQuestion> {
-        throw NotImplementedError()
     }
 }

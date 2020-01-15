@@ -20,7 +20,7 @@ import java.time.Instant
 class TagService(
         validationProps: TagValidationProperties,
         jpaTagRepository: JpaTagRepository
-) : AbstractPaginatedCRUDService<Tag, JpaTagRepository, TagPatchDTO, TagFullDTO>(
+) : AbstractPaginatedCRUDService<Tag, JpaTagRepository, TagPatchDTO, TagFullDTO, SearchQueryDTO>(
         repository = jpaTagRepository
 ) {
     companion object {
@@ -28,8 +28,9 @@ class TagService(
         fun slugify(text: String): String = slugifier.slugify(text)
     }
 
-    override fun buildSingleArgumentSearchSpec(needle: String?): Specification<Tag> {
+    override fun buildSearchSpec(search: SearchQueryDTO?): Specification<Tag> {
         val ownerEquals = SpecificationBuilder.fk(authenticationFacade::user, Tag_.owner)
+        val needle = search?.query
         if (needle.isNullOrEmpty()) return ownerEquals
 
         return Specification

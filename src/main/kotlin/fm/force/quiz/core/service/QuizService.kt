@@ -29,7 +29,7 @@ class QuizService(
         private val jpaQuizQuestionRepository: JpaQuizQuestionRepository,
         validationProps: QuizValidationProperties,
         jpaQuizRepository: JpaQuizRepository
-) : AbstractPaginatedCRUDService<Quiz, JpaQuizRepository, QuizPatchDTO, QuizFullDTO>(
+) : AbstractPaginatedCRUDService<Quiz, JpaQuizRepository, QuizPatchDTO, QuizFullDTO, SearchQueryDTO>(
         repository = jpaQuizRepository
 ) {
     override var dtoValidator = ValidatorBuilder.of<QuizPatchDTO>()
@@ -43,8 +43,9 @@ class QuizService(
             .ownedFkConstraint(QuizPatchDTO::difficultyScale, jpaDifficultyScaleRepository, ::ownerId)
             .build()
 
-    override fun buildSingleArgumentSearchSpec(needle: String?): Specification<Quiz> {
+    override fun buildSearchSpec(search: SearchQueryDTO?): Specification<Quiz> {
         val ownerEquals = SpecificationBuilder.fk(authenticationFacade::user, Quiz_.owner)
+        val needle = search?.query
         if (needle.isNullOrEmpty()) return ownerEquals
 
         return Specification

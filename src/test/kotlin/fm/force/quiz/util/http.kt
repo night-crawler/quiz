@@ -10,6 +10,7 @@ val expectOkOrPrint = ResultHandler { result ->
     val statusCode = result.response.status
     val statusSeries = HttpStatus.Series.valueOf(statusCode)
     if (statusSeries != HttpStatus.Series.SUCCESSFUL) {
+        println(result.request.pathInfo)
         println(JMapper.pformat(result.response.contentAsString))
     }
     statusSeries shouldBe HttpStatus.Series.SUCCESSFUL

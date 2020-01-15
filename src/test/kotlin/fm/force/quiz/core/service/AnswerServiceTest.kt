@@ -4,6 +4,7 @@ import fm.force.quiz.common.getRandomString
 import fm.force.quiz.configuration.properties.AnswerValidationProperties
 import fm.force.quiz.core.dto.AnswerPatchDTO
 import fm.force.quiz.core.dto.PaginationQuery
+import fm.force.quiz.core.dto.SearchQueryDTO
 import fm.force.quiz.core.dto.SortQuery
 import fm.force.quiz.core.entity.Answer
 import fm.force.quiz.core.exception.ValidationError
@@ -36,7 +37,7 @@ open class AnswerServiceTest(
             (1..5).map { testDataFactory.getAnswer(owner = user, text = "some answer $it") }
             (1..5).map { testDataFactory.getAnswer(owner = alien, text = "never get this $it answer") }
 
-            var answerPage = answerService.find(PaginationQuery.default(), SortQuery.byIdDesc(), "answer")
+            var answerPage = answerService.find(PaginationQuery.default(), SortQuery.byIdDesc(), SearchQueryDTO("answer"))
             answerPage.content shouldHaveSize 5
             testDataFactory.removeAllAnswers()
 

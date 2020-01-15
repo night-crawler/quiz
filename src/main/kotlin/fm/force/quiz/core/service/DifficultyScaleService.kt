@@ -20,7 +20,7 @@ import java.time.Instant
 class DifficultyScaleService(
         jpaDifficultyScaleRepository: JpaDifficultyScaleRepository,
         validationProps: DifficultyScaleValidationProperties
-) : AbstractPaginatedCRUDService<DifficultyScale, JpaDifficultyScaleRepository, DifficultyScalePatchDTO, DifficultyScaleFullDTO>(
+) : AbstractPaginatedCRUDService<DifficultyScale, JpaDifficultyScaleRepository, DifficultyScalePatchDTO, DifficultyScaleFullDTO, SearchQueryDTO>(
         repository = jpaDifficultyScaleRepository
 ) {
     override var dtoValidator = ValidatorBuilder.of<DifficultyScalePatchDTO>()
@@ -32,8 +32,9 @@ class DifficultyScaleService(
             .intConstraint(DifficultyScalePatchDTO::max, 1..validationProps.allowedMax)
             .build()
 
-    override fun buildSingleArgumentSearchSpec(needle: String?): Specification<DifficultyScale> {
+    override fun buildSearchSpec(search: SearchQueryDTO?): Specification<DifficultyScale> {
         val ownerEquals = SpecificationBuilder.fk(authenticationFacade::user, DifficultyScale_.owner)
+        val needle = search?.query
         if (needle.isNullOrEmpty()) return ownerEquals
 
         return Specification

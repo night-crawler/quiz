@@ -17,7 +17,7 @@ import java.time.Instant
 class TopicService(
         validationProps: TopicValidationProperties,
         jpaTopicRepository: JpaTopicRepository
-) : AbstractPaginatedCRUDService<Topic, JpaTopicRepository, TopicPatchDTO, TopicFullDTO>(
+) : AbstractPaginatedCRUDService<Topic, JpaTopicRepository, TopicPatchDTO, TopicFullDTO, SearchQueryDTO>(
         repository = jpaTopicRepository
 ) {
     override var entityValidator = ValidatorBuilder.of<Topic>()
@@ -33,8 +33,9 @@ class TopicService(
         return repository.save(topic)
     }
 
-    override fun buildSingleArgumentSearchSpec(needle: String?): Specification<Topic> {
+    override fun buildSearchSpec(search: SearchQueryDTO?): Specification<Topic> {
         val ownerEquals = SpecificationBuilder.fk(authenticationFacade::user, Topic_.owner)
+        val needle = search?.query
         if (needle.isNullOrEmpty())
             return ownerEquals
 

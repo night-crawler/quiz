@@ -2,6 +2,7 @@ package fm.force.quiz.core.service
 
 import fm.force.quiz.core.dto.PaginationQuery
 import fm.force.quiz.core.dto.QuestionPatchDTO
+import fm.force.quiz.core.dto.SearchQueryDTO
 import fm.force.quiz.core.dto.SortQuery
 import fm.force.quiz.core.entity.Answer
 import fm.force.quiz.core.entity.Tag
@@ -54,7 +55,7 @@ open class QuestionServiceTest(questionService: QuestionService) : AbstractCRUDS
             (1..5).map { testDataFactory.getQuestion(owner = user, text = "Surprise question $it") }
             (1..5).map { testDataFactory.getQuestion(owner = alien, text = "Surprise alien question $it") }
 
-            val page = questionService.find(PaginationQuery.default(), SortQuery.byIdDesc(), "SurPRise")
+            val page = questionService.find(PaginationQuery.default(), SortQuery.byIdDesc(), SearchQueryDTO("SurPRise"))
             page.content shouldHaveSize 5
         }
 

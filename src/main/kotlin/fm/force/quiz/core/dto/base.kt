@@ -20,6 +20,10 @@ enum class SerializationType {
 }
 
 interface DTOMarker
+interface DTOSearchMarker
 interface DTOSerializationMarker : DTOMarker
 interface DTOFullSerializationMarker : DTOSerializationMarker
 interface DTORestrictedSerializationMarker : DTOSerializationMarker
+
+
+data class SearchQueryDTO(val query: String?) : DTOSearchMarker

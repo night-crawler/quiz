@@ -4,6 +4,7 @@ import fm.force.quiz.common.getRandomString
 import fm.force.quiz.configuration.properties.DifficultyScaleValidationProperties
 import fm.force.quiz.core.dto.DifficultyScalePatchDTO
 import fm.force.quiz.core.dto.PaginationQuery
+import fm.force.quiz.core.dto.SearchQueryDTO
 import fm.force.quiz.core.dto.SortQuery
 import fm.force.quiz.core.exception.ValidationError
 import io.kotlintest.data.forall
@@ -45,7 +46,7 @@ open class DifficultyScaleServiceTest(
             val page = difficultyScaleService.find(
                     PaginationQuery.default(),
                     SortQuery.byIdDesc(),
-                    "SCALE"
+                    SearchQueryDTO("SCALE")
             )
             page.content shouldHaveSize 5
         }

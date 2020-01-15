@@ -3,6 +3,7 @@ package fm.force.quiz.core.service
 import fm.force.quiz.common.getRandomString
 import fm.force.quiz.configuration.properties.TagValidationProperties
 import fm.force.quiz.core.dto.PaginationQuery
+import fm.force.quiz.core.dto.SearchQueryDTO
 import fm.force.quiz.core.dto.SortQuery
 import fm.force.quiz.core.dto.TagPatchDTO
 import fm.force.quiz.core.entity.Tag
@@ -47,7 +48,7 @@ open class TagServiceTest(
                     Tag(owner = user, name = "prefix-user-1", slug = "prefix-user-1")
             ))
 
-            val spec = tagService.buildSingleArgumentSearchSpec("prefix")
+            val spec = tagService.buildSearchSpec(SearchQueryDTO("prefix"))
             val foundTags = jpaTagRepository.findAll(spec)
             foundTags shouldHaveSize 1
         }
@@ -68,7 +69,7 @@ open class TagServiceTest(
             val p1 = tagService.find(
                     PaginationQuery(null, null),
                     SortQuery(listOf("-id")),
-                    "test-prefix"
+                    SearchQueryDTO("test-prefix")
             )
             p1.content shouldHaveSize 5
         }

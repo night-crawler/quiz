@@ -16,7 +16,7 @@ interface JpaDifficultyScaleRangeRepository :
         where
             t.difficultyScale.id = :difficultyScaleId and
             t.min <= :max and
-            :min <= t.max
+            :min <= t.max and t.id <> :exclude
     """)
-    fun findIntersecting(difficultyScaleId: Long, min: Int, max: Int): List<DifficultyScaleRange>
+    fun findIntersecting(difficultyScaleId: Long, min: Int, max: Int, exclude: Long): List<DifficultyScaleRange>
 }
