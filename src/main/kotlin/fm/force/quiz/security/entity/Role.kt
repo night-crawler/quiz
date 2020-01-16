@@ -1,15 +1,19 @@
 package fm.force.quiz.security.entity
 
-import javax.persistence.*
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.FetchType
+import javax.persistence.ManyToMany
+import javax.persistence.Table
 
 @Entity
 @Table(name = "roles")
 data class Role(
-        @Column(length = 16)
-        val name: String,
+    @Column(length = 16)
+    val name: String,
 
-        @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
-        val users: List<User> = listOf()
+    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
+    val users: List<User> = listOf()
 ) : BaseEntity() {
     enum class PredefinedRoles {
         ADMIN, STUDENT, TEACHER

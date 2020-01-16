@@ -5,7 +5,6 @@ import io.kotlintest.extensions.ProjectLevelExtension
 import io.kotlintest.spring.SpringAutowireConstructorExtension
 import io.kotlintest.spring.SpringListener
 
-
 object ProjectConfig : AbstractProjectConfig() {
     private var started: Long = 0
     override fun listeners() = listOf(SpringListener)

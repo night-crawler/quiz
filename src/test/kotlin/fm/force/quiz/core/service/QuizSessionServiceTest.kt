@@ -1,6 +1,9 @@
 package io.kotlintest.provided.fm.force.quiz.core.service
 
-import fm.force.quiz.core.dto.*
+import fm.force.quiz.core.dto.PaginationQuery
+import fm.force.quiz.core.dto.QuizSessionPatchDTO
+import fm.force.quiz.core.dto.QuizSessionSearchDTO
+import fm.force.quiz.core.dto.SortQuery
 import fm.force.quiz.core.exception.NotFoundException
 import fm.force.quiz.core.exception.ValidationError
 import fm.force.quiz.core.service.AbstractCRUDServiceTest
@@ -19,7 +22,7 @@ open class QuizSessionServiceTest(service: QuizSessionService) : AbstractCRUDSer
     init {
         "should validate create" {
             forall(
-                    row(QuizSessionPatchDTO(quiz = 0))
+                row(QuizSessionPatchDTO(quiz = 0))
             ) {
                 shouldThrow<ValidationError> { service.create(it) }
             }
@@ -64,15 +67,13 @@ open class QuizSessionServiceTest(service: QuizSessionService) : AbstractCRUDSer
             service.complete(sessions[1].id)
 
             forall(
-                    row(QuizSessionSearchDTO(isCancelled = true)),
-                    row(QuizSessionSearchDTO(isCompleted = true)),
-                    row(QuizSessionSearchDTO(quiz = quizzes.random().id)),
-                    row(QuizSessionSearchDTO(difficultyScale = scales.random().id))
+                row(QuizSessionSearchDTO(isCancelled = true)),
+                row(QuizSessionSearchDTO(isCompleted = true)),
+                row(QuizSessionSearchDTO(quiz = quizzes.random().id)),
+                row(QuizSessionSearchDTO(difficultyScale = scales.random().id))
             ) {
                 service.find(PaginationQuery.default(), SortQuery.byIdDesc(), it).content shouldHaveSize 1
             }
         }
-
     }
-
 }

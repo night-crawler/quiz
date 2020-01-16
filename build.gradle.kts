@@ -1,6 +1,7 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 
 plugins {
     val kotlinVersion = "1.3.50"
@@ -18,6 +19,8 @@ plugins {
     id("org.springframework.boot") version "2.1.8.RELEASE"
     id("io.spring.dependency-management") version "1.0.8.RELEASE"
     id("org.asciidoctor.convert") version "1.5.8"
+
+    id("org.jlleitschuh.gradle.ktlint") version "9.1.1"
 }
 
 group = "fm.force"
@@ -33,7 +36,6 @@ val mainResourcesDir by lazy {
 }
 
 val developmentOnly: Configuration by configurations.creating
-
 
 configurations {
     runtimeClasspath {
@@ -104,31 +106,29 @@ dependencies {
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
 }
 
-
 if (!project.hasProperty("runList")) {
     project.ext["runList"] = "main"
 }
-
 
 liquibase {
     val changeLogDir = "$mainResourcesDir/db/changelog"
     val changesDir = "$changeLogDir/changes"
     val masterChangeLogFile = "$changeLogDir/changelog-master.xml"
     val changeLogTs = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))!!
-    val diffChangeLogFile = "$changesDir/change-${changeLogTs}.xml"
+    val diffChangeLogFile = "$changesDir/change-$changeLogTs.xml"
 
     val liquibaseDefaultArguments = mapOf(
-            "driver" to "org.postgresql.Driver",
-            "url" to "jdbc:postgresql://localhost:5432/quiz",
-            "username" to "postgres",
-            "password" to "postgres",
-            "referenceUrl" to "hibernate:spring:fm.force.quiz?" +
-                    "dialect=org.hibernate.dialect.PostgreSQL95Dialect&" +
-                    "hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&" +
-                    "hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy",
-            "defaultSchemaName" to "",
-            "logLevel" to "debug",
-            "classpath" to "$buildDir/classes/kotlin/main"
+        "driver" to "org.postgresql.Driver",
+        "url" to "jdbc:postgresql://localhost:5432/quiz",
+        "username" to "postgres",
+        "password" to "postgres",
+        "referenceUrl" to "hibernate:spring:fm.force.quiz?" +
+            "dialect=org.hibernate.dialect.PostgreSQL95Dialect&" +
+            "hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&" +
+            "hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy",
+        "defaultSchemaName" to "",
+        "logLevel" to "debug",
+        "classpath" to "$buildDir/classes/kotlin/main"
     )
 
     activities.register("main") {
@@ -156,4 +156,25 @@ tasks.test {
 tasks.asciidoctor {
     inputs.dir(snippetsDir)
     dependsOn(tasks.test)
+}
+
+ktlint {
+    verbose.set(true)
+    android.set(false)
+    outputToConsole.set(true)
+    outputColorName.set("RED")
+    ignoreFailures.set(true)
+    enableExperimentalRules.set(true)
+    additionalEditorconfigFile.set(file("./.editorconfig"))
+
+    disabledRules.set(setOf("experimental:multiline-if-else"))
+
+    reporters {
+        reporter(ReporterType.PLAIN)
+        reporter(ReporterType.CHECKSTYLE)
+    }
+    filter {
+        exclude("**/generated/**")
+        include("**/kotlin/**")
+    }
 }

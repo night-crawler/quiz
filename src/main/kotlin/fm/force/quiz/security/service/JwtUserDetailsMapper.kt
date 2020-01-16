@@ -10,23 +10,23 @@ import org.springframework.stereotype.Component
 @ConditionalOnMissingBean(type = ["JwtUserDetailsFactoryService"])
 class JwtUserDetailsMapper {
     fun fromEmpty() = JwtUserDetails(
-            authorities = mutableListOf(),
-            enabled = true,
-            username = "",
-            credentialsNonExpired = true,
-            password = "",
-            accountNonExpired = true,
-            accountNonLocked = true
+        authorities = mutableListOf(),
+        enabled = true,
+        username = "",
+        credentialsNonExpired = true,
+        password = "",
+        accountNonExpired = true,
+        accountNonLocked = true
     )
 
     fun fromUser(user: User) = JwtUserDetails(
-            id = user.id,
-            authorities = user.roles.map { GrantedAuthority { it.name } }.toMutableSet(),
-            enabled = user.isActive,
-            username = user.email,
-            credentialsNonExpired = user.isActive,
-            password = user.password,
-            accountNonExpired = user.isActive,
-            accountNonLocked = user.isActive
+        id = user.id,
+        authorities = user.roles.map { GrantedAuthority { it.name } }.toMutableSet(),
+        enabled = user.isActive,
+        username = user.email,
+        credentialsNonExpired = user.isActive,
+        password = user.password,
+        accountNonExpired = user.isActive,
+        accountNonLocked = user.isActive
     )
 }

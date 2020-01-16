@@ -12,24 +12,24 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.web.bind.MethodArgumentNotValidException
 
 fun ConstraintViolation.toFieldError() = FieldError(
-        fieldName = name(),
-        message = message()
+    fieldName = name(),
+    message = message()
 )
 
 data class ErrorMessage(
-        val message: String
+    val message: String
 )
 
 data class FieldError(
-        val fieldName: String,
-        val message: String,
-        val violatedValue: String? = null
+    val fieldName: String,
+    val message: String,
+    val violatedValue: String? = null
 )
 
 data class ErrorResponse(
-        val exception: String,
-        val type: Type = Type.GENERAL,
-        val errors: List<Any> = emptyList()
+    val exception: String,
+    val type: Type = Type.GENERAL,
+    val errors: List<Any> = emptyList()
 ) {
     enum class Type {
         VALIDATION, GENERAL, AUTH
@@ -44,13 +44,17 @@ data class ErrorResponse(
                 ErrorMessage("${it.objectName}: ${it.defaultMessage ?: ""}")
             }
             val fieldErrors = ex.bindingResult.fieldErrors.map {
-                FieldError(fieldName = it.field, message = it.defaultMessage
-                        ?: "", violatedValue = it.rejectedValue.toString())
+                FieldError(
+                    fieldName = it.field,
+                    message = it.defaultMessage
+                        ?: "",
+                    violatedValue = it.rejectedValue.toString()
+                )
             }
             return ErrorResponse(
-                    exception = ex.javaClass.simpleName,
-                    type = Type.VALIDATION,
-                    errors = globalErrors + fieldErrors
+                exception = ex.javaClass.simpleName,
+                type = Type.VALIDATION,
+                errors = globalErrors + fieldErrors
             )
         }
 
@@ -66,83 +70,84 @@ data class ErrorResponse(
                 // like (quiz_id, question_id)=(27271725837328210, 27271726072212586)
 
                 val errors = commaSeparatedFieldNames
-                        .split(",").map { it.trim() }.filter { it.isNotEmpty() }
-                        .map {
-                            FieldError(
-                                    fieldName = it,
-                                    message = "Entity with field name `$commaSeparatedFieldNames` exists: `$commaSeparatedFieldValues`",
-                                    violatedValue = commaSeparatedFieldValues
-                            )
-                        }
+                    .split(",").map { it.trim() }.filter { it.isNotEmpty() }
+                    .map {
+                        FieldError(
+                            fieldName = it,
+                            message = "Entity with field name `$commaSeparatedFieldNames` exists: `$commaSeparatedFieldValues`",
+                            violatedValue = commaSeparatedFieldValues
+                        )
+                    }
 
                 return ErrorResponse(
-                        exception = ex.javaClass.simpleName,
-                        type = Type.VALIDATION,
-                        errors = errors
+                    exception = ex.javaClass.simpleName,
+                    type = Type.VALIDATION,
+                    errors = errors
                 )
             }
 
             return ErrorResponse(
-                    exception = ex.javaClass.simpleName,
-                    type = Type.VALIDATION,
-                    errors = listOf(FieldError(
-                            fieldName = "",
-                            message = ex.localizedMessage
-                    ))
+                exception = ex.javaClass.simpleName,
+                type = Type.VALIDATION,
+                errors = listOf(
+                    FieldError(
+                        fieldName = "",
+                        message = ex.localizedMessage
+                    )
+                )
             )
         }
 
         fun of(ex: UsernameNotFoundException) = ErrorResponse(
-                exception = ex.javaClass.simpleName,
-                type = Type.AUTH,
-                errors = listOf(ErrorMessage(ex.localizedMessage))
+            exception = ex.javaClass.simpleName,
+            type = Type.AUTH,
+            errors = listOf(ErrorMessage(ex.localizedMessage))
         )
 
         fun of(ex: PropertyReferenceException) = ErrorResponse(
-                exception = ex.javaClass.simpleName,
-                type = Type.GENERAL,
-                errors = listOf(FieldError(fieldName = ex.propertyName, message = "Unknown field"))
+            exception = ex.javaClass.simpleName,
+            type = Type.GENERAL,
+            errors = listOf(FieldError(fieldName = ex.propertyName, message = "Unknown field"))
         )
 
         fun of(ex: NotFoundException) = ErrorResponse(
-                exception = ex.javaClass.simpleName,
-                type = Type.GENERAL,
-                errors = listOf(ErrorMessage(ex.localizedMessage))
+            exception = ex.javaClass.simpleName,
+            type = Type.GENERAL,
+            errors = listOf(ErrorMessage(ex.localizedMessage))
         )
 
         fun of(ex: ValidationError) = ErrorResponse(
-                exception = ex.javaClass.simpleName,
-                type = Type.VALIDATION,
-                errors = ex.violations.map { it.toFieldError() }
+            exception = ex.javaClass.simpleName,
+            type = Type.VALIDATION,
+            errors = ex.violations.map { it.toFieldError() }
         )
 
         fun of(ex: MissingKotlinParameterException) = ErrorResponse(
-                exception = ex.javaClass.simpleName,
-                type = Type.VALIDATION,
-                errors = listOf(FieldError(ex.parameter.name ?: "", "Field is required"))
+            exception = ex.javaClass.simpleName,
+            type = Type.VALIDATION,
+            errors = listOf(FieldError(ex.parameter.name ?: "", "Field is required"))
         )
 
         fun of(ex: Throwable) = ErrorResponse(
-                exception = ex.javaClass.simpleName,
-                type = Type.GENERAL,
-                errors = listOf(ErrorMessage(ex.localizedMessage))
+            exception = ex.javaClass.simpleName,
+            type = Type.GENERAL,
+            errors = listOf(ErrorMessage(ex.localizedMessage))
         )
 
         fun of(ex: MismatchedInputException) = ErrorResponse(
-                exception = ex.javaClass.simpleName,
-                type = Type.VALIDATION,
-                errors = ex.path
-                        // if there's an outlier in an array of Ints: ["a", 1, 2], there will be empty fieldName in path
-                        .filter { !it.fieldName.isNullOrBlank() }
-                        .map { FieldError(it.fieldName, "Field has a wrong type") }
+            exception = ex.javaClass.simpleName,
+            type = Type.VALIDATION,
+            errors = ex.path
+                // if there's an outlier in an array of Ints: ["a", 1, 2], there will be empty fieldName in path
+                .filter { !it.fieldName.isNullOrBlank() }
+                .map { FieldError(it.fieldName, "Field has a wrong type") }
         )
 
         fun of(ex: HttpMessageNotReadableException) =
-                when (val cause = ex.mostSpecificCause) {
-                    is MissingKotlinParameterException -> of(cause)
-                    is MismatchedInputException -> of(cause)
-                    else -> of(cause)
-                }
+            when (val cause = ex.mostSpecificCause) {
+                is MissingKotlinParameterException -> of(cause)
+                is MismatchedInputException -> of(cause)
+                else -> of(cause)
+            }
     }
 }
-

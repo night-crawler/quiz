@@ -1,10 +1,9 @@
 package fm.force.quiz.security.configuration
 
 import fm.force.quiz.security.entity.Role
+import java.time.Duration
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Configuration
-import java.time.Duration
-
 
 @Configuration
 @ConfigurationProperties(prefix = "force.security.jwt")
@@ -34,8 +33,8 @@ class AuthConfigurationProperties {
     }
 
     var access: List<AccessPattern> = listOf(
-            AccessPattern(pattern = "/admin/**", authority = Role.PredefinedRoles.ADMIN.name),
-            AccessPattern(pattern = "/auth/**", anonymous = true)
+        AccessPattern(pattern = "/admin/**", authority = Role.PredefinedRoles.ADMIN.name),
+        AccessPattern(pattern = "/auth/**", anonymous = true)
     )
 }
 

@@ -10,21 +10,20 @@ import io.kotlintest.matchers.string.shouldNotBeBlank
 import io.kotlintest.matchers.types.shouldBeNull
 import io.kotlintest.matchers.types.shouldNotBeNull
 import io.kotlintest.specs.WordSpec
+import java.util.Date
 import org.springframework.test.context.ContextConfiguration
-import java.util.*
-
 
 @ContextConfiguration(classes = [TestConfiguration::class])
 open class JwtProviderServiceTest(
-        private val jwtProviderService: JwtProviderService
+    private val jwtProviderService: JwtProviderService
 ) : WordSpec() {
     private val jwtUserDetailsFactory = JwtUserDetailsMapper()
     private val randomUserDetails: JwtUserDetails get() = jwtUserDetailsFactory.fromUser(randomUser)
     private val randomUser
         get() = User(
-                username = "username-${getRandomString()}",
-                email = "email-${getRandomString()}@example.com",
-                roles = setOf(Role(Role.predefinedRoleNames.random()))
+            username = "username-${getRandomString()}",
+            email = "email-${getRandomString()}@example.com",
+            roles = setOf(Role(Role.predefinedRoleNames.random()))
         )
 
     init {

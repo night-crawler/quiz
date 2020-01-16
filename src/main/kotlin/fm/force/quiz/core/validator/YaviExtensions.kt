@@ -6,22 +6,20 @@ import am.ik.yavi.builder.konstraintOnCondition
 import am.ik.yavi.core.ConstraintCondition
 import fm.force.quiz.common.toCustomSet
 import fm.force.quiz.core.repository.CommonRepository
-import org.springframework.data.jpa.repository.JpaRepository
 import java.time.Instant
-import java.util.*
+import java.util.Locale
 import java.util.function.Predicate
 import kotlin.reflect.KProperty1
-
+import org.springframework.data.jpa.repository.JpaRepository
 
 fun <T> notNullCondition(property: KProperty1<T, Any?>) =
-        ConstraintCondition<T> { dto, _ -> property(dto) != null }
-
+    ConstraintCondition<T> { dto, _ -> property(dto) != null }
 
 fun <T, E : Any?> ValidatorBuilder<T>.mandatory(
-        property: KProperty1<T, E>,
-        errorTemplate: String = "%s must be present",
-        locale: Locale = Locale.ENGLISH,
-        chain: ValidatorBuilder<T>.(ValidatorBuilder<T>) -> Unit = { }
+    property: KProperty1<T, E>,
+    errorTemplate: String = "%s must be present",
+    locale: Locale = Locale.ENGLISH,
+    chain: ValidatorBuilder<T>.(ValidatorBuilder<T>) -> Unit = { }
 ): ValidatorBuilder<T> {
     val msgError = errorTemplate.format(locale, property.name)
     val predicate = Predicate<T> { property(it) != null }
@@ -30,14 +28,13 @@ fun <T, E : Any?> ValidatorBuilder<T>.mandatory(
     return this
 }
 
-
 fun <T, E, C : Collection<E>?> ValidatorBuilder<T>.optionalSubset(
-        sup: KProperty1<T, C>,
-        sub: KProperty1<T, C>,
+    sup: KProperty1<T, C>,
+    sub: KProperty1<T, C>,
 
-        errorTemplate: String = "%s must be a subset of %s",
-        locale: Locale = Locale.ENGLISH,
-        chain: ValidatorBuilder<T>.(ValidatorBuilder<T>) -> Unit = { }
+    errorTemplate: String = "%s must be a subset of %s",
+    locale: Locale = Locale.ENGLISH,
+    chain: ValidatorBuilder<T>.(ValidatorBuilder<T>) -> Unit = { }
 ): ValidatorBuilder<T> {
     val errorMessage = errorTemplate.format(locale, sub.name, sup.name)
 
@@ -64,15 +61,14 @@ fun <T, E, C : Collection<E>?> ValidatorBuilder<T>.optionalSubset(
     return this
 }
 
-
 fun <T, ID : Long?, R> ValidatorBuilder<T>.ownedFkConstraint(
-        property: KProperty1<T, ID>,
-        repository: CommonRepository<R>,
-        getOwnerId: () -> Long,
-        wrongFkTemplate: String = "%s must be positive",
-        doesNotExistErrorTemplate: String = "%s must exist and belong to you",
-        locale: Locale = Locale.ENGLISH,
-        chain: ValidatorBuilder<T>.(ValidatorBuilder<T>) -> Unit = { }
+    property: KProperty1<T, ID>,
+    repository: CommonRepository<R>,
+    getOwnerId: () -> Long,
+    wrongFkTemplate: String = "%s must be positive",
+    doesNotExistErrorTemplate: String = "%s must exist and belong to you",
+    locale: Locale = Locale.ENGLISH,
+    chain: ValidatorBuilder<T>.(ValidatorBuilder<T>) -> Unit = { }
 ): ValidatorBuilder<T> {
     val msgWrongFk = wrongFkTemplate.format(locale, property.name)
     val msgDoesNotExist = doesNotExistErrorTemplate.format(locale, property.name)
@@ -93,12 +89,12 @@ fun <T, ID : Long?, R> ValidatorBuilder<T>.ownedFkConstraint(
 }
 
 fun <T, R> ValidatorBuilder<T>.fkConstraint(
-        property: KProperty1<T, Long>,
-        repository: JpaRepository<R, Long>,
-        wrongFkTemplate: String = "%s must be positive",
-        doesNotExistErrorTemplate: String = "%s must exist",
-        locale: Locale = Locale.ENGLISH,
-        chain: ValidatorBuilder<T>.(ValidatorBuilder<T>) -> Unit = { }
+    property: KProperty1<T, Long>,
+    repository: JpaRepository<R, Long>,
+    wrongFkTemplate: String = "%s must be positive",
+    doesNotExistErrorTemplate: String = "%s must exist",
+    locale: Locale = Locale.ENGLISH,
+    chain: ValidatorBuilder<T>.(ValidatorBuilder<T>) -> Unit = { }
 ): ValidatorBuilder<T> {
     val msgWrongFk = wrongFkTemplate.format(locale, property.name)
     val msgDoesNotExist = doesNotExistErrorTemplate.format(locale, property.name)
@@ -115,11 +111,11 @@ fun <T, R> ValidatorBuilder<T>.fkConstraint(
 }
 
 fun <T, R : String?> ValidatorBuilder<T>.stringConstraint(
-        property: KProperty1<T, R>,
-        range: ClosedRange<Int>,
-        errorTemplate: String = "%s length must be in range [%d; %d]",
-        locale: Locale = Locale.ENGLISH,
-        chain: ValidatorBuilder<T>.(ValidatorBuilder<T>) -> Unit = { }
+    property: KProperty1<T, R>,
+    range: ClosedRange<Int>,
+    errorTemplate: String = "%s length must be in range [%d; %d]",
+    locale: Locale = Locale.ENGLISH,
+    chain: ValidatorBuilder<T>.(ValidatorBuilder<T>) -> Unit = { }
 ): ValidatorBuilder<T> {
     val msgError = errorTemplate.format(locale, property.name, range.start, range.endInclusive)
 
@@ -133,13 +129,12 @@ fun <T, R : String?> ValidatorBuilder<T>.stringConstraint(
     return this
 }
 
-
 fun <T, V : Int?> ValidatorBuilder<T>.intConstraint(
-        property: KProperty1<T, V>,
-        range: ClosedRange<Int>,
-        errorTemplate: String = "%s must be in range [%d; %d]",
-        locale: Locale = Locale.ENGLISH,
-        chain: ValidatorBuilder<T>.(ValidatorBuilder<T>) -> Unit = { }
+    property: KProperty1<T, V>,
+    range: ClosedRange<Int>,
+    errorTemplate: String = "%s must be in range [%d; %d]",
+    locale: Locale = Locale.ENGLISH,
+    chain: ValidatorBuilder<T>.(ValidatorBuilder<T>) -> Unit = { }
 ): ValidatorBuilder<T> {
     val msgError = errorTemplate.format(locale, property.name, range.start, range.endInclusive)
 
@@ -154,14 +149,14 @@ fun <T, V : Int?> ValidatorBuilder<T>.intConstraint(
 }
 
 fun <T, C : Collection<Long>?, R> ValidatorBuilder<T>.ownedFksConstraint(
-        property: KProperty1<T, C>,
-        repository: CommonRepository<R>,
-        range: ClosedRange<Int>,
-        getOwnerId: () -> Long,
-        errorTemplate: String = "Provide %d - %d items for the field %s",
-        missingItemsTemplate: String = "Some of entered items are missing or do not belong to your user",
-        locale: Locale = Locale.ENGLISH,
-        chain: ValidatorBuilder<T>.(ValidatorBuilder<T>) -> Unit = { }
+    property: KProperty1<T, C>,
+    repository: CommonRepository<R>,
+    range: ClosedRange<Int>,
+    getOwnerId: () -> Long,
+    errorTemplate: String = "Provide %d - %d items for the field %s",
+    missingItemsTemplate: String = "Some of entered items are missing or do not belong to your user",
+    locale: Locale = Locale.ENGLISH,
+    chain: ValidatorBuilder<T>.(ValidatorBuilder<T>) -> Unit = { }
 ): ValidatorBuilder<T> {
     val msgError = errorTemplate.format(locale, range.start, range.endInclusive, property.name)
     val msgSomeItemsAreMissing = missingItemsTemplate.format(locale, repository::class.simpleName)
@@ -184,13 +179,12 @@ fun <T, C : Collection<Long>?, R> ValidatorBuilder<T>.ownedFksConstraint(
     return this
 }
 
-
-fun <T, R: Instant?> ValidatorBuilder<T>.instantConstraint(
-        property: KProperty1<T, R>,
-        getStart: () -> Instant = Instant::now,
-        getEnd: () -> Instant = { Instant.MAX },
-        errorTemplate: String = "Instant value {1} of field {0} is illegal",
-        chain: ValidatorBuilder<T>.(ValidatorBuilder<T>) -> Unit = { }
+fun <T, R : Instant?> ValidatorBuilder<T>.instantConstraint(
+    property: KProperty1<T, R>,
+    getStart: () -> Instant = Instant::now,
+    getEnd: () -> Instant = { Instant.MAX },
+    errorTemplate: String = "Instant value {1} of field {0} is illegal",
+    chain: ValidatorBuilder<T>.(ValidatorBuilder<T>) -> Unit = { }
 ): ValidatorBuilder<T> {
     val whenTimeIsBad = Predicate<T> {
         val value = property(it)
@@ -205,16 +199,14 @@ fun <T, R: Instant?> ValidatorBuilder<T>.instantConstraint(
     return this
 }
 
-
-
 val fkValidator = ValidatorBuilder.of(Long::class.java)
-        .constraint(Long::toLong, "") {
-            it.greaterThan(0).message("Must be positive")
-        }
-        .build()
+    .constraint(Long::toLong, "") {
+        it.greaterThan(0).message("Must be positive")
+    }
+    .build()
 
 val nonEmptyString = ValidatorBuilder.of(String::class.java)
-        .constraint(String::toString, "") {
-            it.notEmpty().message("String must not be empty")
-        }
-        .build()
+    .constraint(String::toString, "") {
+        it.notEmpty().message("String must not be empty")
+    }
+    .build()

@@ -4,33 +4,38 @@ import am.ik.yavi.builder.ValidatorBuilder
 import am.ik.yavi.builder.konstraintOnGroup
 import fm.force.quiz.common.SpecificationBuilder
 import fm.force.quiz.configuration.properties.DifficultyScaleValidationProperties
-import fm.force.quiz.core.dto.*
+import fm.force.quiz.core.dto.DifficultyScaleFullDTO
+import fm.force.quiz.core.dto.DifficultyScalePatchDTO
+import fm.force.quiz.core.dto.PageDTO
+import fm.force.quiz.core.dto.SearchQueryDTO
+import fm.force.quiz.core.dto.toDTO
+import fm.force.quiz.core.dto.toFullDTO
 import fm.force.quiz.core.entity.DifficultyScale
 import fm.force.quiz.core.entity.DifficultyScale_
-import fm.force.quiz.core.repository.JpaDifficultyScaleRepository
+import fm.force.quiz.core.repository.DifficultyScaleRepository
 import fm.force.quiz.core.validator.intConstraint
 import fm.force.quiz.core.validator.mandatory
 import fm.force.quiz.core.validator.stringConstraint
+import java.time.Instant
 import org.springframework.data.domain.Page
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
-import java.time.Instant
 
 @Service
 class DifficultyScaleService(
-        jpaDifficultyScaleRepository: JpaDifficultyScaleRepository,
-        validationProps: DifficultyScaleValidationProperties
-) : AbstractPaginatedCRUDService<DifficultyScale, JpaDifficultyScaleRepository, DifficultyScalePatchDTO, DifficultyScaleFullDTO, SearchQueryDTO>(
-        repository = jpaDifficultyScaleRepository
+    difficultyScaleRepository: DifficultyScaleRepository,
+    validationProps: DifficultyScaleValidationProperties
+) : AbstractPaginatedCRUDService<DifficultyScale, DifficultyScaleRepository, DifficultyScalePatchDTO, DifficultyScaleFullDTO, SearchQueryDTO>(
+    repository = difficultyScaleRepository
 ) {
     override var dtoValidator = ValidatorBuilder.of<DifficultyScalePatchDTO>()
-            .konstraintOnGroup(CRUDConstraintGroup.CREATE) {
-                mandatory(DifficultyScalePatchDTO::name)
-                mandatory(DifficultyScalePatchDTO::max)
-            }
-            .stringConstraint(DifficultyScalePatchDTO::name, validationProps.minNameLength..validationProps.maxNameLength)
-            .intConstraint(DifficultyScalePatchDTO::max, 1..validationProps.allowedMax)
-            .build()
+        .konstraintOnGroup(CRUDConstraintGroup.CREATE) {
+            mandatory(DifficultyScalePatchDTO::name)
+            mandatory(DifficultyScalePatchDTO::max)
+        }
+        .stringConstraint(DifficultyScalePatchDTO::name, validationProps.minNameLength..validationProps.maxNameLength)
+        .intConstraint(DifficultyScalePatchDTO::max, 1..validationProps.allowedMax)
+        .build()
 
     override fun buildSearchSpec(search: SearchQueryDTO?): Specification<DifficultyScale> {
         val ownerEquals = SpecificationBuilder.fk(authenticationFacade::user, DifficultyScale_.owner)
@@ -38,8 +43,8 @@ class DifficultyScaleService(
         if (needle.isNullOrEmpty()) return ownerEquals
 
         return Specification
-                .where(ownerEquals)
-                .and(SpecificationBuilder.ciContains(needle, DifficultyScale_.name))
+            .where(ownerEquals)
+            .and(SpecificationBuilder.ciContains(needle, DifficultyScale_.name))
     }
 
     override fun serializePage(page: Page<DifficultyScale>): PageDTO = page.toDTO { it.toFullDTO() }
@@ -50,9 +55,9 @@ class DifficultyScaleService(
         validateCreate(createDTO)
         val entity = with(createDTO) {
             DifficultyScale(
-                    owner = authenticationFacade.user,
-                    name = name!!,
-                    max = max!!
+                owner = authenticationFacade.user,
+                name = name!!,
+                max = max!!
             )
         }
         return repository.save(entity)

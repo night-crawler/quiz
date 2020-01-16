@@ -10,12 +10,12 @@ import javax.persistence.Table
 @Entity
 @Table(name = "quiz_sessions")
 data class QuizSession(
-        @ManyToOne val owner: User,
-        @ManyToOne val quiz: Quiz,
-        @ManyToOne var difficultyScale: DifficultyScale? = null,
-        var validTill: Instant = Instant.now() + Duration.ofDays(1),
-        var isCompleted: Boolean = false,
-        var isCancelled: Boolean = false,
-        var completedAt: Instant? = null,
-        var cancelledAt: Instant? = null
+    @ManyToOne val owner: User,
+    @ManyToOne val quiz: Quiz,
+    @ManyToOne var difficultyScale: DifficultyScale? = null,
+    var validTill: Instant = Instant.now() + Duration.ofDays(1),
+    var isCompleted: Boolean = false,
+    var isCancelled: Boolean = false,
+    var completedAt: Instant? = null,
+    var cancelledAt: Instant? = null
 ) : BaseQuizEntity()

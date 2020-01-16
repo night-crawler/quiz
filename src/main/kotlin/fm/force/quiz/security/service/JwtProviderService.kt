@@ -5,17 +5,16 @@ import fm.force.quiz.security.jwt.JwtUserDetails
 import io.jsonwebtoken.JwtException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
+import java.security.Key
+import java.util.Date
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.stereotype.Service
-import java.security.Key
-import java.util.*
-
 
 @Service
 class JwtProviderService(
-        private val config: JwtConfigurationProperties
+    private val config: JwtConfigurationProperties
 ) {
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
     private val key: Key = Keys.hmacShaKeyFor(config.secret.toByteArray())
@@ -36,24 +35,24 @@ class JwtProviderService(
         claims["userId"] = "${jwtUserDetails.id}"
 
         return Jwts.builder()
-                .setClaims(claims)
-                .signWith(key)
-                .compact()
-                .also { logger.debug("Issued a token for {}: {}", jwtUserDetails, it) }
+            .setClaims(claims)
+            .signWith(key)
+            .compact()
+            .also { logger.debug("Issued a token for {}: {}", jwtUserDetails, it) }
     }
 
     // TODO: validate is a bad name here
     fun validate(token: String): JwtUserDetails? = try {
         val claims = Jwts.parser().setSigningKey(key).parseClaimsJws(token)
         JwtUserDetails(
-                id = safeExtractUserId(claims.body["userId"]),
-                authorities = safeExtractAuthoritiesFromRoles(claims.body["roles"]),
-                enabled = true,
-                username = claims.body.subject,
-                credentialsNonExpired = true,
-                password = "",
-                accountNonExpired = true,
-                accountNonLocked = true
+            id = safeExtractUserId(claims.body["userId"]),
+            authorities = safeExtractAuthoritiesFromRoles(claims.body["roles"]),
+            enabled = true,
+            username = claims.body.subject,
+            credentialsNonExpired = true,
+            password = "",
+            accountNonExpired = true,
+            accountNonLocked = true
         )
     } catch (exc: JwtException) {
         logger.warn("Failed to parse token {}, {}", token, exc)

@@ -4,6 +4,5 @@ import fm.force.quiz.core.entity.Tag
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.stereotype.Repository
 
-
 @Repository
-interface JpaTagRepository : CustomJpaRepository<Tag, Long>, JpaSpecificationExecutor<Tag>, CommonRepository<Tag>
+interface TagRepository : CustomJpaRepository<Tag, Long>, JpaSpecificationExecutor<Tag>, CommonRepository<Tag>

@@ -3,7 +3,7 @@ package io.kotlintest.provided.fm.force.quiz.core.service
 import fm.force.quiz.core.dto.QuizQuestionPatchDTO
 import fm.force.quiz.core.entity.QuizQuestion
 import fm.force.quiz.core.exception.ValidationError
-import fm.force.quiz.core.repository.JpaQuizQuestionRepository
+import fm.force.quiz.core.repository.QuizQuestionRepository
 import fm.force.quiz.core.service.AbstractCRUDServiceTest
 import fm.force.quiz.core.service.QuizQuestionService
 import io.kotlintest.data.forall
@@ -13,8 +13,8 @@ import io.kotlintest.tables.row
 import org.springframework.dao.DataIntegrityViolationException
 
 open class QuizQuestionServiceTest(
-        private val service: QuizQuestionService,
-        private val jpaQuizQuestionRepository: JpaQuizQuestionRepository
+    private val service: QuizQuestionService,
+    private val quizQuestionRepository: QuizQuestionRepository
 ) : AbstractCRUDServiceTest() {
 
     init {
@@ -25,13 +25,13 @@ open class QuizQuestionServiceTest(
             val freeQuestion = testDataFactory.getQuestion(owner = user)
 
             forall(
-                    // insufficient data attributes
-                    row(QuizQuestionPatchDTO(id = 1)),
-                    row(QuizQuestionPatchDTO(id = null, quiz = quiz.id)),
-                    row(QuizQuestionPatchDTO(question = quizQuestion.id)),
+                // insufficient data attributes
+                row(QuizQuestionPatchDTO(id = 1)),
+                row(QuizQuestionPatchDTO(id = null, quiz = quiz.id)),
+                row(QuizQuestionPatchDTO(question = quizQuestion.id)),
 
-                    // negative sequence with everything else properly formed
-                    row(QuizQuestionPatchDTO(id = quizQuestion.id, quiz = quiz.id, question = usedQuestion.id, seq = -2))
+                // negative sequence with everything else properly formed
+                row(QuizQuestionPatchDTO(id = quizQuestion.id, quiz = quiz.id, question = usedQuestion.id, seq = -2))
             ) {
                 shouldThrow<ValidationError> { service.create(it) }
             }
@@ -64,7 +64,7 @@ open class QuizQuestionServiceTest(
             val qq4 = service.create(QuizQuestionPatchDTO(quiz = quiz.id, question = questions[3].id, seq = 1))
             // now: [qq2, qq4, qq1, qq3]
 
-            val actualQuizQuestions = jpaQuizQuestionRepository.findAllByQuizIdOrderBySeq(quiz.id)
+            val actualQuizQuestions = quizQuestionRepository.findAllByQuizIdOrderBySeq(quiz.id)
             listOf(qq2, qq4, qq1, qq3).zip(actualQuizQuestions).map { (expected, actual) ->
                 expected.id shouldBe actual.id
             }
@@ -77,25 +77,25 @@ open class QuizQuestionServiceTest(
             lateinit var removing: QuizQuestion
             lateinit var quizQuestions: List<QuizQuestion>
 
-            quizQuestions = jpaQuizQuestionRepository.findAllByQuizIdOrderBySeq(quiz.id)
+            quizQuestions = quizQuestionRepository.findAllByQuizIdOrderBySeq(quiz.id)
             questionIds shouldBe quizQuestions.map { it.question.id }
 
             removing = quizQuestions[0]
             service.delete(removing.id)
             questionIds.removeAt(0)
-            quizQuestions = jpaQuizQuestionRepository.findAllByQuizIdOrderBySeq(quiz.id)
+            quizQuestions = quizQuestionRepository.findAllByQuizIdOrderBySeq(quiz.id)
             questionIds shouldBe quizQuestions.map { it.question.id }
 
             removing = quizQuestions[2]
             service.delete(removing.id)
             questionIds.removeAt(2)
-            quizQuestions = jpaQuizQuestionRepository.findAllByQuizIdOrderBySeq(quiz.id)
+            quizQuestions = quizQuestionRepository.findAllByQuizIdOrderBySeq(quiz.id)
             questionIds shouldBe quizQuestions.map { it.question.id }
 
             removing = quizQuestions.last()
             service.delete(removing.id)
             questionIds.remove(questionIds.last())
-            quizQuestions = jpaQuizQuestionRepository.findAllByQuizIdOrderBySeq(quiz.id)
+            quizQuestions = quizQuestionRepository.findAllByQuizIdOrderBySeq(quiz.id)
             questionIds shouldBe quizQuestions.map { it.question.id }
         }
 
@@ -138,7 +138,7 @@ open class QuizQuestionServiceTest(
 
     private fun testPatch(quizId: Long, from: Int, to: Int, vararg order: Int) {
         // get initial order of QuizQuestions
-        var qqs = jpaQuizQuestionRepository.findAllByQuizIdOrderBySeq(quizId)
+        var qqs = quizQuestionRepository.findAllByQuizIdOrderBySeq(quizId)
         // remember question ids as they were before
         val originalQuestionOrder = qqs.map { it.question.id }
         // remember *question* order because implementation may delete old records
@@ -148,7 +148,7 @@ open class QuizQuestionServiceTest(
         service.patch(qqs[from].id, QuizQuestionPatchDTO(seq = to))
 
         // retrieve changes
-        qqs = jpaQuizQuestionRepository.findAllByQuizIdOrderBySeq(quizId)
+        qqs = quizQuestionRepository.findAllByQuizIdOrderBySeq(quizId)
 
         // get question ids
         val actualQuestionIds = qqs.map { it.question.id }
@@ -161,5 +161,4 @@ open class QuizQuestionServiceTest(
         // range must remain continuous
         qqs.map { it.seq } shouldBe (order.indices).toList()
     }
-
 }

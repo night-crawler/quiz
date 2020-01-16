@@ -1,11 +1,11 @@
 package fm.force.quiz.security.service
 
 import fm.force.quiz.security.jwt.JwtAuthenticationException
+import javax.servlet.http.HttpServletRequest
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Service
-import javax.servlet.http.HttpServletRequest
 
 @Service
 class JwtRequestAuthProviderServiceImpl(val jwtProviderService: JwtProviderService) : JwtRequestAuthProviderService() {
@@ -25,7 +25,7 @@ class JwtRequestAuthProviderServiceImpl(val jwtProviderService: JwtProviderServi
 
         val token = authHeader.substring(bearer.length)
         val jwtUserDetails = jwtProviderService.validate(token)
-                ?: throw JwtAuthenticationException("Provided token is invalid")
+            ?: throw JwtAuthenticationException("Provided token is invalid")
 
         return UsernamePasswordAuthenticationToken(jwtUserDetails, "", jwtUserDetails.authorities)
     }

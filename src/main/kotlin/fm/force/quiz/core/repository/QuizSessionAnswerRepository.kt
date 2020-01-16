@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.stereotype.Repository
 
 @Repository
-interface JpaQuizSessionAnswerRepository :
-        CustomJpaRepository<QuizSessionAnswer, Long>,
-        JpaSpecificationExecutor<QuizSessionAnswer>,
-        CommonRepository<QuizSessionAnswer>
+interface QuizSessionAnswerRepository :
+    CustomJpaRepository<QuizSessionAnswer, Long>,
+    JpaSpecificationExecutor<QuizSessionAnswer>,
+    CommonRepository<QuizSessionAnswer>

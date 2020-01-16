@@ -1,23 +1,22 @@
 package fm.force.quiz.core.entity
 
 import fm.force.quiz.common.ObjectId
-import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.annotation.LastModifiedDate
 import java.time.Instant
 import javax.persistence.Id
 import javax.persistence.MappedSuperclass
-
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedDate
 
 @MappedSuperclass
 class BaseQuizEntity(
-        @Id
-        val id: Long = ObjectId.now(),
+    @Id
+    val id: Long = ObjectId.now(),
 
-        @CreatedDate
-        val createdAt: Instant = Instant.now(),
+    @CreatedDate
+    val createdAt: Instant = Instant.now(),
 
-        @LastModifiedDate
-        var updatedAt: Instant = Instant.now()
+    @LastModifiedDate
+    var updatedAt: Instant = Instant.now()
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

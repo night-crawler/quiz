@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class AuthenticationFacade(
-        private val jwtAuthService: JwtAuthService
+    private val jwtAuthService: JwtAuthService
 ) {
     val principal
         get() =

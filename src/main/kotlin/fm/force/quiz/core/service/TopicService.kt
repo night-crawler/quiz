@@ -3,31 +3,36 @@ package fm.force.quiz.core.service
 import am.ik.yavi.builder.ValidatorBuilder
 import fm.force.quiz.common.SpecificationBuilder
 import fm.force.quiz.configuration.properties.TopicValidationProperties
-import fm.force.quiz.core.dto.*
+import fm.force.quiz.core.dto.PageDTO
+import fm.force.quiz.core.dto.SearchQueryDTO
+import fm.force.quiz.core.dto.TopicFullDTO
+import fm.force.quiz.core.dto.TopicPatchDTO
+import fm.force.quiz.core.dto.toDTO
+import fm.force.quiz.core.dto.toFullDTO
 import fm.force.quiz.core.entity.Topic
 import fm.force.quiz.core.entity.Topic_
-import fm.force.quiz.core.repository.JpaTopicRepository
+import fm.force.quiz.core.repository.TopicRepository
 import fm.force.quiz.core.validator.stringConstraint
+import java.time.Instant
 import org.springframework.data.domain.Page
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
-import java.time.Instant
 
 @Service
 class TopicService(
-        validationProps: TopicValidationProperties,
-        jpaTopicRepository: JpaTopicRepository
-) : AbstractPaginatedCRUDService<Topic, JpaTopicRepository, TopicPatchDTO, TopicFullDTO, SearchQueryDTO>(
-        repository = jpaTopicRepository
+    validationProps: TopicValidationProperties,
+    topicRepository: TopicRepository
+) : AbstractPaginatedCRUDService<Topic, TopicRepository, TopicPatchDTO, TopicFullDTO, SearchQueryDTO>(
+    repository = topicRepository
 ) {
     override var entityValidator = ValidatorBuilder.of<Topic>()
-            .stringConstraint(Topic::title, validationProps.minTitleLength..validationProps.maxTitleLength)
-            .build()
+        .stringConstraint(Topic::title, validationProps.minTitleLength..validationProps.maxTitleLength)
+        .build()
 
     override fun create(createDTO: TopicPatchDTO): Topic {
         val topic = Topic(
-                owner = authenticationFacade.user,
-                title = createDTO.title
+            owner = authenticationFacade.user,
+            title = createDTO.title
         )
         validateEntity(topic)
         return repository.save(topic)
@@ -40,7 +45,7 @@ class TopicService(
             return ownerEquals
 
         return Specification
-                .where(ownerEquals).and(SpecificationBuilder.ciContains(needle, Topic_.title))
+            .where(ownerEquals).and(SpecificationBuilder.ciContains(needle, Topic_.title))
     }
 
     override fun patch(id: Long, patchDTO: TopicPatchDTO): Topic {

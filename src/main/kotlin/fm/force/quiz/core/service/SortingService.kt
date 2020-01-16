@@ -13,32 +13,32 @@ import fm.force.quiz.core.validator.nonEmptyString
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 
-
 @Service
 class SortingService(
-        val validationProps: SortingValidationProperties
+    val validationProps: SortingValidationProperties
 ) {
     private val whenSortIsPresent = ConstraintCondition<SortQuery> { sortQuery, _: ConstraintGroup? -> sortQuery.sort != null }
     val validator = ValidatorBuilder.of<SortQuery>()
-            .konstraintOnCondition(whenSortIsPresent) {
-                konstraint(SortQuery::sort) {
-                    lessThanOrEqual(validationProps.maxSortingFields).message(
-                            "The `sort` parameter must contain max ${validationProps.maxSortingFields} items")
-                }
-                        .forEach(SortQuery::sort, "sort", nonEmptyString)
+        .konstraintOnCondition(whenSortIsPresent) {
+            konstraint(SortQuery::sort) {
+                lessThanOrEqual(validationProps.maxSortingFields).message(
+                    "The `sort` parameter must contain max ${validationProps.maxSortingFields} items"
+                )
             }
-            .build()
+                .forEach(SortQuery::sort, "sort", nonEmptyString)
+        }
+        .build()
 
     fun validate(sortQuery: SortQuery) = validator
-            .validate(sortQuery)
-            .throwIfInvalid { ValidationError(it) }
+        .validate(sortQuery)
+        .throwIfInvalid { ValidationError(it) }
 
     fun getSorting(
-            sortQuery: SortQuery,
-            defaultSortFieldName: String = "id",
-            defaultSortDirection: Sort.Direction = Sort.Direction.ASC,
-            allowedFields: Collection<String> = emptySet()): Sort {
-
+        sortQuery: SortQuery,
+        defaultSortFieldName: String = "id",
+        defaultSortDirection: Sort.Direction = Sort.Direction.ASC,
+        allowedFields: Collection<String> = emptySet()
+    ): Sort {
         validate(sortQuery)
 
         val sortFields = sortQuery.sort

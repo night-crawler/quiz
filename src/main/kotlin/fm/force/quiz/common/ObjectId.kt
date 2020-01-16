@@ -8,7 +8,7 @@ import java.time.ZoneId
 class ObjectId {
     companion object {
         private val localEpoch = LocalDateTime.parse("2019-12-01T00:00:00").atZone(ZoneId.of("UTC"))
-                .toInstant().toEpochMilli()
+            .toInstant().toEpochMilli()
 
         private const val totalBits = 63
         private const val timestampBits = 40

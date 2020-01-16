@@ -1,36 +1,44 @@
 package fm.force.quiz.core.entity
 
 import fm.force.quiz.security.entity.User
-import javax.persistence.*
+import javax.persistence.Entity
+import javax.persistence.FetchType
+import javax.persistence.JoinColumn
+import javax.persistence.JoinTable
+import javax.persistence.ManyToMany
+import javax.persistence.ManyToOne
+import javax.persistence.OneToMany
+import javax.persistence.OrderBy
+import javax.persistence.Table
 
 @Entity
 @Table(name = "quizzes")
 data class Quiz(
-        @ManyToOne val owner: User,
+    @ManyToOne val owner: User,
 
-        var title: String,
+    var title: String,
 
-        @OneToMany(mappedBy = "quiz")
-        @OrderBy("seq ASC")
-        var quizQuestions: MutableList<QuizQuestion> = mutableListOf(),
+    @OneToMany(mappedBy = "quiz")
+    @OrderBy("seq ASC")
+    var quizQuestions: MutableList<QuizQuestion> = mutableListOf(),
 
-        @ManyToMany(targetEntity = Tag::class, fetch = FetchType.LAZY)
-        @JoinTable(
-                name = "quizzes__tags",
-                joinColumns = [JoinColumn(name = "quiz_id")],
-                inverseJoinColumns = [JoinColumn(name = "tag_id")]
-        )
-        var tags: MutableSet<Tag> = mutableSetOf(),
+    @ManyToMany(targetEntity = Tag::class, fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "quizzes__tags",
+        joinColumns = [JoinColumn(name = "quiz_id")],
+        inverseJoinColumns = [JoinColumn(name = "tag_id")]
+    )
+    var tags: MutableSet<Tag> = mutableSetOf(),
 
-        @ManyToMany(targetEntity = Topic::class, fetch = FetchType.LAZY)
-        @JoinTable(
-                name = "quizzes__topics",
-                joinColumns = [JoinColumn(name = "quiz_id")],
-                inverseJoinColumns = [JoinColumn(name = "topic_id")]
-        )
-        var topics: MutableSet<Topic> = mutableSetOf(),
+    @ManyToMany(targetEntity = Topic::class, fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "quizzes__topics",
+        joinColumns = [JoinColumn(name = "quiz_id")],
+        inverseJoinColumns = [JoinColumn(name = "topic_id")]
+    )
+    var topics: MutableSet<Topic> = mutableSetOf(),
 
-        @ManyToOne var difficultyScale: DifficultyScale? = null
+    @ManyToOne var difficultyScale: DifficultyScale? = null
 
 ) : BaseQuizEntity() {
     override fun equals(other: Any?): Boolean {

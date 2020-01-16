@@ -3,54 +3,57 @@ package fm.force.quiz.core.service
 import am.ik.yavi.builder.ValidatorBuilder
 import am.ik.yavi.builder.konstraintOnGroup
 import fm.force.quiz.common.SpecificationBuilder
-import fm.force.quiz.core.dto.*
-import fm.force.quiz.core.entity.Question_
+import fm.force.quiz.core.dto.PageDTO
+import fm.force.quiz.core.dto.QuizQuestionFullDTO
+import fm.force.quiz.core.dto.QuizQuestionPatchDTO
+import fm.force.quiz.core.dto.QuizQuestionSearchDTO
+import fm.force.quiz.core.dto.toDTO
+import fm.force.quiz.core.dto.toFullDTO
 import fm.force.quiz.core.entity.QuizQuestion
 import fm.force.quiz.core.entity.QuizQuestion_
 import fm.force.quiz.core.exception.NotFoundException
-import fm.force.quiz.core.repository.JpaQuestionRepository
-import fm.force.quiz.core.repository.JpaQuizQuestionRepository
-import fm.force.quiz.core.repository.JpaQuizRepository
-import fm.force.quiz.core.validator.ownedFkConstraint
+import fm.force.quiz.core.repository.QuestionRepository
+import fm.force.quiz.core.repository.QuizQuestionRepository
+import fm.force.quiz.core.repository.QuizRepository
 import fm.force.quiz.core.validator.intConstraint
 import fm.force.quiz.core.validator.mandatory
+import fm.force.quiz.core.validator.ownedFkConstraint
+import java.util.function.Predicate
+import javax.transaction.Transactional
 import org.springframework.data.domain.Page
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
-import java.util.function.Predicate
-import javax.transaction.Transactional
-
 
 @Service
 class QuizQuestionService(
-        jpaQuizQuestionRepository: JpaQuizQuestionRepository,
-        private val jpaQuizRepository: JpaQuizRepository,
-        private val jpaQuestionRepository: JpaQuestionRepository
-) : AbstractPaginatedCRUDService<QuizQuestion, JpaQuizQuestionRepository, QuizQuestionPatchDTO, QuizQuestionFullDTO, QuizQuestionSearchDTO>(
-        jpaQuizQuestionRepository
+    quizQuestionRepository: QuizQuestionRepository,
+    private val quizRepository: QuizRepository,
+    private val questionRepository: QuestionRepository
+) : AbstractPaginatedCRUDService<QuizQuestion, QuizQuestionRepository, QuizQuestionPatchDTO, QuizQuestionFullDTO, QuizQuestionSearchDTO>(
+    quizQuestionRepository
 ) {
     private val msgSeqTooBigPredicate = "Sequence number is too big"
     private val seqTooBigPredicate = Predicate<QuizQuestionPatchDTO> {
         if (it.seq == null || it.quiz == null || it.seq!! < 0) true
-        else jpaQuizQuestionRepository.countByQuizId(it.quiz!!) >= it.seq!!
+        else quizQuestionRepository.countByQuizId(it.quiz!!) >= it.seq!!
     }
 
     override var dtoValidator = ValidatorBuilder.of<QuizQuestionPatchDTO>()
-            .konstraintOnGroup(CRUDConstraintGroup.CREATE) {
-                mandatory(QuizQuestionPatchDTO::question)
-                mandatory(QuizQuestionPatchDTO::quiz)
-                mandatory(QuizQuestionPatchDTO::seq)
-            }
-            .konstraintOnGroup(CRUDConstraintGroup.UPDATE) {
-                mandatory(QuizQuestionPatchDTO::seq)
-            }
-            .ownedFkConstraint(QuizQuestionPatchDTO::id, jpaQuizQuestionRepository, ::ownerId)
-            .ownedFkConstraint(QuizQuestionPatchDTO::question, jpaQuestionRepository, ::ownerId)
-            .ownedFkConstraint(QuizQuestionPatchDTO::quiz, jpaQuizRepository, ::ownerId)
-            .intConstraint(QuizQuestionPatchDTO::seq, -1..Int.MAX_VALUE) {
-                constraintOnTarget(seqTooBigPredicate, "seq", "", msgSeqTooBigPredicate)
-            }
-            .build()
+        .konstraintOnGroup(CRUDConstraintGroup.CREATE) {
+            mandatory(QuizQuestionPatchDTO::question)
+            mandatory(QuizQuestionPatchDTO::quiz)
+            mandatory(QuizQuestionPatchDTO::seq)
+        }
+        .konstraintOnGroup(CRUDConstraintGroup.UPDATE) {
+            mandatory(QuizQuestionPatchDTO::seq)
+        }
+        .ownedFkConstraint(QuizQuestionPatchDTO::id, quizQuestionRepository, ::ownerId)
+        .ownedFkConstraint(QuizQuestionPatchDTO::question, questionRepository, ::ownerId)
+        .ownedFkConstraint(QuizQuestionPatchDTO::quiz, quizRepository, ::ownerId)
+        .intConstraint(QuizQuestionPatchDTO::seq, -1..Int.MAX_VALUE) {
+            constraintOnTarget(seqTooBigPredicate, "seq", "", msgSeqTooBigPredicate)
+        }
+        .build()
 
     override fun serializePage(page: Page<QuizQuestion>): PageDTO = page.toDTO { it.toFullDTO() }
 
@@ -59,10 +62,10 @@ class QuizQuestionService(
     private fun createInternal(quizId: Long, questionId: Long, seq: Int): QuizQuestion {
         repository.updateSeqBetween(quizId, seq, Int.MAX_VALUE, 1)
         val entity = QuizQuestion(
-                quiz = jpaQuizRepository.findById(quizId).get(),
-                question = jpaQuestionRepository.findById(questionId).get(),
-                owner = authenticationFacade.user,
-                seq = seq
+            quiz = quizRepository.findById(quizId).get(),
+            question = questionRepository.findById(questionId).get(),
+            owner = authenticationFacade.user,
+            seq = seq
         )
         return repository.save(entity)
     }
@@ -98,8 +101,8 @@ class QuizQuestionService(
     }
 
     private fun getInstanceByQuizIdAndId(quizId: Long, id: Long) = repository
-            .getByQuizIdAndId(quizId, id)
-            .orElseThrow { NotFoundException(id, QuizQuestion::class) }
+        .getByQuizIdAndId(quizId, id)
+        .orElseThrow { NotFoundException(id, QuizQuestion::class) }
 
     @Transactional
     override fun patch(id: Long, patchDTO: QuizQuestionPatchDTO): QuizQuestion {

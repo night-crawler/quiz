@@ -18,23 +18,22 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @ContextConfiguration(classes = [TestConfiguration::class])
 @PropertySource("classpath:application-test.yaml", factory = YamlPropertyLoaderFactory::class)
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 class AuthControllersTest(
-        private val mockMvc: MockMvc,
-        private val passwordConfigurationProperties: PasswordConfigurationProperties
+    private val mockMvc: MockMvc,
+    private val passwordConfigurationProperties: PasswordConfigurationProperties
 ) : WordSpec() {
     val mapper by lazy { jacksonObjectMapper() }
     fun performPost(uri: String, content: String) =
-            mockMvc.perform(
-                    post(uri)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(content)
-            )
+        mockMvc.perform(
+            post(uri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content)
+        )
 
     fun performPost(uri: String, dto: Any) = this.performPost(uri, mapper.writeValueAsString(dto))
 
@@ -43,18 +42,18 @@ class AuthControllersTest(
             "register a new user" {
                 val data = RegisterRequestDTO("user-sample001@example.com", "samplesample")
                 performPost("/auth/register", data)
-                        .andExpect(status().isCreated)
-                        .andDo(print())
+                    .andExpect(status().isCreated)
+                    .andDo(print())
 
                 performPost("/auth/register", data)
-                        .andExpect(status().isConflict)
-                        .andDo(print())
+                    .andExpect(status().isConflict)
+                    .andDo(print())
             }
 
             "ensure validation is working" {
                 performPost("/auth/register", """{"email": "", "password": ""}""")
-                        .andExpect(status().isBadRequest)
-                        .andDo(print())
+                    .andExpect(status().isBadRequest)
+                    .andDo(print())
             }
         }
 
@@ -62,12 +61,12 @@ class AuthControllersTest(
             "fail because profile was not activated by default" {
                 val failCreds = LoginRequestDTO("user-fail@example.com", "samplesample")
                 performPost("/auth/register", failCreds)
-                        .andExpect(status().isCreated)
-                        .andDo(print())
+                    .andExpect(status().isCreated)
+                    .andDo(print())
 
                 performPost("/auth/login", failCreds)
-                        .andExpect(status().isForbidden)
-                        .andDo(print())
+                    .andExpect(status().isForbidden)
+                    .andDo(print())
             }
 
             "successfully login" {
@@ -75,11 +74,11 @@ class AuthControllersTest(
                 // FIXME: it's a cheat to test it like this
                 passwordConfigurationProperties.userIsEnabledAfterCreation = true
                 performPost("/auth/register", successCreds)
-                        .andExpect(status().isCreated)
+                    .andExpect(status().isCreated)
 
                 performPost("/auth/login", successCreds)
-                        .andExpect(status().isOk)
-                        .andDo(print())
+                    .andExpect(status().isOk)
+                    .andDo(print())
             }
         }
     }

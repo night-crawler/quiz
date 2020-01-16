@@ -8,10 +8,10 @@ import javax.persistence.UniqueConstraint
 
 @Entity
 @Table(
-        name = "topics",
-        uniqueConstraints = [UniqueConstraint(columnNames = ["owner_id", "title"])]
+    name = "topics",
+    uniqueConstraints = [UniqueConstraint(columnNames = ["owner_id", "title"])]
 )
 class Topic(
-        @ManyToOne val owner: User,
-        var title: String
+    @ManyToOne val owner: User,
+    var title: String
 ) : BaseQuizEntity()

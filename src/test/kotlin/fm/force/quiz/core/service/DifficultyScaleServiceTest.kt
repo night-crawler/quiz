@@ -16,24 +16,24 @@ import io.kotlintest.shouldThrow
 import io.kotlintest.tables.row
 
 open class DifficultyScaleServiceTest(
-        difficultyScaleService: DifficultyScaleService,
-        validationProps: DifficultyScaleValidationProperties
+    difficultyScaleService: DifficultyScaleService,
+    validationProps: DifficultyScaleValidationProperties
 ) : AbstractCRUDServiceTest() {
 
     init {
         "should validate" {
             forall(
-                    row(DifficultyScalePatchDTO()),
-                    row(DifficultyScalePatchDTO(name = getRandomString(validationProps.minNameLength - 1))),
-                    row(DifficultyScalePatchDTO(max = 0)),
-                    row(DifficultyScalePatchDTO(max = validationProps.allowedMax, name = ""))
+                row(DifficultyScalePatchDTO()),
+                row(DifficultyScalePatchDTO(name = getRandomString(validationProps.minNameLength - 1))),
+                row(DifficultyScalePatchDTO(max = 0)),
+                row(DifficultyScalePatchDTO(max = validationProps.allowedMax, name = ""))
             ) {
                 shouldThrow<ValidationError> { difficultyScaleService.create(it) }
             }
 
             val createDTO = DifficultyScalePatchDTO(
-                    name = getRandomString(validationProps.maxNameLength),
-                    max = validationProps.allowedMax
+                name = getRandomString(validationProps.maxNameLength),
+                max = validationProps.allowedMax
             )
 
             difficultyScaleService.validateCreate(createDTO)
@@ -44,17 +44,17 @@ open class DifficultyScaleServiceTest(
             (1..5).map { testDataFactory.getDifficultyScale(owner = alien, name = "diff scale - $it") }
 
             val page = difficultyScaleService.find(
-                    PaginationQuery.default(),
-                    SortQuery.byIdDesc(),
-                    SearchQueryDTO("SCALE")
+                PaginationQuery.default(),
+                SortQuery.byIdDesc(),
+                SearchQueryDTO("SCALE")
             )
             page.content shouldHaveSize 5
         }
 
         "should create" {
             val createDTO = DifficultyScalePatchDTO(
-                    name = getRandomString(validationProps.maxNameLength),
-                    max = validationProps.allowedMax
+                name = getRandomString(validationProps.maxNameLength),
+                max = validationProps.allowedMax
             )
 
             val entity = difficultyScaleService.create(createDTO)
@@ -64,8 +64,8 @@ open class DifficultyScaleServiceTest(
         "should patch" {
             val scale = testDataFactory.getDifficultyScale(owner = user)
             val patch = DifficultyScalePatchDTO(
-                    name = getRandomString(validationProps.maxNameLength),
-                    max = validationProps.allowedMax
+                name = getRandomString(validationProps.maxNameLength),
+                max = validationProps.allowedMax
             )
             val entity = difficultyScaleService.patch(scale.id, patch)
             entity.max shouldBe patch.max
@@ -73,5 +73,4 @@ open class DifficultyScaleServiceTest(
             entity.updatedAt shouldNotBe scale.updatedAt
         }
     }
-
 }

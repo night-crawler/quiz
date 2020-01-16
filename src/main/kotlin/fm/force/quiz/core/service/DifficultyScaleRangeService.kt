@@ -5,34 +5,38 @@ import am.ik.yavi.builder.konstraint
 import am.ik.yavi.builder.konstraintOnGroup
 import fm.force.quiz.common.SpecificationBuilder
 import fm.force.quiz.configuration.properties.DifficultyScaleRangeValidationProperties
-import fm.force.quiz.core.dto.*
+import fm.force.quiz.core.dto.DifficultyScaleRangeFullDTO
+import fm.force.quiz.core.dto.DifficultyScaleRangePatchDTO
+import fm.force.quiz.core.dto.DifficultyScaleRangeSearchDTO
+import fm.force.quiz.core.dto.PageDTO
+import fm.force.quiz.core.dto.toDTO
+import fm.force.quiz.core.dto.toFullDTO
 import fm.force.quiz.core.entity.DifficultyScaleRange
 import fm.force.quiz.core.entity.DifficultyScaleRange_
-import fm.force.quiz.core.repository.JpaDifficultyScaleRangeRepository
-import fm.force.quiz.core.repository.JpaDifficultyScaleRepository
+import fm.force.quiz.core.repository.DifficultyScaleRangeRepository
+import fm.force.quiz.core.repository.DifficultyScaleRepository
 import fm.force.quiz.core.validator.intConstraint
 import fm.force.quiz.core.validator.mandatory
 import fm.force.quiz.core.validator.ownedFkConstraint
 import fm.force.quiz.core.validator.stringConstraint
-import org.springframework.data.domain.Page
-import org.springframework.data.jpa.domain.Specification
-import org.springframework.stereotype.Service
 import java.time.Instant
 import java.util.function.Predicate
 import javax.transaction.Transactional
-
+import org.springframework.data.domain.Page
+import org.springframework.data.jpa.domain.Specification
+import org.springframework.stereotype.Service
 
 @Service
 class DifficultyScaleRangeService(
-        private val jpaDifficultyScaleRepository: JpaDifficultyScaleRepository,
-        jpaDifficultyScaleRangeRepository: JpaDifficultyScaleRangeRepository,
-        validationProps: DifficultyScaleRangeValidationProperties
+    private val difficultyScaleRepository: DifficultyScaleRepository,
+    difficultyScaleRangeRepository: DifficultyScaleRangeRepository,
+    validationProps: DifficultyScaleRangeValidationProperties
 ) : AbstractPaginatedCRUDService<
-        DifficultyScaleRange,
-        JpaDifficultyScaleRangeRepository,
-        DifficultyScaleRangePatchDTO,
-        DifficultyScaleRangeFullDTO,
-        DifficultyScaleRangeSearchDTO>(repository = jpaDifficultyScaleRangeRepository) {
+    DifficultyScaleRange,
+    DifficultyScaleRangeRepository,
+    DifficultyScaleRangePatchDTO,
+    DifficultyScaleRangeFullDTO,
+    DifficultyScaleRangeSearchDTO>(repository = difficultyScaleRangeRepository) {
     private val msgCannotBeModified = "Cannot be modified"
     private val msgMaxMustBeLessThanMin = "Max must be less than min"
     private val msgMustNotIntersect = "Ranges must not intersect"
@@ -43,29 +47,29 @@ class DifficultyScaleRangeService(
     }
 
     override var entityValidator = ValidatorBuilder.of<DifficultyScaleRange>()
-            .constraintOnTarget(whenMinMaxSwapped, "max", "", msgMaxMustBeLessThanMin)
-            .constraintOnTarget(whenIntersects, "max", "", msgMustNotIntersect)
-            .build()
+        .constraintOnTarget(whenMinMaxSwapped, "max", "", msgMaxMustBeLessThanMin)
+        .constraintOnTarget(whenIntersects, "max", "", msgMustNotIntersect)
+        .build()
 
     override var dtoValidator = ValidatorBuilder.of<DifficultyScaleRangePatchDTO>()
-            .konstraintOnGroup(CRUDConstraintGroup.CREATE) {
-                mandatory(DifficultyScaleRangePatchDTO::title)
-                mandatory(DifficultyScaleRangePatchDTO::min)
-                mandatory(DifficultyScaleRangePatchDTO::max)
-                mandatory(DifficultyScaleRangePatchDTO::difficultyScale)
+        .konstraintOnGroup(CRUDConstraintGroup.CREATE) {
+            mandatory(DifficultyScaleRangePatchDTO::title)
+            mandatory(DifficultyScaleRangePatchDTO::min)
+            mandatory(DifficultyScaleRangePatchDTO::max)
+            mandatory(DifficultyScaleRangePatchDTO::difficultyScale)
+        }
+        .konstraintOnGroup(CRUDConstraintGroup.UPDATE) {
+            konstraint(DifficultyScaleRangePatchDTO::difficultyScale) {
+                isNull.message(msgCannotBeModified)
             }
-            .konstraintOnGroup(CRUDConstraintGroup.UPDATE) {
-                konstraint(DifficultyScaleRangePatchDTO::difficultyScale) {
-                    isNull.message(msgCannotBeModified)
-                }
-            }
+        }
 
-            .stringConstraint(DifficultyScaleRangePatchDTO::title, validationProps.minTitleLength..validationProps.maxTitleLength)
-            .intConstraint(DifficultyScaleRangePatchDTO::min, 0..validationProps.minUpper)
-            .intConstraint(DifficultyScaleRangePatchDTO::max, 1..validationProps.maxUpper)
+        .stringConstraint(DifficultyScaleRangePatchDTO::title, validationProps.minTitleLength..validationProps.maxTitleLength)
+        .intConstraint(DifficultyScaleRangePatchDTO::min, 0..validationProps.minUpper)
+        .intConstraint(DifficultyScaleRangePatchDTO::max, 1..validationProps.maxUpper)
 
-            .ownedFkConstraint(DifficultyScaleRangePatchDTO::difficultyScale, jpaDifficultyScaleRepository, ::ownerId)
-            .build()
+        .ownedFkConstraint(DifficultyScaleRangePatchDTO::difficultyScale, difficultyScaleRepository, ::ownerId)
+        .build()
 
     override fun buildSearchSpec(search: DifficultyScaleRangeSearchDTO?): Specification<DifficultyScaleRange> {
         val ownerEquals = SpecificationBuilder.fk(authenticationFacade::user, DifficultyScaleRange_.owner)
@@ -75,7 +79,7 @@ class DifficultyScaleRangeService(
 
         with(SpecificationBuilder) {
             if (search.difficultyScale != null)
-                spec = spec.and(fk({ jpaDifficultyScaleRepository.getEntity(search.difficultyScale) }, DifficultyScaleRange_.difficultyScale))
+                spec = spec.and(fk({ difficultyScaleRepository.getEntity(search.difficultyScale) }, DifficultyScaleRange_.difficultyScale))
             if (search.title != null) {
                 spec = spec.and(ciContains(search.title, DifficultyScaleRange_.title))
             }
@@ -93,11 +97,11 @@ class DifficultyScaleRangeService(
         validateCreate(createDTO)
         val entity = with(createDTO) {
             DifficultyScaleRange(
-                    owner = authenticationFacade.user,
-                    difficultyScale = jpaDifficultyScaleRepository.getEntity(difficultyScale!!),
-                    title = title!!,
-                    min = min!!,
-                    max = max!!
+                owner = authenticationFacade.user,
+                difficultyScale = difficultyScaleRepository.getEntity(difficultyScale!!),
+                title = title!!,
+                min = min!!,
+                max = max!!
             )
         }
         validateEntity(entity)

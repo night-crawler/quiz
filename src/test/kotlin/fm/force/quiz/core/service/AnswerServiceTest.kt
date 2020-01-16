@@ -13,17 +13,16 @@ import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.shouldThrow
 import io.kotlintest.tables.row
 
-
 open class AnswerServiceTest(
-        private val answerService: AnswerService,
-        validationProps: AnswerValidationProperties
+    private val answerService: AnswerService,
+    validationProps: AnswerValidationProperties
 ) : AbstractCRUDServiceTest() {
 
     init {
         "should validate" {
             forall(
-                    row(Answer(text = getRandomString(validationProps.minAnswerLength - 1), owner = user)),
-                    row(Answer(text = getRandomString(validationProps.maxAnswerLength + 1), owner = user))
+                row(Answer(text = getRandomString(validationProps.minAnswerLength - 1), owner = user)),
+                row(Answer(text = getRandomString(validationProps.maxAnswerLength + 1), owner = user))
             ) {
                 shouldThrow<ValidationError> { answerService.validateEntity(it) }
             }

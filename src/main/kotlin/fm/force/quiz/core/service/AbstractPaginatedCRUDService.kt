@@ -1,12 +1,17 @@
 package fm.force.quiz.core.service
 
 import am.ik.yavi.core.Validator
-import fm.force.quiz.core.dto.*
+import fm.force.quiz.core.dto.DTOSearchMarker
+import fm.force.quiz.core.dto.DTOSerializationMarker
+import fm.force.quiz.core.dto.PageDTO
+import fm.force.quiz.core.dto.PaginationQuery
+import fm.force.quiz.core.dto.SortQuery
 import fm.force.quiz.core.exception.NotFoundException
 import fm.force.quiz.core.exception.ValidationError
 import fm.force.quiz.core.repository.CommonRepository
 import fm.force.quiz.core.repository.CustomJpaRepository
 import fm.force.quiz.security.service.AuthenticationFacade
+import javax.transaction.Transactional
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,16 +19,15 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor
-import javax.transaction.Transactional
 
 abstract class AbstractPaginatedCRUDService<EntType, RepoType, PatchType, DTOType, SearchType>(
-        val repository: RepoType
+    val repository: RepoType
 )
-        where RepoType : CustomJpaRepository<EntType, Long>,
-              RepoType : CommonRepository<EntType>,
-              RepoType : JpaSpecificationExecutor<EntType>,
-              DTOType: DTOSerializationMarker,
-              SearchType: DTOSearchMarker {
+    where RepoType : CustomJpaRepository<EntType, Long>,
+          RepoType : CommonRepository<EntType>,
+          RepoType : JpaSpecificationExecutor<EntType>,
+          DTOType : DTOSerializationMarker,
+          SearchType : DTOSearchMarker {
     val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     @Autowired
@@ -41,25 +45,25 @@ abstract class AbstractPaginatedCRUDService<EntType, RepoType, PatchType, DTOTyp
     open lateinit var dtoValidator: Validator<PatchType>
 
     open fun validateEntity(entity: EntType) = entityValidator
-            .validate(entity)
-            .throwIfInvalid {
-                logger.debug("Entity validation failed: {}", entity)
-                ValidationError(it)
-            }
+        .validate(entity)
+        .throwIfInvalid {
+            logger.debug("Entity validation failed: {}", entity)
+            ValidationError(it)
+        }
 
     open fun validatePatch(patchDTO: PatchType) = dtoValidator
-            .validate(patchDTO, CRUDConstraintGroup.UPDATE)
-            .throwIfInvalid {
-                logger.debug("DTO validation failed: {}", patchDTO)
-                ValidationError(it)
-            }
+        .validate(patchDTO, CRUDConstraintGroup.UPDATE)
+        .throwIfInvalid {
+            logger.debug("DTO validation failed: {}", patchDTO)
+            ValidationError(it)
+        }
 
     open fun validateCreate(createDTO: PatchType) = dtoValidator
-            .validate(createDTO, CRUDConstraintGroup.CREATE)
-            .throwIfInvalid {
-                logger.debug("DTO validation failed: {}", createDTO)
-                ValidationError(it)
-            }
+        .validate(createDTO, CRUDConstraintGroup.CREATE)
+        .throwIfInvalid {
+            logger.debug("DTO validation failed: {}", createDTO)
+            ValidationError(it)
+        }
 
     open fun buildSearchSpec(search: SearchType?): Specification<EntType> = throw NotImplementedError()
     abstract fun serializePage(page: Page<EntType>): PageDTO
@@ -67,18 +71,18 @@ abstract class AbstractPaginatedCRUDService<EntType, RepoType, PatchType, DTOTyp
     abstract fun create(createDTO: PatchType): EntType
 
     open fun getOwnedEntity(id: Long): EntType = repository
-            .findByIdAndOwner(id, authenticationFacade.user)
-            .orElseThrow { NotFoundException(id, this::class) }
+        .findByIdAndOwner(id, authenticationFacade.user)
+        .orElseThrow { NotFoundException(id, this::class) }
 
     open fun getEntity(id: Long): EntType = repository
-            .findById(id)
-            .orElseThrow { NotFoundException(id, this::class) }
+        .findById(id)
+        .orElseThrow { NotFoundException(id, this::class) }
 
     @Transactional
     open fun find(
-            paginationQuery: PaginationQuery,
-            sortQuery: SortQuery,
-            search: SearchType?
+        paginationQuery: PaginationQuery,
+        sortQuery: SortQuery,
+        search: SearchType?
     ): PageDTO {
         val pagination = paginationService.getPagination(paginationQuery)
         val sorting = sortingService.getSorting(sortQuery)

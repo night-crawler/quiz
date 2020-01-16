@@ -1,17 +1,14 @@
 package fm.force.quiz.common
 
-import java.util.*
-
+import java.util.BitSet
 
 val ALPHABET = ('a'..'z') + ('A'..'Z') + ('0'..'9')
 
-
 fun getRandomString(len: Int = 8, alphabet: List<Char> = ALPHABET) =
-        (1..len)
-                .map { kotlin.random.Random.nextInt(0, alphabet.size) }
-                .map(alphabet::get)
-                .joinToString("")
-
+    (1..len)
+        .map { kotlin.random.Random.nextInt(0, alphabet.size) }
+        .map(alphabet::get)
+        .joinToString("")
 
 fun Long.toBinaryString(): String = BitSet.valueOf(longArrayOf(this)).let { bs ->
     (63 downTo 0).joinToString("") {
@@ -35,4 +32,4 @@ fun Long.maxSignificantValue(): Long {
 }
 
 fun <T> Collection<T>?.toCustomSet(): Set<T> =
-        this?.map { it }?.toSet() ?: setOf()
+    this?.map { it }?.toSet() ?: setOf()

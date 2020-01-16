@@ -13,12 +13,11 @@ import io.kotlintest.specs.WordSpec
 import org.springframework.context.annotation.PropertySource
 import org.springframework.test.context.ContextConfiguration
 
-
 @PropertySource("classpath:application-test.yaml", factory = YamlPropertyLoaderFactory::class)
 @ContextConfiguration(classes = [TestConfiguration::class])
 open class UserRepositoryTest(
-        private val jpaUserRepository: JpaUserRepository,
-        private val jpaRoleRepository: JpaRoleRepository
+    private val jpaUserRepository: JpaUserRepository,
+    private val jpaRoleRepository: JpaRoleRepository
 ) : WordSpec() {
 
     private lateinit var adminRole: Role
@@ -33,15 +32,15 @@ open class UserRepositoryTest(
         studentRole = jpaRoleRepository.findByName("STUDENT")!!
 
         testUsers = listOf(
-                User(username = "vasya", email = "vasya@force.fm"),
+            User(username = "vasya", email = "vasya@force.fm"),
 
-                User(username = "admin", password = "admin", email = "admin@force.fm", roles = setOf(adminRole)),
+            User(username = "admin", password = "admin", email = "admin@force.fm", roles = setOf(adminRole)),
 
-                User(username = "student-1", password = "student-1", email = "student-1@force.fm", roles = setOf(studentRole)),
-                User(username = "student-2", password = "student-2", email = "student-2@force.fm", roles = setOf(studentRole)),
+            User(username = "student-1", password = "student-1", email = "student-1@force.fm", roles = setOf(studentRole)),
+            User(username = "student-2", password = "student-2", email = "student-2@force.fm", roles = setOf(studentRole)),
 
-                User(username = "teacher-1", password = "teacher-1", email = "teacher-1@force.fm", roles = setOf(teacherRole)),
-                User(username = "teacher-2", password = "teacher-2", email = "teacher-2@force.fm", roles = setOf(teacherRole))
+            User(username = "teacher-1", password = "teacher-1", email = "teacher-1@force.fm", roles = setOf(teacherRole)),
+            User(username = "teacher-2", password = "teacher-2", email = "teacher-2@force.fm", roles = setOf(teacherRole))
         )
 
         jpaUserRepository.saveAll(testUsers)

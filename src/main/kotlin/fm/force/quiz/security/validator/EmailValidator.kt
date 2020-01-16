@@ -1,13 +1,12 @@
 package fm.force.quiz.security.validator
 
 import fm.force.quiz.security.configuration.PasswordConfigurationProperties
-import org.springframework.beans.factory.annotation.Autowired
 import javax.validation.Constraint
 import javax.validation.ConstraintValidator
 import javax.validation.ConstraintValidatorContext
 import javax.validation.Payload
 import kotlin.reflect.KClass
-
+import org.springframework.beans.factory.annotation.Autowired
 
 class EmailValidator : ConstraintValidator<CheckEmail, String> {
     @Autowired
@@ -26,7 +25,7 @@ class EmailValidator : ConstraintValidator<CheckEmail, String> {
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.FIELD, AnnotationTarget.TYPE, AnnotationTarget.CONSTRUCTOR, AnnotationTarget.TYPE_PARAMETER)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class CheckEmail(
-        val message: String = "Invalid email",
-        val groups: Array<KClass<*>> = [],
-        val payload: Array<KClass<out Payload>> = []
+    val message: String = "Invalid email",
+    val groups: Array<KClass<*>> = [],
+    val payload: Array<KClass<out Payload>> = []
 )

@@ -30,22 +30,28 @@ open class QuestionServiceTest(questionService: QuestionService) : AbstractCRUDS
     init {
         "should validate" {
             forall(
-                    row(QuestionPatchDTO("sample", setOf(1, 2), setOf(3, 4), setOf(5), setOf(6))),
-                    row(QuestionPatchDTO("", setOf(1, 22), setOf(1, 33), setOf(44), setOf(66))),
-                    row(QuestionPatchDTO("", emptySet(), emptySet(), emptySet(), emptySet()))
+                row(QuestionPatchDTO("sample", setOf(1, 2), setOf(3, 4), setOf(5), setOf(6))),
+                row(QuestionPatchDTO("", setOf(1, 22), setOf(1, 33), setOf(44), setOf(66))),
+                row(QuestionPatchDTO("", emptySet(), emptySet(), emptySet(), emptySet()))
             ) {
                 shouldThrow<ValidationError> { questionService.validatePatch(it) }
             }
 
             forall(
-                    row(QuestionPatchDTO(
-                            text = "valid sample",
-                            answers = setOf(answer.id), correctAnswers = setOf(answer.id),
-                            tags = emptySet(), topics = emptySet())),
-                    row(QuestionPatchDTO(
-                            text = "valid sample",
-                            answers = setOf(answer.id), correctAnswers = setOf(answer.id),
-                            tags = setOf(tag.id), topics = setOf(topic.id)))
+                row(
+                    QuestionPatchDTO(
+                        text = "valid sample",
+                        answers = setOf(answer.id), correctAnswers = setOf(answer.id),
+                        tags = emptySet(), topics = emptySet()
+                    )
+                ),
+                row(
+                    QuestionPatchDTO(
+                        text = "valid sample",
+                        answers = setOf(answer.id), correctAnswers = setOf(answer.id),
+                        tags = setOf(tag.id), topics = setOf(topic.id)
+                    )
+                )
             ) {
                 questionService.validatePatch(it)
             }
@@ -66,12 +72,12 @@ open class QuestionServiceTest(questionService: QuestionService) : AbstractCRUDS
             val question = testDataFactory.getQuestion(owner = user)
 
             val patchDTO = QuestionPatchDTO(
-                    text = "new text",
-                    answers = setOf(answer.id),
-                    correctAnswers = setOf(answer.id),
-                    topics = setOf(topic.id),
-                    tags = setOf(tag.id),
-                    difficulty = 100500
+                text = "new text",
+                answers = setOf(answer.id),
+                correctAnswers = setOf(answer.id),
+                topics = setOf(topic.id),
+                tags = setOf(tag.id),
+                difficulty = 100500
             )
 
             val updatedQuestion = questionService.patch(question.id, patchDTO)

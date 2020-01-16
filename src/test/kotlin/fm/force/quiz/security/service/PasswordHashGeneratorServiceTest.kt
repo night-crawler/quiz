@@ -7,10 +7,9 @@ import io.kotlintest.matchers.types.shouldNotBeNull
 import io.kotlintest.specs.WordSpec
 import org.springframework.test.context.ContextConfiguration
 
-
 @ContextConfiguration(classes = [TestConfiguration::class])
 open class PasswordHashGeneratorServiceTest(
-        private val passwordHashGeneratorService: PasswordHashGeneratorService
+    private val passwordHashGeneratorService: PasswordHashGeneratorService
 ) : WordSpec() {
 
     init {

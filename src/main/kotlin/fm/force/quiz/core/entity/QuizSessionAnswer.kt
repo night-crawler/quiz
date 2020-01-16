@@ -8,9 +8,9 @@ import javax.persistence.Table
 @Entity
 @Table(name = "quiz_session_answers")
 data class QuizSessionAnswer(
-        @ManyToOne val owner: User,
-        @ManyToOne val quiz: Quiz,
-        @ManyToOne val quizSession: QuizSession,
-        @ManyToOne val question: Question,
-        @ManyToOne val answer: Answer
+    @ManyToOne val owner: User,
+    @ManyToOne val quiz: Quiz,
+    @ManyToOne val quizSession: QuizSession,
+    @ManyToOne val question: Question,
+    @ManyToOne val answer: Answer
 ) : BaseQuizEntity()

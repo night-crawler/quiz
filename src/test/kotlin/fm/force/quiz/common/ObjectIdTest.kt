@@ -11,14 +11,14 @@ open class ObjectIdTest : StringSpec() {
     init {
         "should check for boundaries" {
             forall(
-                    row(ObjectId.maxEffectiveInstant.plusSeconds(1)),
-                    row(ObjectId.minEffectiveInstant.minusSeconds(1))
+                row(ObjectId.maxEffectiveInstant.plusSeconds(1)),
+                row(ObjectId.minEffectiveInstant.minusSeconds(1))
             ) {
                 shouldThrow<IllegalArgumentException> { ObjectId.of(it) }
             }
 
             forall(
-                    row(-1L)
+                row(-1L)
             ) {
                 shouldThrow<IllegalArgumentException> { ObjectId.nextSequence(it) }
             }

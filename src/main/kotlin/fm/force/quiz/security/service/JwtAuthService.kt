@@ -7,7 +7,11 @@ import fm.force.quiz.security.dto.RegisterRequestDTO
 import fm.force.quiz.security.entity.User
 import fm.force.quiz.security.jwt.JwtUserDetails
 import fm.force.quiz.security.repository.JpaUserRepository
-import org.springframework.security.authentication.*
+import org.springframework.security.authentication.AccountExpiredException
+import org.springframework.security.authentication.BadCredentialsException
+import org.springframework.security.authentication.CredentialsExpiredException
+import org.springframework.security.authentication.DisabledException
+import org.springframework.security.authentication.LockedException
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
@@ -15,28 +19,31 @@ import org.springframework.stereotype.Service
 
 @Service
 class JwtAuthService(
-        private val jpaUserRepository: JpaUserRepository,
-        private val jwtUserDetailsMapper: JwtUserDetailsMapper,
-        private val hashGeneratorService: PasswordHashGeneratorService,
-        private val jwtProviderService: JwtProviderService,
-        private val passwordConfigurationProperties: PasswordConfigurationProperties
+    private val jpaUserRepository: JpaUserRepository,
+    private val jwtUserDetailsMapper: JwtUserDetailsMapper,
+    private val hashGeneratorService: PasswordHashGeneratorService,
+    private val jwtProviderService: JwtProviderService,
+    private val passwordConfigurationProperties: PasswordConfigurationProperties
 ) : UserDetailsService {
     override fun loadUserByUsername(username: String?): UserDetails =
-            jwtUserDetailsMapper.fromUser(getUser(username))
+        jwtUserDetailsMapper.fromUser(getUser(username))
 
     fun getUser(username: String?): User {
         username ?: throw UsernameNotFoundException("Null user names are not supported")
         return jpaUserRepository
-                .findByEmailOrUsername(username, username)
-                ?: throw UsernameNotFoundException("Username $username was not found")
+            .findByEmailOrUsername(username, username)
+            ?: throw UsernameNotFoundException("Username $username was not found")
     }
 
-    fun register(request: RegisterRequestDTO, isActive: Boolean = passwordConfigurationProperties.userIsEnabledAfterCreation): User {
+    fun register(
+        request: RegisterRequestDTO,
+        isActive: Boolean = passwordConfigurationProperties.userIsEnabledAfterCreation
+    ): User {
         val user = User(
-                username = request.email,
-                email = request.email,
-                password = hashGeneratorService.encode(request.password),
-                isActive = isActive
+            username = request.email,
+            email = request.email,
+            password = hashGeneratorService.encode(request.password),
+            isActive = isActive
         )
         return jpaUserRepository.save(user)
     }

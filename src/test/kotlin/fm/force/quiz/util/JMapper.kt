@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 
-
 class JMapper {
     companion object {
         val mapper by lazy {
@@ -22,6 +21,6 @@ class JMapper {
             input
         }
 
-        inline fun <reified K, reified V>toMap(input: String) = mapper.readValue<Map<K, V>>(input)
+        inline fun <reified K, reified V> toMap(input: String) = mapper.readValue<Map<K, V>>(input)
     }
 }

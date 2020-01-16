@@ -1,13 +1,12 @@
 package fm.force.quiz.interceptor
 
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.HandlerInterceptor
 import org.springframework.web.servlet.ModelAndView
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
-
 
 @Component
 class SampleInterceptor : HandlerInterceptor {
@@ -18,11 +17,21 @@ class SampleInterceptor : HandlerInterceptor {
         return true
     }
 
-    override fun postHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any, modelAndView: ModelAndView?) {
+    override fun postHandle(
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        handler: Any,
+        modelAndView: ModelAndView?
+    ) {
         logger.debug("[ø] Handled a request $request, $response")
     }
 
-    override fun afterCompletion(request: HttpServletRequest, response: HttpServletResponse, handler: Any, ex: Exception?) {
+    override fun afterCompletion(
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        handler: Any,
+        ex: Exception?
+    ) {
         logger.debug("[ø] Completed handling requests")
     }
 }

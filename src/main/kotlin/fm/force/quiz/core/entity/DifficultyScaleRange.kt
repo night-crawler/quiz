@@ -8,17 +8,17 @@ import javax.persistence.UniqueConstraint
 
 @Entity
 @Table(
-        name = "difficulty_scale_ranges",
-        uniqueConstraints = [UniqueConstraint(columnNames = ["difficulty_scale_id", "title"])]
+    name = "difficulty_scale_ranges",
+    uniqueConstraints = [UniqueConstraint(columnNames = ["difficulty_scale_id", "title"])]
 )
 data class DifficultyScaleRange(
-        @ManyToOne val owner: User,
-        @ManyToOne val difficultyScale: DifficultyScale,
+    @ManyToOne val owner: User,
+    @ManyToOne val difficultyScale: DifficultyScale,
 
-        var title: String,
+    var title: String,
 
-        var min: Int = 0,
-        var max: Int = 10
+    var min: Int = 0,
+    var max: Int = 10
 
 ) : BaseQuizEntity() {
     override fun equals(other: Any?): Boolean {

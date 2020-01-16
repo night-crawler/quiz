@@ -14,14 +14,14 @@ import io.kotlintest.shouldThrow
 import io.kotlintest.tables.row
 
 class TopicServiceTest(
-        validationProps: TopicValidationProperties,
-        topicService: TopicService
+    validationProps: TopicValidationProperties,
+    topicService: TopicService
 ) : AbstractCRUDServiceTest() {
     init {
         "should validate topic title length" {
             forall(
-                    row(TopicPatchDTO(getRandomString(validationProps.minTitleLength - 1))),
-                    row(TopicPatchDTO(getRandomString(validationProps.maxTitleLength + 1)))
+                row(TopicPatchDTO(getRandomString(validationProps.minTitleLength - 1))),
+                row(TopicPatchDTO(getRandomString(validationProps.maxTitleLength + 1)))
             ) {
                 shouldThrow<ValidationError> { topicService.create(it) }
             }
@@ -38,9 +38,9 @@ class TopicServiceTest(
             (1..5).map { testDataFactory.getTopic(owner = alien, title = "123-contains-$it") }
 
             val page = topicService.find(
-                    PaginationQuery.default(),
-                    SortQuery.byIdDesc(),
-                    SearchQueryDTO("conT")
+                PaginationQuery.default(),
+                SortQuery.byIdDesc(),
+                SearchQueryDTO("conT")
             )
             page.content shouldHaveSize 5
         }

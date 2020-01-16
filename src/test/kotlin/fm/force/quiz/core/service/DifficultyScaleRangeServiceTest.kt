@@ -12,20 +12,20 @@ import io.kotlintest.shouldThrow
 import io.kotlintest.tables.row
 
 open class DifficultyScaleRangeServiceTest(
-        service: DifficultyScaleRangeService,
-        validationProps: DifficultyScaleRangeValidationProperties
+    service: DifficultyScaleRangeService,
+    validationProps: DifficultyScaleRangeValidationProperties
 ) : AbstractCRUDServiceTest() {
 
     init {
         "should validate when creating a new instance" {
             val range = testDataFactory.getDifficultyScaleRange(owner = user)
             forall(
-                    row(DifficultyScaleRangePatchDTO()),
-                    row(DifficultyScaleRangePatchDTO(difficultyScale = -1)),
-                    row(DifficultyScaleRangePatchDTO(title = "")),
-                    row(DifficultyScaleRangePatchDTO(min = -1)),
-                    // swap min & max
-                    row(DifficultyScaleRangePatchDTO(difficultyScale = range.difficultyScale.id, min = validationProps.maxUpper, max = 1, title = "sample sample"))
+                row(DifficultyScaleRangePatchDTO()),
+                row(DifficultyScaleRangePatchDTO(difficultyScale = -1)),
+                row(DifficultyScaleRangePatchDTO(title = "")),
+                row(DifficultyScaleRangePatchDTO(min = -1)),
+                // swap min & max
+                row(DifficultyScaleRangePatchDTO(difficultyScale = range.difficultyScale.id, min = validationProps.maxUpper, max = 1, title = "sample sample"))
             ) {
                 shouldThrow<ValidationError> { service.create(it) }
             }
@@ -35,7 +35,8 @@ open class DifficultyScaleRangeServiceTest(
             val range = testDataFactory.getDifficultyScaleRange(owner = user, min = 100, max = 1000)
             // difficultyScale must not be changed
             var patch = DifficultyScaleRangePatchDTO(
-                    difficultyScale = range.id, min = 100, max = validationProps.maxUpper, title = "sample sample")
+                difficultyScale = range.id, min = 100, max = validationProps.maxUpper, title = "sample sample"
+            )
             shouldThrow<ValidationError> { service.patch(range.id, patch) }
 
             // even if a patch itself is valid, we must check against changed boundaries
@@ -62,9 +63,9 @@ open class DifficultyScaleRangeServiceTest(
             (1..5).forEach { testDataFactory.getDifficultyScaleRange(owner = alien, title = "uniqueTitle $it") }
 
             val page = service.find(
-                    PaginationQuery.default(),
-                    SortQuery.byIdDesc(),
-                    DifficultyScaleRangeSearchDTO(title = "NIQUE")
+                PaginationQuery.default(),
+                SortQuery.byIdDesc(),
+                DifficultyScaleRangeSearchDTO(title = "NIQUE")
             )
 
             page.content shouldHaveSize 5

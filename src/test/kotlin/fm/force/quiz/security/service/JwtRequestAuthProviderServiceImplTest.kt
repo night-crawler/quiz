@@ -7,8 +7,8 @@ import org.springframework.test.context.ContextConfiguration
 
 @ContextConfiguration(classes = [TestConfiguration::class])
 open class JwtRequestAuthProviderServiceImplTest(
-        private val jwtRequestAuthProviderService: JwtRequestAuthProviderService,
-        private val jwtProviderService: JwtProviderService
+    private val jwtRequestAuthProviderService: JwtRequestAuthProviderService,
+    private val jwtProviderService: JwtProviderService
 ) : WordSpec() {
     private val jwtUserDetailsFactory = JwtUserDetailsMapper()
 

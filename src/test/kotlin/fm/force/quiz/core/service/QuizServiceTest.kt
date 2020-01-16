@@ -15,23 +15,25 @@ import io.kotlintest.shouldThrow
 import io.kotlintest.tables.row
 
 open class QuizServiceTest(
-        validationProps: QuizValidationProperties,
-        quizService: QuizService
+    validationProps: QuizValidationProperties,
+    quizService: QuizService
 ) : AbstractCRUDServiceTest() {
 
     init {
         "should validate" {
             forall(
-                    row(QuizPatchDTO()),
-                    row(QuizPatchDTO(title = "")),
-                    row(QuizPatchDTO(title = getRandomString(validationProps.minTitleLength), topics = setOf(1, 2))),
-                    row(QuizPatchDTO(
-                            title = getRandomString(validationProps.minTitleLength),
-                            questions = setOf(1, 3),
-                            tags = setOf(1, 2),
-                            topics = setOf(1, 2),
-                            difficultyScale = 123
-                    ))
+                row(QuizPatchDTO()),
+                row(QuizPatchDTO(title = "")),
+                row(QuizPatchDTO(title = getRandomString(validationProps.minTitleLength), topics = setOf(1, 2))),
+                row(
+                    QuizPatchDTO(
+                        title = getRandomString(validationProps.minTitleLength),
+                        questions = setOf(1, 3),
+                        tags = setOf(1, 2),
+                        topics = setOf(1, 2),
+                        difficultyScale = 123
+                    )
+                )
             ) {
                 shouldThrow<ValidationError> { quizService.create(it) }
             }
@@ -44,11 +46,11 @@ open class QuizServiceTest(
             val scale = testDataFactory.getDifficultyScale(owner = user)
 
             val dto = QuizPatchDTO(
-                    title = getRandomString(validationProps.minTitleLength),
-                    questions = questions.map { it.id }.toSet(),
-                    tags = setOf(tags.random().id, tags.random().id),
-                    topics = setOf(topics.random().id, topics.random().id),
-                    difficultyScale = scale.id
+                title = getRandomString(validationProps.minTitleLength),
+                questions = questions.map { it.id }.toSet(),
+                tags = setOf(tags.random().id, tags.random().id),
+                topics = setOf(topics.random().id, topics.random().id),
+                difficultyScale = scale.id
             )
             quizService.create(dto)
         }
@@ -57,9 +59,9 @@ open class QuizServiceTest(
             (1..5).map { testDataFactory.getQuiz(owner = user, title = "This title is exciting $it") }
             (1..5).map { testDataFactory.getQuiz(owner = alien, title = "This title is exciting $it") }
             val page = quizService.find(
-                    PaginationQuery.default(),
-                    SortQuery.byIdDesc(),
-                    SearchQueryDTO("exciTINg")
+                PaginationQuery.default(),
+                SortQuery.byIdDesc(),
+                SearchQueryDTO("exciTINg")
             )
             page.content shouldHaveSize 5
         }
@@ -67,12 +69,12 @@ open class QuizServiceTest(
         "should patch" {
             val quiz = testDataFactory.getQuiz(owner = user)
             val patch = QuizPatchDTO(
-                    title = "sample!",
-                    questions = setOf(),
-                    tags = setOf(),
-                    topics = setOf()
-                    // Cannot set it to null
-                    // difficultyScale = null
+                title = "sample!",
+                questions = setOf(),
+                tags = setOf(),
+                topics = setOf()
+                // Cannot set it to null
+                // difficultyScale = null
             )
             val patched = quizService.patch(quiz.id, patch)
             patched.title shouldBe "sample!"

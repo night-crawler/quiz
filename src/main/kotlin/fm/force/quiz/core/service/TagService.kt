@@ -4,24 +4,28 @@ import am.ik.yavi.builder.ValidatorBuilder
 import com.github.slugify.Slugify
 import fm.force.quiz.common.SpecificationBuilder
 import fm.force.quiz.configuration.properties.TagValidationProperties
-import fm.force.quiz.core.dto.*
+import fm.force.quiz.core.dto.PageDTO
+import fm.force.quiz.core.dto.SearchQueryDTO
+import fm.force.quiz.core.dto.TagFullDTO
+import fm.force.quiz.core.dto.TagPatchDTO
+import fm.force.quiz.core.dto.toDTO
+import fm.force.quiz.core.dto.toFullDTO
 import fm.force.quiz.core.entity.Tag
 import fm.force.quiz.core.entity.Tag_
 import fm.force.quiz.core.exception.ValidationError
-import fm.force.quiz.core.repository.JpaTagRepository
+import fm.force.quiz.core.repository.TagRepository
 import fm.force.quiz.core.validator.stringConstraint
+import java.time.Instant
 import org.springframework.data.domain.Page
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
-import java.time.Instant
-
 
 @Service
 class TagService(
-        validationProps: TagValidationProperties,
-        jpaTagRepository: JpaTagRepository
-) : AbstractPaginatedCRUDService<Tag, JpaTagRepository, TagPatchDTO, TagFullDTO, SearchQueryDTO>(
-        repository = jpaTagRepository
+    validationProps: TagValidationProperties,
+    tagRepository: TagRepository
+) : AbstractPaginatedCRUDService<Tag, TagRepository, TagPatchDTO, TagFullDTO, SearchQueryDTO>(
+    repository = tagRepository
 ) {
     companion object {
         private val slugifier = Slugify()
@@ -34,21 +38,22 @@ class TagService(
         if (needle.isNullOrEmpty()) return ownerEquals
 
         return Specification
-                .where(ownerEquals)
-                .and(Specification
-                        .where(SpecificationBuilder.ciEquals(needle, Tag_.name))
-                        .or(SpecificationBuilder.ciStartsWith(needle, Tag_.name))
-                        .or(SpecificationBuilder.ciEndsWith(needle, Tag_.name))
-                )
+            .where(ownerEquals)
+            .and(
+                Specification
+                    .where(SpecificationBuilder.ciEquals(needle, Tag_.name))
+                    .or(SpecificationBuilder.ciStartsWith(needle, Tag_.name))
+                    .or(SpecificationBuilder.ciEndsWith(needle, Tag_.name))
+            )
     }
 
     override var entityValidator = ValidatorBuilder.of<Tag>()
-            .stringConstraint(Tag::name, validationProps.minTagLength..validationProps.maxTagLength)
-            .build()
+        .stringConstraint(Tag::name, validationProps.minTagLength..validationProps.maxTagLength)
+        .build()
 
     private val slugValidator = ValidatorBuilder.of<Tag>()
-            .stringConstraint(Tag::slug, validationProps.minTagLength..validationProps.maxSlugLength)
-            .build()
+        .stringConstraint(Tag::slug, validationProps.minTagLength..validationProps.maxSlugLength)
+        .build()
 
     override fun validateEntity(entity: Tag) {
         entityValidator.validate(entity).throwIfInvalid { ValidationError(it) }
@@ -57,9 +62,9 @@ class TagService(
 
     override fun create(createDTO: TagPatchDTO): Tag {
         val tag = Tag(
-                owner = authenticationFacade.user,
-                name = createDTO.name,
-                slug = slugify(createDTO.name)
+            owner = authenticationFacade.user,
+            name = createDTO.name,
+            slug = slugify(createDTO.name)
         )
         validateEntity(tag)
         return repository.save(tag)
