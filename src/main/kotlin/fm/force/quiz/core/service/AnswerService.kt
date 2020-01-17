@@ -22,9 +22,8 @@ import org.springframework.stereotype.Service
 class AnswerService(
     answerRepository: AnswerRepository,
     validationProps: AnswerValidationProperties
-) : AbstractPaginatedCRUDService<Answer, AnswerRepository, AnswerPatchDTO, AnswerFullDTO, SearchQueryDTO>(
-    repository = answerRepository
-) {
+) : AnswerServiceType(repository = answerRepository) {
+
     override var entityValidator = ValidatorBuilder.of<Answer>()
         .stringConstraint(Answer::text, validationProps.minAnswerLength..validationProps.maxAnswerLength)
         .build()

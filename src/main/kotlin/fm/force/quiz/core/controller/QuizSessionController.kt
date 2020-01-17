@@ -1,10 +1,5 @@
 package fm.force.quiz.core.controller
 
-import fm.force.quiz.core.dto.QuizSessionFullDTO
-import fm.force.quiz.core.dto.QuizSessionPatchDTO
-import fm.force.quiz.core.dto.QuizSessionSearchDTO
-import fm.force.quiz.core.entity.QuizSession
-import fm.force.quiz.core.repository.QuizSessionRepository
 import fm.force.quiz.core.service.QuizSessionService
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -13,8 +8,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("quizSessions")
-class QuizSessionController(quizSessionService: QuizSessionService) :
-    AbstractCRUDController<QuizSession, QuizSessionRepository, QuizSessionPatchDTO, QuizSessionFullDTO, QuizSessionSearchDTO>(quizSessionService) {
+class QuizSessionController(quizSessionService: QuizSessionService) : QuizSessionControllerType(quizSessionService) {
 
     override val service = quizSessionService
 

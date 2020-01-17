@@ -9,9 +9,7 @@ import fm.force.quiz.core.validator.intConstraint
 import org.springframework.stereotype.Service
 
 @Service
-class PaginationService(
-    private val paginationProps: PaginationValidationProperties
-) {
+class PaginationService(private val paginationProps: PaginationValidationProperties) {
     val validator = ValidatorBuilder.of<PaginationQuery>()
         .intConstraint(PaginationQuery::page, 1..Int.MAX_VALUE)
         .intConstraint(PaginationQuery::pageSize, paginationProps.minPageSize..paginationProps.maxPageSize)

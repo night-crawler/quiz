@@ -24,9 +24,7 @@ import org.springframework.stereotype.Service
 class TagService(
     validationProps: TagValidationProperties,
     tagRepository: TagRepository
-) : AbstractPaginatedCRUDService<Tag, TagRepository, TagPatchDTO, TagFullDTO, SearchQueryDTO>(
-    repository = tagRepository
-) {
+) : TagServiceType(repository = tagRepository) {
     companion object {
         private val slugifier = Slugify()
         fun slugify(text: String): String = slugifier.slugify(text)

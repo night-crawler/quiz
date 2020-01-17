@@ -31,12 +31,8 @@ class DifficultyScaleRangeService(
     private val difficultyScaleRepository: DifficultyScaleRepository,
     difficultyScaleRangeRepository: DifficultyScaleRangeRepository,
     validationProps: DifficultyScaleRangeValidationProperties
-) : AbstractPaginatedCRUDService<
-    DifficultyScaleRange,
-    DifficultyScaleRangeRepository,
-    DifficultyScaleRangePatchDTO,
-    DifficultyScaleRangeFullDTO,
-    DifficultyScaleRangeSearchDTO>(repository = difficultyScaleRangeRepository) {
+) : DifficultyScaleRangeServiceType(repository = difficultyScaleRangeRepository) {
+
     private val msgCannotBeModified = "Cannot be modified"
     private val msgMaxMustBeLessThanMin = "Max must be less than min"
     private val msgMustNotIntersect = "Ranges must not intersect"

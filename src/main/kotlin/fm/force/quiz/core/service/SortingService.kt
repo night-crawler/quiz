@@ -14,9 +14,7 @@ import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 
 @Service
-class SortingService(
-    val validationProps: SortingValidationProperties
-) {
+class SortingService(val validationProps: SortingValidationProperties) {
     private val whenSortIsPresent = ConstraintCondition<SortQuery> { sortQuery, _: ConstraintGroup? -> sortQuery.sort != null }
     val validator = ValidatorBuilder.of<SortQuery>()
         .konstraintOnCondition(whenSortIsPresent) {

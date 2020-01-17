@@ -29,7 +29,7 @@ class QuizSessionService(
     private val quizRepository: QuizRepository,
     private val difficultyScaleRepository: DifficultyScaleRepository,
     quizSessionRepository: QuizSessionRepository
-) : AbstractPaginatedCRUDService<QuizSession, QuizSessionRepository, QuizSessionPatchDTO, QuizSessionFullDTO, QuizSessionSearchDTO>(quizSessionRepository) {
+) : QuizSessionServiceType(quizSessionRepository) {
 
     override var dtoValidator = ValidatorBuilder.of<QuizSessionPatchDTO>()
         .fkConstraint(QuizSessionPatchDTO::quiz, quizRepository)

@@ -34,9 +34,7 @@ class QuestionService(
     private val topicRepository: TopicRepository,
     validationProps: QuestionValidationProperties,
     questionRepository: QuestionRepository
-) : AbstractPaginatedCRUDService<Question, QuestionRepository, QuestionPatchDTO, QuestionFullDTO, SearchQueryDTO>(
-    repository = questionRepository
-) {
+) : QuestionServiceType(repository = questionRepository) {
 
     override var dtoValidator = ValidatorBuilder.of<QuestionPatchDTO>()
         .konstraintOnGroup(CRUDConstraintGroup.CREATE) {

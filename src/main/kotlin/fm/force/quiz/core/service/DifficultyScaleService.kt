@@ -25,9 +25,7 @@ import org.springframework.stereotype.Service
 class DifficultyScaleService(
     difficultyScaleRepository: DifficultyScaleRepository,
     validationProps: DifficultyScaleValidationProperties
-) : AbstractPaginatedCRUDService<DifficultyScale, DifficultyScaleRepository, DifficultyScalePatchDTO, DifficultyScaleFullDTO, SearchQueryDTO>(
-    repository = difficultyScaleRepository
-) {
+) : DifficultyScaleServiceType(repository = difficultyScaleRepository) {
     override var dtoValidator = ValidatorBuilder.of<DifficultyScalePatchDTO>()
         .konstraintOnGroup(CRUDConstraintGroup.CREATE) {
             mandatory(DifficultyScalePatchDTO::name)

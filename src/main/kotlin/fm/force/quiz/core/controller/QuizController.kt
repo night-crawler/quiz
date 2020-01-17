@@ -1,18 +1,13 @@
 package fm.force.quiz.core.controller
 
 import fm.force.quiz.core.dto.PaginationQuery
-import fm.force.quiz.core.dto.QuizFullDTO
-import fm.force.quiz.core.dto.QuizPatchDTO
 import fm.force.quiz.core.dto.QuizQuestionFullDTO
 import fm.force.quiz.core.dto.QuizQuestionPatchDTO
 import fm.force.quiz.core.dto.QuizQuestionSearchDTO
 import fm.force.quiz.core.dto.QuizSessionPatchDTO
-import fm.force.quiz.core.dto.SearchQueryDTO
 import fm.force.quiz.core.dto.SortQuery
 import fm.force.quiz.core.dto.toFullDTO
 import fm.force.quiz.core.dto.toRestrictedDTO
-import fm.force.quiz.core.entity.Quiz
-import fm.force.quiz.core.repository.QuizRepository
 import fm.force.quiz.core.service.QuizQuestionService
 import fm.force.quiz.core.service.QuizService
 import fm.force.quiz.core.service.QuizSessionService
@@ -33,8 +28,7 @@ class QuizController(
     quizService: QuizService,
     private val quizQuestionService: QuizQuestionService,
     private val quizSessionService: QuizSessionService
-) :
-    AbstractCRUDController<Quiz, QuizRepository, QuizPatchDTO, QuizFullDTO, SearchQueryDTO>(quizService) {
+) : QuizControllerType(quizService) {
 
     @GetMapping("{quizId}/view")
     fun getRestricted(@PathVariable quizId: Long) = service.getEntity(quizId).toRestrictedDTO()

@@ -38,9 +38,7 @@ class QuizService(
     private val quizQuestionRepository: QuizQuestionRepository,
     validationProps: QuizValidationProperties,
     quizRepository: QuizRepository
-) : AbstractPaginatedCRUDService<Quiz, QuizRepository, QuizPatchDTO, QuizFullDTO, SearchQueryDTO>(
-    repository = quizRepository
-) {
+) : QuizServiceType(repository = quizRepository) {
     override var dtoValidator = ValidatorBuilder.of<QuizPatchDTO>()
         .konstraintOnGroup(CRUDConstraintGroup.CREATE) {
             mandatory(QuizPatchDTO::title)

@@ -22,9 +22,7 @@ import org.springframework.stereotype.Service
 class TopicService(
     validationProps: TopicValidationProperties,
     topicRepository: TopicRepository
-) : AbstractPaginatedCRUDService<Topic, TopicRepository, TopicPatchDTO, TopicFullDTO, SearchQueryDTO>(
-    repository = topicRepository
-) {
+) : TopicServiceType(repository = topicRepository) {
     override var entityValidator = ValidatorBuilder.of<Topic>()
         .stringConstraint(Topic::title, validationProps.minTitleLength..validationProps.maxTitleLength)
         .build()

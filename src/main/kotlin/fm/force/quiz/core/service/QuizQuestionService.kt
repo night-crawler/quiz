@@ -29,9 +29,8 @@ class QuizQuestionService(
     quizQuestionRepository: QuizQuestionRepository,
     private val quizRepository: QuizRepository,
     private val questionRepository: QuestionRepository
-) : AbstractPaginatedCRUDService<QuizQuestion, QuizQuestionRepository, QuizQuestionPatchDTO, QuizQuestionFullDTO, QuizQuestionSearchDTO>(
-    quizQuestionRepository
-) {
+) : QuizQuestionServiceType(quizQuestionRepository) {
+
     private val msgSeqTooBigPredicate = "Sequence number is too big"
     private val seqTooBigPredicate = Predicate<QuizQuestionPatchDTO> {
         if (it.seq == null || it.quiz == null || it.seq!! < 0) true
