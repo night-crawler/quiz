@@ -13,7 +13,7 @@ import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.shouldThrow
 import io.kotlintest.tables.row
 
-class TopicServiceTest(
+open class TopicServiceTest(
     validationProps: TopicValidationProperties,
     topicService: TopicService
 ) : AbstractCRUDServiceTest() {

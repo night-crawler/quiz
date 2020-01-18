@@ -3,7 +3,7 @@ package fm.force.quiz.security.entity
 import io.kotlintest.matchers.string.shouldHaveMinLength
 import io.kotlintest.specs.WordSpec
 
-class BaseEntityTest : WordSpec({
+open class BaseEntityTest : WordSpec({
     val baseEntity = BaseEntity()
     "BaseEntity" When {
         "called toString() method" should {

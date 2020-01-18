@@ -7,7 +7,6 @@ import am.ik.yavi.core.ConstraintCondition
 import fm.force.quiz.common.toCustomSet
 import fm.force.quiz.core.repository.CommonRepository
 import java.time.Instant
-import java.util.Locale
 import java.util.function.Predicate
 import kotlin.reflect.KProperty1
 import org.springframework.data.jpa.repository.JpaRepository
@@ -17,11 +16,9 @@ fun <T> notNullCondition(property: KProperty1<T, Any?>) =
 
 fun <T, E : Any?> ValidatorBuilder<T>.mandatory(
     property: KProperty1<T, E>,
-    errorTemplate: String = "%s must be present",
-    locale: Locale = Locale.ENGLISH,
     chain: ValidatorBuilder<T>.(ValidatorBuilder<T>) -> Unit = { }
 ): ValidatorBuilder<T> {
-    val msgError = errorTemplate.format(locale, property.name)
+    val msgError = "${property.name} must be present"
     val predicate = Predicate<T> { property(it) != null }
     constraintOnTarget(predicate, property.name, "", msgError)
     chain(this)
@@ -31,12 +28,9 @@ fun <T, E : Any?> ValidatorBuilder<T>.mandatory(
 fun <T, E, C : Collection<E>?> ValidatorBuilder<T>.optionalSubset(
     sup: KProperty1<T, C>,
     sub: KProperty1<T, C>,
-
-    errorTemplate: String = "%s must be a subset of %s",
-    locale: Locale = Locale.ENGLISH,
     chain: ValidatorBuilder<T>.(ValidatorBuilder<T>) -> Unit = { }
 ): ValidatorBuilder<T> {
-    val errorMessage = errorTemplate.format(locale, sub.name, sup.name)
+    val errorMessage = "${sub.name} must be a subset of ${sup.name}"
 
     val predicate = Predicate<T> {
         val maybeSuper = sup(it)
@@ -65,13 +59,10 @@ fun <T, ID : Long?, R> ValidatorBuilder<T>.ownedFkConstraint(
     property: KProperty1<T, ID>,
     repository: CommonRepository<R>,
     getOwnerId: () -> Long,
-    wrongFkTemplate: String = "%s must be positive",
-    doesNotExistErrorTemplate: String = "%s must exist and belong to you",
-    locale: Locale = Locale.ENGLISH,
     chain: ValidatorBuilder<T>.(ValidatorBuilder<T>) -> Unit = { }
 ): ValidatorBuilder<T> {
-    val msgWrongFk = wrongFkTemplate.format(locale, property.name)
-    val msgDoesNotExist = doesNotExistErrorTemplate.format(locale, property.name)
+    val msgWrongFk = "Must be greater than zero"
+    val msgDoesNotExist = "Must exist and belong to you"
     val predicate = Predicate<T> {
         val value = property(it)
         if (value == null) true
@@ -91,33 +82,25 @@ fun <T, ID : Long?, R> ValidatorBuilder<T>.ownedFkConstraint(
 fun <T, R> ValidatorBuilder<T>.fkConstraint(
     property: KProperty1<T, Long>,
     repository: JpaRepository<R, Long>,
-    wrongFkTemplate: String = "%s must be positive",
-    doesNotExistErrorTemplate: String = "%s must exist",
-    locale: Locale = Locale.ENGLISH,
+    predicate: Predicate<T> = Predicate { repository.existsById(property(it)) },
     chain: ValidatorBuilder<T>.(ValidatorBuilder<T>) -> Unit = { }
 ): ValidatorBuilder<T> {
-    val msgWrongFk = wrongFkTemplate.format(locale, property.name)
-    val msgDoesNotExist = doesNotExistErrorTemplate.format(locale, property.name)
+    val msgWrongFk = "Must be greater than zero"
+    val msgDoesNotExist = "Must exist"
 
-    val predicate = Predicate<T> { repository.existsById(property(it)) }
-
-    konstraint(property) {
-        greaterThan(0).message(msgWrongFk)
-    }
+    konstraint(property) { greaterThan(0).message(msgWrongFk) }
     constraintOnTarget(predicate, property.name, "", msgDoesNotExist)
-    chain(this)
 
+    chain(this)
     return this
 }
 
 fun <T, R : String?> ValidatorBuilder<T>.stringConstraint(
     property: KProperty1<T, R>,
     range: ClosedRange<Int>,
-    errorTemplate: String = "%s length must be in range [%d; %d]",
-    locale: Locale = Locale.ENGLISH,
     chain: ValidatorBuilder<T>.(ValidatorBuilder<T>) -> Unit = { }
 ): ValidatorBuilder<T> {
-    val msgError = errorTemplate.format(locale, property.name, range.start, range.endInclusive)
+    val msgError = "Provide a string with length in range $range"
 
     konstraintOnCondition(notNullCondition(property)) {
         konstraint(property) {
@@ -132,11 +115,9 @@ fun <T, R : String?> ValidatorBuilder<T>.stringConstraint(
 fun <T, V : Int?> ValidatorBuilder<T>.intConstraint(
     property: KProperty1<T, V>,
     range: ClosedRange<Int>,
-    errorTemplate: String = "%s must be in range [%d; %d]",
-    locale: Locale = Locale.ENGLISH,
     chain: ValidatorBuilder<T>.(ValidatorBuilder<T>) -> Unit = { }
 ): ValidatorBuilder<T> {
-    val msgError = errorTemplate.format(locale, property.name, range.start, range.endInclusive)
+    val msgError = "Provide an integer in range $range"
 
     konstraintOnCondition(notNullCondition(property)) {
         konstraint(property) {
@@ -148,34 +129,64 @@ fun <T, V : Int?> ValidatorBuilder<T>.intConstraint(
     return this
 }
 
+fun <T, C : Collection<Long>?> ValidatorBuilder<T>.collectionConstraint(
+    property: KProperty1<T, C>,
+    range: ClosedRange<Int>,
+    chain: ValidatorBuilder<T>.(ValidatorBuilder<T>) -> Unit = { }
+): ValidatorBuilder<T> {
+    val msgError = "Provide $range items for the field"
+    konstraintOnCondition(notNullCondition(property)) {
+        konstraint(property) {
+            greaterThanOrEqual(range.start).message(msgError)
+            lessThanOrEqual(range.endInclusive).message(msgError)
+        }
+        chain(this)
+    }
+    return this
+}
+
+fun <T, C : Collection<Long>?, R> ValidatorBuilder<T>.fksConstraint(
+    property: KProperty1<T, C>,
+    repository: JpaRepository<R, Long>,
+    range: ClosedRange<Int>,
+    chain: ValidatorBuilder<T>.(ValidatorBuilder<T>) -> Unit = { }
+): ValidatorBuilder<T> {
+    val msgSomeItemsAreMissing = "Some of entered items do not exist"
+    val whenSomeItemsDoNotExist = Predicate<T> {
+        val value = property(it)
+        if (value.isNullOrEmpty()) true
+        else repository.findAllById(value).toSet() == value.toCustomSet()
+    }
+
+    collectionConstraint(property, range) {
+        constraintOnTarget(whenSomeItemsDoNotExist, property.name, "custom.fksConstraint", msgSomeItemsAreMissing)
+        forEach(property, property.name, fkValidator)
+        chain(this)
+    }
+
+    return this
+}
+
 fun <T, C : Collection<Long>?, R> ValidatorBuilder<T>.ownedFksConstraint(
     property: KProperty1<T, C>,
     repository: CommonRepository<R>,
     range: ClosedRange<Int>,
     getOwnerId: () -> Long,
-    errorTemplate: String = "Provide %d - %d items for the field %s",
-    missingItemsTemplate: String = "Some of entered items are missing or do not belong to your user",
-    locale: Locale = Locale.ENGLISH,
     chain: ValidatorBuilder<T>.(ValidatorBuilder<T>) -> Unit = { }
 ): ValidatorBuilder<T> {
-    val msgError = errorTemplate.format(locale, range.start, range.endInclusive, property.name)
-    val msgSomeItemsAreMissing = missingItemsTemplate.format(locale, repository::class.simpleName)
-
+    val msgSomeItemsAreMissing = "Some of entered items are missing or do not belong to your user"
     val whenSomeItemsDoNotExist = Predicate<T> {
         val value = property(it)
         if (value.isNullOrEmpty()) true
         else repository.findOwnedIds(value, getOwnerId()).toSet() == value.toCustomSet()
     }
 
-    konstraintOnCondition(notNullCondition(property)) {
-        konstraint(property) {
-            greaterThanOrEqual(range.start).message(msgError)
-            lessThanOrEqual(range.endInclusive).message(msgError)
-        }
-        forEach(property, property.name, fkValidator)
+    collectionConstraint(property, range) {
         constraintOnTarget(whenSomeItemsDoNotExist, property.name, "", msgSomeItemsAreMissing)
+        forEach(property, property.name, fkValidator)
         chain(this)
     }
+
     return this
 }
 
@@ -201,7 +212,7 @@ fun <T, R : Instant?> ValidatorBuilder<T>.instantConstraint(
 
 val fkValidator = ValidatorBuilder.of(Long::class.java)
     .constraint(Long::toLong, "") {
-        it.greaterThan(0).message("Must be positive")
+        it.greaterThan(0).message("Must be greater than zero")
     }
     .build()
 
