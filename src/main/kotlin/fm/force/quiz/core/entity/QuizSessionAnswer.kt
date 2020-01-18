@@ -2,6 +2,10 @@ package fm.force.quiz.core.entity
 
 import fm.force.quiz.security.entity.User
 import javax.persistence.Entity
+import javax.persistence.FetchType
+import javax.persistence.JoinColumn
+import javax.persistence.JoinTable
+import javax.persistence.ManyToMany
 import javax.persistence.ManyToOne
 import javax.persistence.Table
 
@@ -11,6 +15,14 @@ data class QuizSessionAnswer(
     @ManyToOne val owner: User,
     @ManyToOne val quiz: Quiz,
     @ManyToOne val quizSession: QuizSession,
+    @ManyToOne val quizQuestion: QuizQuestion,
     @ManyToOne val question: Question,
-    @ManyToOne val answer: Answer
+
+    @ManyToMany(targetEntity = Answer::class, fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "quiz_session_answer__answers",
+        joinColumns = [JoinColumn(name = "quiz_session_answer_id")],
+        inverseJoinColumns = [JoinColumn(name = "answer_id")]
+    )
+    val answers: Set<Answer> = setOf()
 ) : BaseQuizEntity()

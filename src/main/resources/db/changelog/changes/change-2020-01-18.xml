@@ -1,0 +1,25 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="igorkalishevsky (generated)" id="1579296481966-1">
+        <dropForeignKeyConstraint baseTableName="quiz_session_answers" constraintName="FKsq84brltraekqvtwqjbqnkkug"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1579296481966-2">
+        <dropColumn columnName="answer_id" tableName="quiz_session_answers"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1579339033368-1">
+        <createTable tableName="quiz_session_answer__answers">
+            <column name="quiz_session_answer_id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="answer_id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1579339033368-2">
+        <addForeignKeyConstraint baseColumnNames="quiz_session_answer_id" baseTableName="quiz_session_answer__answers" constraintName="FK40ek4ihysf5ryuwju2hibdx07" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="quiz_session_answers" validate="true"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1579339033368-3">
+        <addForeignKeyConstraint baseColumnNames="answer_id" baseTableName="quiz_session_answer__answers" constraintName="FKqybini2e4rc8o0oj8m1i140s" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="answers" validate="true"/>
+    </changeSet>
+</databaseChangeLog>
