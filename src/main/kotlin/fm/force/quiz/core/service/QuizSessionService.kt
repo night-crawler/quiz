@@ -10,11 +10,16 @@ import fm.force.quiz.core.dto.QuizSessionPatchDTO
 import fm.force.quiz.core.dto.QuizSessionSearchDTO
 import fm.force.quiz.core.dto.toDTO
 import fm.force.quiz.core.dto.toFullDTO
+import fm.force.quiz.core.entity.QuizQuestion
 import fm.force.quiz.core.entity.QuizSession
+import fm.force.quiz.core.entity.QuizSessionQuestion
+import fm.force.quiz.core.entity.QuizSessionQuestionAnswer
 import fm.force.quiz.core.entity.QuizSession_
 import fm.force.quiz.core.exception.ValidationError
 import fm.force.quiz.core.repository.DifficultyScaleRepository
 import fm.force.quiz.core.repository.QuizRepository
+import fm.force.quiz.core.repository.QuizSessionQuestionAnswerRepository
+import fm.force.quiz.core.repository.QuizSessionQuestionRepository
 import fm.force.quiz.core.repository.QuizSessionRepository
 import fm.force.quiz.core.validator.fkConstraint
 import fm.force.quiz.core.validator.instantConstraint
@@ -28,6 +33,8 @@ import org.springframework.transaction.annotation.Transactional
 class QuizSessionService(
     private val quizRepository: QuizRepository,
     private val difficultyScaleRepository: DifficultyScaleRepository,
+    private val quizSessionQuestionAnswerRepository: QuizSessionQuestionAnswerRepository,
+    private val quizSessionQuestionRepository: QuizSessionQuestionRepository,
     quizSessionRepository: QuizSessionRepository
 ) : QuizSessionServiceType(quizSessionRepository) {
 
@@ -47,17 +54,63 @@ class QuizSessionService(
         .instantConstraint(QuizSession::validTill, errorTemplate = "Session is no more valid")
         .build()
 
+    @Transactional
     override fun create(createDTO: QuizSessionPatchDTO): QuizSession {
+        val owner = authenticationFacade.user
         validateCreate(createDTO)
-        val entity = with(createDTO) {
+        var entity = with(createDTO) {
             QuizSession(
-                owner = authenticationFacade.user,
+                owner = owner,
                 quiz = quizRepository.getEntity(quiz),
                 isCancelled = false,
                 isCompleted = false
             )
         }
-        return repository.save(entity)
+        entity = repository.save(entity)
+        cloneQuizQuestions(entity)
+
+        return entity
+    }
+
+    private fun cloneQuizQuestions(entity: QuizSession) {
+        val clonedQuestions = mutableListOf<QuizSessionQuestion>()
+        val clonedAnswers = mutableListOf<QuizSessionQuestionAnswer>()
+
+        entity.quiz.quizQuestions.forEach { qq ->
+            val (quizSessionQuestion, quizSessionQuestionAnswers) = cloneQuizQuestion(entity, qq)
+            clonedQuestions.add(quizSessionQuestion)
+            clonedAnswers.addAll(quizSessionQuestionAnswers)
+        }
+
+        quizSessionQuestionRepository.saveAll(clonedQuestions)
+        quizSessionQuestionAnswerRepository.saveAll(clonedAnswers)
+    }
+
+    private fun cloneQuizQuestion(
+        entity: QuizSession,
+        quizQuestion: QuizQuestion
+    ): Pair<QuizSessionQuestion, List<QuizSessionQuestionAnswer>> {
+        val owner = authenticationFacade.user
+        val quizSessionQuestion = QuizSessionQuestion(
+            owner = owner,
+            quizSession = entity,
+            originalQuestion = quizQuestion.question,
+            text = quizQuestion.question.text,
+            seq = quizQuestion.seq
+        )
+
+        val correctAnswersMap = quizQuestion.question.correctAnswers.map { it.id to it }.toMap()
+        val answers = quizQuestion.question.answers.map {
+            QuizSessionQuestionAnswer(
+                owner = owner,
+                quizSession = entity,
+                quizSessionQuestion = quizSessionQuestion,
+                originalAnswer = it,
+                text = it.text,
+                isCorrect = correctAnswersMap[it.id] != null
+            )
+        }
+        return quizSessionQuestion to answers
     }
 
     override fun buildSearchSpec(search: QuizSessionSearchDTO?): Specification<QuizSession> {

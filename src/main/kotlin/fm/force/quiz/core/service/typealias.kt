@@ -9,6 +9,7 @@ import fm.force.quiz.core.entity.Quiz
 import fm.force.quiz.core.entity.QuizQuestion
 import fm.force.quiz.core.entity.QuizSession
 import fm.force.quiz.core.entity.QuizSessionAnswer
+import fm.force.quiz.core.entity.QuizSessionQuestion
 import fm.force.quiz.core.entity.Tag
 import fm.force.quiz.core.entity.Topic
 import fm.force.quiz.core.repository.AnswerRepository
@@ -18,6 +19,7 @@ import fm.force.quiz.core.repository.QuestionRepository
 import fm.force.quiz.core.repository.QuizQuestionRepository
 import fm.force.quiz.core.repository.QuizRepository
 import fm.force.quiz.core.repository.QuizSessionAnswerRepository
+import fm.force.quiz.core.repository.QuizSessionQuestionRepository
 import fm.force.quiz.core.repository.QuizSessionRepository
 import fm.force.quiz.core.repository.TagRepository
 import fm.force.quiz.core.repository.TopicRepository
@@ -55,3 +57,10 @@ typealias DifficultyScaleRangeServiceType = AbstractPaginatedCRUDService<
 
 typealias AnswerServiceType = AbstractPaginatedCRUDService<
     Answer, AnswerRepository, AnswerPatchDTO, AnswerFullDTO, SearchQueryDTO>
+
+typealias QuizSessionQuestion = AbstractPaginatedCRUDService<
+    QuizSessionQuestion,
+    QuizSessionQuestionRepository,
+    QuizSessionQuestionPatchDTO,
+    QuizSessionQuestionRestrictedDTO,
+    QuizSessionQuestionSearchDTO>
