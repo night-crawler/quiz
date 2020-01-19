@@ -8,10 +8,13 @@ import java.time.Instant
 data class QuizSessionFullDTO(
     @JsonSerialize(using = ToStringSerializer::class)
     val id: Long,
+
     @JsonSerialize(using = ToStringSerializer::class)
     val quiz: Long,
+
     @JsonSerialize(using = ToStringSerializer::class)
     val difficultyScale: Long?,
+
     val validTill: Instant,
     val isCompleted: Boolean = false,
     val isCancelled: Boolean = false,

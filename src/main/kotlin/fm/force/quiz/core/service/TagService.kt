@@ -19,6 +19,7 @@ import java.time.Instant
 import org.springframework.data.domain.Page
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class TagService(
@@ -68,6 +69,7 @@ class TagService(
         return repository.save(tag)
     }
 
+    @Transactional
     override fun patch(id: Long, patchDTO: TagPatchDTO): Tag {
         val tag = getOwnedEntity(id)
         tag.name = patchDTO.name
@@ -77,6 +79,10 @@ class TagService(
         return repository.save(tag)
     }
 
+    @Transactional(readOnly = true)
     override fun serializePage(page: Page<Tag>): PageDTO = page.toDTO { it.toFullDTO() }
-    override fun serializeEntity(entity: Tag): TagFullDTO = entity.toFullDTO()
+
+    @Transactional(readOnly = true)
+    override fun serializeEntity(entity: Tag): TagFullDTO =
+        repository.refresh(entity).toFullDTO()
 }

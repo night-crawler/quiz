@@ -17,6 +17,7 @@ import java.time.Instant
 import org.springframework.data.domain.Page
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class TopicService(
@@ -46,6 +47,7 @@ class TopicService(
             .where(ownerEquals).and(SpecificationBuilder.ciContains(needle, Topic_.title))
     }
 
+    @Transactional
     override fun patch(id: Long, patchDTO: TopicPatchDTO): Topic {
         val topic = getOwnedEntity(id)
         topic.title = patchDTO.title
@@ -54,6 +56,10 @@ class TopicService(
         return repository.save(topic)
     }
 
+    @Transactional(readOnly = true)
     override fun serializePage(page: Page<Topic>): PageDTO = page.toDTO { it.toFullDTO() }
-    override fun serializeEntity(entity: Topic): TopicFullDTO = entity.toFullDTO()
+
+    @Transactional(readOnly = true)
+    override fun serializeEntity(entity: Topic): TopicFullDTO =
+        repository.refresh(entity).toFullDTO()
 }

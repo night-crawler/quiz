@@ -20,6 +20,7 @@ import java.time.Instant
 import org.springframework.data.domain.Page
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class DifficultyScaleService(
@@ -45,9 +46,12 @@ class DifficultyScaleService(
             .and(SpecificationBuilder.ciContains(needle, DifficultyScale_.name))
     }
 
+    @Transactional(readOnly = true)
     override fun serializePage(page: Page<DifficultyScale>): PageDTO = page.toDTO { it.toFullDTO() }
 
-    override fun serializeEntity(entity: DifficultyScale): DifficultyScaleFullDTO = entity.toFullDTO()
+    @Transactional(readOnly = true)
+    override fun serializeEntity(entity: DifficultyScale): DifficultyScaleFullDTO =
+        repository.refresh(entity).toFullDTO()
 
     override fun create(createDTO: DifficultyScalePatchDTO): DifficultyScale {
         validateCreate(createDTO)
@@ -61,6 +65,7 @@ class DifficultyScaleService(
         return repository.save(entity)
     }
 
+    @Transactional
     override fun patch(id: Long, patchDTO: DifficultyScalePatchDTO): DifficultyScale {
         validatePatch(patchDTO)
         val modified = getOwnedEntity(id).apply {

@@ -7,7 +7,6 @@ import fm.force.quiz.core.dto.QuizQuestionSearchDTO
 import fm.force.quiz.core.dto.QuizSessionPatchDTO
 import fm.force.quiz.core.dto.SortQuery
 import fm.force.quiz.core.dto.toFullDTO
-import fm.force.quiz.core.dto.toRestrictedDTO
 import fm.force.quiz.core.service.QuizQuestionService
 import fm.force.quiz.core.service.QuizService
 import fm.force.quiz.core.service.QuizSessionService
@@ -30,8 +29,11 @@ class QuizController(
     private val quizSessionService: QuizSessionService
 ) : QuizControllerType(quizService) {
 
+    override val service: QuizService = quizService
+
     @GetMapping("{quizId}/view")
-    fun getRestricted(@PathVariable quizId: Long) = service.getEntity(quizId).toRestrictedDTO()
+    fun getRestricted(@PathVariable quizId: Long) =
+        service.serializeRestrictedEntity(service.getEntity(quizId))
 
     @GetMapping("{quizId}/quizQuestions")
     fun findQuizQuestions(
@@ -67,7 +69,7 @@ class QuizController(
         @RequestBody patchDTO: QuizQuestionPatchDTO
     ): QuizQuestionFullDTO {
         patchDTO.quiz = quizId
-        return quizQuestionService.patch(quizQuestionId, patchDTO).toFullDTO()
+        return quizQuestionService.serializeEntity(quizQuestionService.patch(quizQuestionId, patchDTO))
     }
 
     @DeleteMapping("{quizId}/quizQuestions/{quizQuestionId}")
@@ -80,5 +82,5 @@ class QuizController(
     @PostMapping("{quizId}/startSession")
     @ResponseStatus(HttpStatus.CREATED)
     fun startSession(@PathVariable quizId: Long) =
-        quizSessionService.create(QuizSessionPatchDTO(quizId))
+        quizSessionService.serializeEntity(quizSessionService.create(QuizSessionPatchDTO(quizId)))
 }

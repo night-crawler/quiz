@@ -11,7 +11,6 @@ import fm.force.quiz.core.exception.ValidationError
 import fm.force.quiz.core.repository.CommonRepository
 import fm.force.quiz.core.repository.CustomJpaRepository
 import fm.force.quiz.security.service.AuthenticationFacade
-import javax.transaction.Transactional
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -19,6 +18,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor
+import org.springframework.transaction.annotation.Transactional
 
 abstract class AbstractPaginatedCRUDService<EntType, RepoType, PatchType, DTOType, SearchType>(
     val repository: RepoType
@@ -78,7 +78,7 @@ abstract class AbstractPaginatedCRUDService<EntType, RepoType, PatchType, DTOTyp
         .findById(id)
         .orElseThrow { NotFoundException(id, this::class) }
 
-    @Transactional
+    @Transactional(readOnly = true)
     open fun find(
         paginationQuery: PaginationQuery,
         sortQuery: SortQuery,

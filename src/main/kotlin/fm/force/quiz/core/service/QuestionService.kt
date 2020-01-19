@@ -22,10 +22,10 @@ import fm.force.quiz.core.validator.optionalSubset
 import fm.force.quiz.core.validator.ownedFksConstraint
 import fm.force.quiz.core.validator.stringConstraint
 import java.time.Instant
-import javax.transaction.Transactional
 import org.springframework.data.domain.Page
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class QuestionService(
@@ -102,6 +102,10 @@ class QuestionService(
             .where(ownerEquals).and(SpecificationBuilder.ciContains(needle, Question_.text))
     }
 
+    @Transactional(readOnly = true)
     override fun serializePage(page: Page<Question>): PageDTO = page.toDTO { it.toFullDTO() }
-    override fun serializeEntity(entity: Question): QuestionFullDTO = entity.toFullDTO()
+
+    @Transactional(readOnly = true)
+    override fun serializeEntity(entity: Question): QuestionFullDTO =
+        repository.refresh(entity).toFullDTO()
 }

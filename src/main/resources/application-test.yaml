@@ -7,6 +7,7 @@ spring:
     change-log: classpath:db/changelog/changelog-master.xml
     drop-first: true
   jpa:
+    open-in-view: false
     hibernate:
       ddl-auto: none
 force:

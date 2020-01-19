@@ -19,10 +19,10 @@ import fm.force.quiz.core.validator.intConstraint
 import fm.force.quiz.core.validator.mandatory
 import fm.force.quiz.core.validator.ownedFkConstraint
 import java.util.function.Predicate
-import javax.transaction.Transactional
 import org.springframework.data.domain.Page
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class QuizQuestionService(
@@ -54,9 +54,12 @@ class QuizQuestionService(
         }
         .build()
 
+    @Transactional(readOnly = true)
     override fun serializePage(page: Page<QuizQuestion>): PageDTO = page.toDTO { it.toFullDTO() }
 
-    override fun serializeEntity(entity: QuizQuestion): QuizQuestionFullDTO = entity.toFullDTO()
+    @Transactional(readOnly = true)
+    override fun serializeEntity(entity: QuizQuestion): QuizQuestionFullDTO =
+        repository.refresh(entity).toFullDTO()
 
     private fun createInternal(quizId: Long, questionId: Long, seq: Int): QuizQuestion {
         repository.updateSeqBetween(quizId, seq, Int.MAX_VALUE, 1)

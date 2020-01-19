@@ -16,9 +16,9 @@ import fm.force.quiz.core.repository.QuizSessionRepository
 import fm.force.quiz.core.validator.fkConstraint
 import fm.force.quiz.core.validator.fksConstraint
 import fm.force.quiz.core.validator.ownedFkConstraint
-import javax.transaction.Transactional
 import org.springframework.data.domain.Page
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class QuizSessionAnswerService(
@@ -52,11 +52,13 @@ class QuizSessionAnswerService(
         .constraintOnTarget({ !it.quizSession.isCompleted }, "quizSession", "", msgCancelled)
         .build()
 
+    @Transactional(readOnly = true)
     override fun serializePage(page: Page<QuizSessionAnswer>): PageDTO =
         page.toDTO { it.toRestrictedDTO() }
 
+    @Transactional(readOnly = true)
     override fun serializeEntity(entity: QuizSessionAnswer): QuizSessionAnswerFullDTO =
-        entity.toFullDTO()
+        repository.refresh(entity).toFullDTO()
 
     @Transactional
     override fun create(createDTO: QuizSessionAnswerPatchDTO): QuizSessionAnswer {

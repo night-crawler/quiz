@@ -19,10 +19,10 @@ import fm.force.quiz.core.repository.QuizSessionRepository
 import fm.force.quiz.core.validator.fkConstraint
 import fm.force.quiz.core.validator.instantConstraint
 import java.time.Instant
-import javax.transaction.Transactional
 import org.springframework.data.domain.Page
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class QuizSessionService(
@@ -83,9 +83,12 @@ class QuizSessionService(
         return spec
     }
 
+    @Transactional(readOnly = true)
     override fun serializePage(page: Page<QuizSession>): PageDTO = page.toDTO { it.toFullDTO() }
 
-    override fun serializeEntity(entity: QuizSession): QuizSessionFullDTO = entity.toFullDTO()
+    @Transactional(readOnly = true)
+    override fun serializeEntity(entity: QuizSession): QuizSessionFullDTO =
+        repository.refresh(entity).toFullDTO()
 
     @Transactional
     fun cancel(id: Long) = getOwnedEntity(id)

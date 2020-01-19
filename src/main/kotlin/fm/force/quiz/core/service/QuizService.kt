@@ -10,6 +10,7 @@ import fm.force.quiz.core.dto.QuizPatchDTO
 import fm.force.quiz.core.dto.SearchQueryDTO
 import fm.force.quiz.core.dto.toDTO
 import fm.force.quiz.core.dto.toFullDTO
+import fm.force.quiz.core.dto.toRestrictedDTO
 import fm.force.quiz.core.entity.Quiz
 import fm.force.quiz.core.entity.QuizQuestion
 import fm.force.quiz.core.entity.Quiz_
@@ -24,10 +25,10 @@ import fm.force.quiz.core.validator.ownedFkConstraint
 import fm.force.quiz.core.validator.ownedFksConstraint
 import fm.force.quiz.core.validator.stringConstraint
 import java.time.Instant
-import javax.transaction.Transactional
 import org.springframework.data.domain.Page
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class QuizService(
@@ -59,9 +60,16 @@ class QuizService(
             .where(ownerEquals).and(SpecificationBuilder.ciContains(needle, Quiz_.title))
     }
 
+    @Transactional(readOnly = true)
     override fun serializePage(page: Page<Quiz>): PageDTO = page.toDTO { it.toFullDTO() }
 
-    override fun serializeEntity(entity: Quiz): QuizFullDTO = entity.toFullDTO()
+    @Transactional(readOnly = true)
+    override fun serializeEntity(entity: Quiz): QuizFullDTO =
+        repository.refresh(entity).toFullDTO()
+
+    @Transactional(readOnly = true)
+    fun serializeRestrictedEntity(entity: Quiz) =
+        repository.refresh(entity).toRestrictedDTO()
 
     @Transactional
     override fun create(createDTO: QuizPatchDTO): Quiz {
@@ -91,6 +99,7 @@ class QuizService(
         return entity
     }
 
+    @Transactional
     override fun patch(id: Long, patchDTO: QuizPatchDTO): Quiz {
         validatePatch(patchDTO)
         val modified = getOwnedEntity(id).apply {

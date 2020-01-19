@@ -23,9 +23,9 @@ import fm.force.quiz.security.entity.User
 import fm.force.quiz.security.repository.JpaUserRepository
 import java.time.Duration
 import java.time.Instant
-import javax.transaction.Transactional
 import kotlin.random.Random
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class TestDataFactory(

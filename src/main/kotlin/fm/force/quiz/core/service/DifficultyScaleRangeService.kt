@@ -21,10 +21,10 @@ import fm.force.quiz.core.validator.ownedFkConstraint
 import fm.force.quiz.core.validator.stringConstraint
 import java.time.Instant
 import java.util.function.Predicate
-import javax.transaction.Transactional
 import org.springframework.data.domain.Page
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class DifficultyScaleRangeService(
@@ -84,9 +84,12 @@ class DifficultyScaleRangeService(
         return spec
     }
 
+    @Transactional(readOnly = true)
     override fun serializePage(page: Page<DifficultyScaleRange>): PageDTO = page.toDTO { it.toFullDTO() }
 
-    override fun serializeEntity(entity: DifficultyScaleRange): DifficultyScaleRangeFullDTO = entity.toFullDTO()
+    @Transactional(readOnly = true)
+    override fun serializeEntity(entity: DifficultyScaleRange): DifficultyScaleRangeFullDTO =
+        repository.refresh(entity).toFullDTO()
 
     @Transactional
     override fun create(createDTO: DifficultyScaleRangePatchDTO): DifficultyScaleRange {

@@ -12,6 +12,10 @@
         <appender-ref ref="STDOUT"/>
     </logger>
 
+    <logger name="org.springframework.transaction" additivity="false" level="TRACE">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
     <root level="INFO">
         <appender-ref ref="STDOUT"/>
     </root>

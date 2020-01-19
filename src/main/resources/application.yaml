@@ -15,6 +15,7 @@ spring:
     hibernate:
       ddl-auto: none
     show-sql: false
+    open-in-view: false
 
 force:
   security:
