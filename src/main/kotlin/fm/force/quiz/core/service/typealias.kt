@@ -58,7 +58,7 @@ typealias DifficultyScaleRangeServiceType = AbstractPaginatedCRUDService<
 typealias AnswerServiceType = AbstractPaginatedCRUDService<
     Answer, AnswerRepository, AnswerPatchDTO, AnswerFullDTO, SearchQueryDTO>
 
-typealias QuizSessionQuestion = AbstractPaginatedCRUDService<
+typealias QuizSessionQuestionType = AbstractPaginatedCRUDService<
     QuizSessionQuestion,
     QuizSessionQuestionRepository,
     QuizSessionQuestionPatchDTO,

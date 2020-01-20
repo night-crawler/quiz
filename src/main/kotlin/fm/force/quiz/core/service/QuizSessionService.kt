@@ -121,10 +121,10 @@ class QuizSessionService(
 
         with(SpecificationBuilder) {
             if (search.quiz != null)
-                spec = spec.and(fk({ quizRepository.getEntity((search.quiz)) }, QuizSession_.quiz))
+                spec = spec.and(fk(quizRepository.getEntity((search.quiz)), QuizSession_.quiz))
 
             if (search.difficultyScale != null)
-                spec = spec.and(fk({ difficultyScaleRepository.getEntity((search.difficultyScale)) }, QuizSession_.difficultyScale))
+                spec = spec.and(fk(difficultyScaleRepository.getEntity((search.difficultyScale)), QuizSession_.difficultyScale))
 
             if (search.isCancelled != null)
                 spec = spec.and(equals(search.isCancelled, QuizSession_.isCancelled))

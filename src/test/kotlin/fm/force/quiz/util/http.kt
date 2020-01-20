@@ -10,10 +10,18 @@ val expectOkOrPrint = ResultHandler { result ->
     val statusCode = result.response.status
     val statusSeries = HttpStatus.Series.valueOf(statusCode)
     if (statusSeries != HttpStatus.Series.SUCCESSFUL) {
-        println(result.request.pathInfo)
+        println("$statusCode :: $statusSeries :: ${result.request.pathInfo}")
+        println(result.response.contentAsString)
         println(JMapper.pformat(result.response.contentAsString))
     }
     statusSeries shouldBe HttpStatus.Series.SUCCESSFUL
+}
+
+val pprint = ResultHandler { result ->
+    val statusCode = result.response.status
+    val statusSeries = HttpStatus.Series.valueOf(statusCode)
+    println("$statusCode :: $statusSeries :: ${result.request.pathInfo}")
+    println(JMapper.pformat(result.response.contentAsString))
 }
 
 inline fun <reified T> MockHttpServletResponse.toDTO() = JMapper.fromString<T>(contentAsString)

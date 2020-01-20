@@ -99,13 +99,26 @@ class CoreControllersTest(
                     QuizSessionPatchDTO(quiz = quiz.id)
                 )
             }
-            "/quizSessions/cancel" {
-                val quizId = testDataFactory.getQuizSession(owner = user).id
-                client.post("/quizSessions/$quizId/cancel", "")
+            "/quizSessions/{id}/cancel" {
+                val sessionId = testDataFactory.getQuizSession(owner = user).id
+                client
+                    .post("/quizSessions/$sessionId/cancel", "")
+                    .andDo(expectOkOrPrint)
+                    .andExpect(status().is2xxSuccessful)
             }
-            "/quizSessions/complete" {
-                val quizId = testDataFactory.getQuizSession(owner = user).id
-                client.post("/quizSessions/$quizId/complete", "")
+            "/quizSessions/{id}/complete" {
+                val sessionId = testDataFactory.getQuizSession(owner = user).id
+                client
+                    .post("/quizSessions/$sessionId/complete", "")
+                    .andDo(expectOkOrPrint)
+                    .andExpect(status().is2xxSuccessful)
+            }
+            "/quizSessions/{id}/questions" {
+                val sessionId = testDataFactory.getQuizSessionQuestion(owner = user).quizSession.id
+                client
+                    .get("/quizSessions/$sessionId/questions")
+                    .andDo(expectOkOrPrint)
+                    .andExpect(status().is2xxSuccessful)
             }
         }
     }

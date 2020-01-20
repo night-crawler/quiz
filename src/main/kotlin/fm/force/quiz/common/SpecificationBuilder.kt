@@ -5,6 +5,11 @@ import org.springframework.data.jpa.domain.Specification
 
 class SpecificationBuilder {
     companion object {
+        fun <T, F> fk(value: F, attr: SingularAttribute<T, F>) =
+            Specification<T> { root, _, builder ->
+                builder.equal(root[attr], value)
+            }
+
         fun <T, F> fk(prop0: () -> F, attr: SingularAttribute<T, F>) =
             Specification<T> { root, _, builder ->
                 builder.equal(root[attr], prop0())

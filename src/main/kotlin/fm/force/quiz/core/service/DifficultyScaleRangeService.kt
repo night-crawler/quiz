@@ -75,7 +75,7 @@ class DifficultyScaleRangeService(
 
         with(SpecificationBuilder) {
             if (search.difficultyScale != null)
-                spec = spec.and(fk({ difficultyScaleRepository.getEntity(search.difficultyScale) }, DifficultyScaleRange_.difficultyScale))
+                spec = spec.and(fk(difficultyScaleRepository.getEntity(search.difficultyScale), DifficultyScaleRange_.difficultyScale))
             if (search.title != null) {
                 spec = spec.and(ciContains(search.title, DifficultyScaleRange_.title))
             }

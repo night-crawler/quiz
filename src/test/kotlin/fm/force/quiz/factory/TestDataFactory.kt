@@ -8,6 +8,8 @@ import fm.force.quiz.core.entity.Question
 import fm.force.quiz.core.entity.Quiz
 import fm.force.quiz.core.entity.QuizQuestion
 import fm.force.quiz.core.entity.QuizSession
+import fm.force.quiz.core.entity.QuizSessionQuestion
+import fm.force.quiz.core.entity.QuizSessionQuestionAnswer
 import fm.force.quiz.core.entity.Tag
 import fm.force.quiz.core.entity.Topic
 import fm.force.quiz.core.repository.AnswerRepository
@@ -16,6 +18,8 @@ import fm.force.quiz.core.repository.DifficultyScaleRepository
 import fm.force.quiz.core.repository.QuestionRepository
 import fm.force.quiz.core.repository.QuizQuestionRepository
 import fm.force.quiz.core.repository.QuizRepository
+import fm.force.quiz.core.repository.QuizSessionQuestionAnswerRepository
+import fm.force.quiz.core.repository.QuizSessionQuestionRepository
 import fm.force.quiz.core.repository.QuizSessionRepository
 import fm.force.quiz.core.repository.TagRepository
 import fm.force.quiz.core.repository.TopicRepository
@@ -38,7 +42,9 @@ class TestDataFactory(
     private val difficultyScaleRangeRepository: DifficultyScaleRangeRepository,
     private val quizRepository: QuizRepository,
     private val quizQuestionRepository: QuizQuestionRepository,
-    private val quizSessionRepository: QuizSessionRepository
+    private val quizSessionRepository: QuizSessionRepository,
+    private val quizSessionQuestionRepository: QuizSessionQuestionRepository,
+    private val quizSessionQuestionAnswerRepository: QuizSessionQuestionAnswerRepository
 ) {
     @Transactional
     fun getUser(
@@ -184,4 +190,38 @@ class TestDataFactory(
 
     @Transactional
     fun removeAllAnswers() = answerRepository.deleteAll()
+
+    @Transactional
+    fun getQuizSessionQuestion(
+        owner: User = getUser(),
+
+        text: String = getRandomString(),
+
+        question: Question = getQuestion(owner = owner, text = text),
+        quiz: Quiz = getQuiz(owner = owner, questions = listOf(question)),
+        quizSession: QuizSession = getQuizSession(owner = owner, quiz = quiz),
+
+        seq: Int = Random.nextInt(1000)
+    ): QuizSessionQuestion {
+        val q = quizSessionQuestionRepository.save(
+            QuizSessionQuestion(
+                owner = owner, quizSession = quizSession, originalQuestion = question,
+                text = text, seq = seq
+            )
+        )
+
+        val correctAnswers = question.correctAnswers
+        val qsqaList = question.answers.map {
+            QuizSessionQuestionAnswer(
+                owner = owner,
+                quizSession = quizSession,
+                quizSessionQuestion = q,
+                originalAnswer = it,
+                text = it.text,
+                isCorrect = it in correctAnswers
+            )
+        }
+        quizSessionQuestionAnswerRepository.saveAll(qsqaList)
+        return q
+    }
 }
