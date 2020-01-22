@@ -13,16 +13,14 @@ import javax.persistence.Table
 @Table(name = "quiz_session_answers")
 data class QuizSessionAnswer(
     @ManyToOne val owner: User,
-    @ManyToOne val quiz: Quiz,
     @ManyToOne val quizSession: QuizSession,
-    @ManyToOne val quizQuestion: QuizQuestion,
-    @ManyToOne val question: Question,
+    @ManyToOne val quizSessionQuestion: QuizSessionQuestion,
 
-    @ManyToMany(targetEntity = Answer::class, fetch = FetchType.LAZY)
+    @ManyToMany(targetEntity = QuizSessionQuestionAnswer::class, fetch = FetchType.LAZY)
     @JoinTable(
-        name = "quiz_session_answer__answers",
+        name = "quiz_session_answer__quiz_session_question_answers",
         joinColumns = [JoinColumn(name = "quiz_session_answer_id")],
-        inverseJoinColumns = [JoinColumn(name = "answer_id")]
+        inverseJoinColumns = [JoinColumn(name = "quiz_session_question_answer_id")]
     )
-    val answers: Set<Answer> = setOf()
+    val answers: Set<QuizSessionQuestionAnswer> = setOf()
 ) : BaseQuizEntity()

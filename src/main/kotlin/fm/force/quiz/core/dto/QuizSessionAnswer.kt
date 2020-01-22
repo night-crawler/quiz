@@ -11,8 +11,8 @@ data class QuizSessionAnswerRestrictedDTO(
 )
 
 data class QuizSessionAnswerPatchDTO(
-    val quizSession: Long,
-    val quizQuestion: Long,
+    val session: Long,
+    val question: Long,
     val answers: Set<Long>
 ) : DTOSerializationMarker
 

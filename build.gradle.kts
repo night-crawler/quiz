@@ -102,7 +102,9 @@ dependencies {
     testImplementation("io.kotlintest:kotlintest-runner-junit5:3.4.2")
     testCompile("io.kotlintest:kotlintest-extensions-spring:3.4.2")
     testImplementation("org.springframework.security:spring-security-test")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude(group = "com.vaadin.external.google", module = "android-json")
+    }
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
 }
 
