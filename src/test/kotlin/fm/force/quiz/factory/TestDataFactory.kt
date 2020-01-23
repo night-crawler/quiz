@@ -217,7 +217,7 @@ class TestDataFactory(
 
         question: Question = getQuestion(owner = owner, text = text),
         quiz: Quiz = getQuiz(owner = owner, questions = listOf(question)),
-        quizSession: QuizSession = getQuizSession(owner = owner, quiz = quiz),
+        quizSession: QuizSession = getQuizSession(owner = owner, quiz = quiz, doInstantiateQuizSessionQuestions = false),
 
         seq: Int = Random.nextInt(1000)
     ): QuizSessionQuestion {
