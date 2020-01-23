@@ -7,11 +7,14 @@ data class QuizSessionAnswerFullDTO(
 ) : DTOFullSerializationMarker
 
 data class QuizSessionAnswerRestrictedDTO(
-    val id: Long
-)
+    val id: Long,
+    val session: Long,
+    val question: QuizSessionQuestionRestrictedDTO,
+    val answers: List<QuizSessionQuestionAnswerRestrictedDTO>
+) : DTORestrictedSerializationMarker
 
 data class QuizSessionAnswerPatchDTO(
-    val session: Long,
+    var session: Long = 0,
     val question: Long,
     val answers: Set<Long>
 ) : DTOSerializationMarker
@@ -25,5 +28,8 @@ fun QuizSessionAnswer.toFullDTO() = QuizSessionAnswerFullDTO(
 )
 
 fun QuizSessionAnswer.toRestrictedDTO() = QuizSessionAnswerRestrictedDTO(
-    id = id
+    id = id,
+    session = quizSession.id,
+    question = quizSessionQuestion.toRestrictedDTO(),
+    answers = answers.map { it.toRestrictedDTO() }
 )

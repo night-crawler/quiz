@@ -3,10 +3,9 @@ package fm.force.quiz.core.service
 import am.ik.yavi.builder.ValidatorBuilder
 import fm.force.quiz.configuration.properties.QuestionValidationProperties
 import fm.force.quiz.core.dto.PageDTO
-import fm.force.quiz.core.dto.QuizSessionAnswerFullDTO
 import fm.force.quiz.core.dto.QuizSessionAnswerPatchDTO
+import fm.force.quiz.core.dto.QuizSessionAnswerRestrictedDTO
 import fm.force.quiz.core.dto.toDTO
-import fm.force.quiz.core.dto.toFullDTO
 import fm.force.quiz.core.dto.toRestrictedDTO
 import fm.force.quiz.core.entity.QuizSessionAnswer
 import fm.force.quiz.core.repository.QuizSessionAnswerRepository
@@ -60,8 +59,8 @@ class QuizSessionAnswerService(
         page.toDTO { it.toRestrictedDTO() }
 
     @Transactional(readOnly = true)
-    override fun serializeEntity(entity: QuizSessionAnswer): QuizSessionAnswerFullDTO =
-        repository.refresh(entity).toFullDTO()
+    override fun serializeEntity(entity: QuizSessionAnswer): QuizSessionAnswerRestrictedDTO =
+        repository.refresh(entity).toRestrictedDTO()
 
     @Transactional
     override fun create(createDTO: QuizSessionAnswerPatchDTO): QuizSessionAnswer {

@@ -25,7 +25,11 @@ import fm.force.quiz.core.repository.TagRepository
 import fm.force.quiz.core.repository.TopicRepository
 
 typealias QuizSessionAnswerServiceType = AbstractPaginatedCRUDService<
-    QuizSessionAnswer, QuizSessionAnswerRepository, QuizSessionAnswerPatchDTO, QuizSessionAnswerFullDTO, QuizSessionAnswerSearchDTO>
+    QuizSessionAnswer,
+    QuizSessionAnswerRepository,
+    QuizSessionAnswerPatchDTO,
+    QuizSessionAnswerRestrictedDTO,
+    QuizSessionAnswerSearchDTO>
 
 typealias TopicServiceType = AbstractPaginatedCRUDService<
     Topic, TopicRepository, TopicPatchDTO, TopicFullDTO, SearchQueryDTO>

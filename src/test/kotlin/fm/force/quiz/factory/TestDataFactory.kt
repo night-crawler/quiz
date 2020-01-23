@@ -174,19 +174,37 @@ class TestDataFactory(
         cancelledAt: Instant? = if (isCancelled) Instant.now() else null,
         completedAt: Instant? = if (isCompleted) Instant.now() else null,
         difficultyScale: DifficultyScale? = getDifficultyScale(owner = owner),
-        validTill: Instant = Instant.now() + Duration.ofDays(1)
-    ) = quizSessionRepository.save(
-        QuizSession(
-            owner = owner,
-            quiz = quiz,
-            validTill = validTill,
-            isCancelled = isCancelled,
-            isCompleted = isCompleted,
-            cancelledAt = cancelledAt,
-            completedAt = completedAt,
-            difficultyScale = difficultyScale
+        validTill: Instant = Instant.now() + Duration.ofDays(1),
+        doInstantiateQuizSessionQuestions: Boolean = true
+    ): QuizSession {
+        val quizSession = quizSessionRepository.save(
+            QuizSession(
+                owner = owner,
+                quiz = quiz,
+                validTill = validTill,
+                isCancelled = isCancelled,
+                isCompleted = isCompleted,
+                cancelledAt = cancelledAt,
+                completedAt = completedAt,
+                difficultyScale = difficultyScale
+            )
         )
-    )
+
+        if (doInstantiateQuizSessionQuestions) {
+            quiz.quizQuestions.forEachIndexed { index, it ->
+                val quizQuestion = quizQuestionRepository.refresh(it)
+                getQuizSessionQuestion(
+                    owner = owner,
+                    question = quizQuestion.question,
+                    text = quizQuestion.question.text,
+                    quiz = quiz,
+                    quizSession = quizSession,
+                    seq = index
+                )
+            }
+        }
+        return quizSession
+    }
 
     @Transactional
     fun removeAllAnswers() = answerRepository.deleteAll()
@@ -205,7 +223,9 @@ class TestDataFactory(
     ): QuizSessionQuestion {
         val q = quizSessionQuestionRepository.save(
             QuizSessionQuestion(
-                owner = owner, quizSession = quizSession, originalQuestion = question,
+                owner = owner,
+                quizSession = quizSession,
+                originalQuestion = question,
                 text = text, seq = seq
             )
         )

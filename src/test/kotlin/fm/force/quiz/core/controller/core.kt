@@ -7,10 +7,12 @@ import fm.force.quiz.core.dto.DifficultyScaleRangePatchDTO
 import fm.force.quiz.core.dto.QuestionPatchDTO
 import fm.force.quiz.core.dto.QuizPatchDTO
 import fm.force.quiz.core.dto.QuizQuestionPatchDTO
+import fm.force.quiz.core.dto.QuizSessionAnswerPatchDTO
 import fm.force.quiz.core.dto.QuizSessionPatchDTO
 import fm.force.quiz.core.dto.TagPatchDTO
 import fm.force.quiz.core.dto.TopicPatchDTO
-import fm.force.quiz.core.repository.DifficultyScaleRangeRepository
+import fm.force.quiz.core.repository.QuizSessionQuestionRepository
+import fm.force.quiz.core.repository.QuizSessionRepository
 import fm.force.quiz.factory.TestDataFactory
 import fm.force.quiz.util.entityId
 import fm.force.quiz.util.expectOkOrPrint
@@ -18,7 +20,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 class CoreControllersTest(
     testDataFactory: TestDataFactory,
-    val difficultyScaleRangeRepository: DifficultyScaleRangeRepository
+    private val quizSessionRepository: QuizSessionRepository,
+    private val quizSessionQuestionRepository: QuizSessionQuestionRepository
 ) : AbstractControllerTest() {
     init {
         "CRUD controllers" should {
@@ -50,7 +53,6 @@ class CoreControllersTest(
                 val difficultyScaleIds = (1..5).map {
                     testDataFactory.getDifficultyScale(owner = user, createNRandomRanges = 0)
                 }.map { it.id }.toMutableSet()
-                println(difficultyScaleRangeRepository.findAll())
                 smokeTestCRUD(
                     "/difficultyScaleRanges",
                     DifficultyScaleRangePatchDTO(
@@ -114,9 +116,24 @@ class CoreControllersTest(
                     .andExpect(status().is2xxSuccessful)
             }
             "/quizSessions/{id}/questions" {
-                val sessionId = testDataFactory.getQuizSessionQuestion(owner = user).quizSession.id
+                val sessionId = testDataFactory.getQuizSession(owner = user).id
                 client
                     .get("/quizSessions/$sessionId/questions")
+                    .andDo(expectOkOrPrint)
+                    .andExpect(status().is2xxSuccessful)
+            }
+            "/quizSessions/{id}/doAnswer" {
+                val session = quizSessionRepository.refresh(testDataFactory.getQuizSession(owner = user))
+                val question = quizSessionQuestionRepository.refresh(session.questions.random())
+                val answer = question.answers.random()
+                client
+                    .post(
+                        "/quizSessions/${session.id}/doAnswer",
+                        QuizSessionAnswerPatchDTO(
+                            question = question.id,
+                            answers = setOf(answer.id)
+                        )
+                    )
                     .andDo(expectOkOrPrint)
                     .andExpect(status().is2xxSuccessful)
             }
