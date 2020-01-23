@@ -26,7 +26,8 @@ open class QuizSessionAnswerServiceTest(
 
         "should create" {
             val quizSessionQuestion = quizSessionQuestionRepository.refresh(
-                testDataFactory.getQuizSessionQuestion(owner = user))
+                testDataFactory.getQuizSessionQuestion(owner = user)
+            )
             val dto = QuizSessionAnswerPatchDTO(
                 quizSessionQuestion.quizSession.id,
                 quizSessionQuestion.id,
@@ -37,7 +38,8 @@ open class QuizSessionAnswerServiceTest(
 
         "should not be able to answer to a question in a foreign session" {
             val quizSessionQuestion = quizSessionQuestionRepository.refresh(
-                testDataFactory.getQuizSessionQuestion(owner = alien))
+                testDataFactory.getQuizSessionQuestion(owner = alien)
+            )
 
             val patchDTO = QuizSessionAnswerPatchDTO(
                 session = quizSessionQuestion.quizSession.id,
