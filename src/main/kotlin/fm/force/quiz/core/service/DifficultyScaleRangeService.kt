@@ -71,13 +71,13 @@ class DifficultyScaleRangeService(
         val ownerEquals = SpecificationBuilder.fk(authenticationFacade::user, DifficultyScaleRange_.owner)
         if (search == null) return ownerEquals
 
-        var spec = Specification.where(ownerEquals)
+        var spec = ownerEquals
 
         with(SpecificationBuilder) {
             if (search.difficultyScale != null)
-                spec = spec.and(fk(difficultyScaleRepository.getEntity(search.difficultyScale), DifficultyScaleRange_.difficultyScale))
+                spec = spec.and(fk(difficultyScaleRepository.getEntity(search.difficultyScale), DifficultyScaleRange_.difficultyScale))!!
             if (search.title != null) {
-                spec = spec.and(ciContains(search.title, DifficultyScaleRange_.title))
+                spec = spec.and(ciContains(search.title, DifficultyScaleRange_.title))!!
             }
         }
 

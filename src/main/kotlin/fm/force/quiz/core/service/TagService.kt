@@ -36,14 +36,11 @@ class TagService(
         val needle = search?.query
         if (needle.isNullOrEmpty()) return ownerEquals
 
-        return Specification
-            .where(ownerEquals)
-            .and(
-                Specification
-                    .where(SpecificationBuilder.ciEquals(needle, Tag_.name))
-                    .or(SpecificationBuilder.ciStartsWith(needle, Tag_.name))
-                    .or(SpecificationBuilder.ciEndsWith(needle, Tag_.name))
+        return with(SpecificationBuilder) {
+            ownerEquals.and(
+                ciEquals(needle, Tag_.name).or(ciStartsWith(needle, Tag_.name))?.or(ciEndsWith(needle, Tag_.name))
             )
+        }!!
     }
 
     override var entityValidator = ValidatorBuilder.of<Tag>()

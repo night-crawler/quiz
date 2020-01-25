@@ -41,9 +41,7 @@ class DifficultyScaleService(
         val needle = search?.query
         if (needle.isNullOrEmpty()) return ownerEquals
 
-        return Specification
-            .where(ownerEquals)
-            .and(SpecificationBuilder.ciContains(needle, DifficultyScale_.name))
+        return ownerEquals.and(SpecificationBuilder.ciContains(needle, DifficultyScale_.name))!!
     }
 
     @Transactional(readOnly = true)

@@ -117,20 +117,20 @@ class QuizSessionService(
         val ownerEquals = SpecificationBuilder.fk(authenticationFacade::user, QuizSession_.owner)
         if (search == null) return ownerEquals
 
-        var spec = Specification.where(ownerEquals)
+        var spec = ownerEquals
 
         with(SpecificationBuilder) {
             if (search.quiz != null)
-                spec = spec.and(fk(quizRepository.getEntity((search.quiz)), QuizSession_.quiz))
+                spec = spec.and(fk(quizRepository.getEntity((search.quiz)), QuizSession_.quiz))!!
 
             if (search.difficultyScale != null)
-                spec = spec.and(fk(difficultyScaleRepository.getEntity((search.difficultyScale)), QuizSession_.difficultyScale))
+                spec = spec.and(fk(difficultyScaleRepository.getEntity((search.difficultyScale)), QuizSession_.difficultyScale))!!
 
             if (search.isCancelled != null)
-                spec = spec.and(equals(search.isCancelled, QuizSession_.isCancelled))
+                spec = spec.and(equals(search.isCancelled, QuizSession_.isCancelled))!!
 
             if (search.isCompleted != null)
-                spec = spec.and(equals(search.isCompleted, QuizSession_.isCompleted))
+                spec = spec.and(equals(search.isCompleted, QuizSession_.isCompleted))!!
         }
 
         return spec

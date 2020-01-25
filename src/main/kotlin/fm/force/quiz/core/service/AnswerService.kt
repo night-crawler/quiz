@@ -34,8 +34,7 @@ class AnswerService(
         val needle = search?.query
         if (needle.isNullOrEmpty()) return ownerEquals
 
-        return Specification
-            .where(ownerEquals).and(SpecificationBuilder.ciContains(search.query, Answer_.text))
+        return ownerEquals.and(SpecificationBuilder.ciContains(search.query, Answer_.text))!!
     }
 
     @Transactional(readOnly = true)

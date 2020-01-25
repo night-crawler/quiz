@@ -43,8 +43,7 @@ class TopicService(
         if (needle.isNullOrEmpty())
             return ownerEquals
 
-        return Specification
-            .where(ownerEquals).and(SpecificationBuilder.ciContains(needle, Topic_.title))
+        return ownerEquals.and(SpecificationBuilder.ciContains(needle, Topic_.title))!!
     }
 
     @Transactional

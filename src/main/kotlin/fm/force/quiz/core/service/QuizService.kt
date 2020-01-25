@@ -56,8 +56,7 @@ class QuizService(
         val needle = search?.query
         if (needle.isNullOrEmpty()) return ownerEquals
 
-        return Specification
-            .where(ownerEquals).and(SpecificationBuilder.ciContains(needle, Quiz_.title))
+        return ownerEquals.and(SpecificationBuilder.ciContains(needle, Quiz_.title))!!
     }
 
     @Transactional(readOnly = true)

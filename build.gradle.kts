@@ -1,10 +1,13 @@
+import java.io.FileInputStream
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Properties
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 
 plugins {
-    val kotlinVersion = "1.3.50"
+    val kotlinVersion: String by System.getProperties()
+    val springBootVersion: String by System.getProperties()
 
     idea
     java
@@ -15,10 +18,10 @@ plugins {
     kotlin("plugin.spring") version kotlinVersion
     kotlin("plugin.jpa") version kotlinVersion
 
-    id("org.liquibase.gradle") version "2.0.1"
-    id("org.springframework.boot") version "2.1.8.RELEASE"
-    id("io.spring.dependency-management") version "1.0.8.RELEASE"
-    id("org.asciidoctor.convert") version "1.5.8"
+    id("org.liquibase.gradle") version "2.0.2"
+    id("org.springframework.boot") version springBootVersion
+    id("io.spring.dependency-management") version "1.0.9.RELEASE"
+    id("org.asciidoctor.convert") version "2.4.0"
 
     id("org.jlleitschuh.gradle.ktlint") version "9.1.1"
 }
@@ -26,6 +29,10 @@ plugins {
 group = "fm.force"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_11
+
+val snippetsDir = file("build/generated-snippets")
+val kotlinVersion: String by System.getProperties()
+val springBootVersion: String by System.getProperties()
 
 val mainResourcesSrcDirs: MutableSet<File> by lazy { project.sourceSets.getByName("main").resources.srcDirs }
 val mainResourcesDir by lazy {
@@ -45,7 +52,6 @@ configurations {
 
 repositories {
     mavenCentral()
-    maven(url = "https://dl.bintray.com/konform-kt/konform")
 }
 
 allOpen {
@@ -55,11 +61,8 @@ allOpen {
     annotation("javax.persistence.Embeddable")
 }
 
-val snippetsDir = file("build/generated-snippets")
-
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
-//    implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
@@ -78,7 +81,7 @@ dependencies {
     liquibaseRuntime(sourceSets.getByName("main").compileClasspath)
     liquibaseRuntime(sourceSets.getByName("main").output)
     liquibaseRuntime("org.postgresql:postgresql")
-    liquibaseRuntime("org.springframework.boot:spring-boot:2.1.8.RELEASE")
+    liquibaseRuntime("org.springframework.boot:spring-boot:$springBootVersion")
 
     api("io.jsonwebtoken:jjwt-api:0.10.7")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.10.7")
@@ -94,8 +97,6 @@ dependencies {
     implementation("com.vladmihalcea:hibernate-types-52:2.5.0")
     runtimeOnly("org.postgresql:postgresql")
 
-    compileOnly("org.projectlombok:lombok:1.18.10")
-    annotationProcessor("org.projectlombok:lombok:1.18.10")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     kapt("org.hibernate:hibernate-jpamodelgen:5.3.8.Final")
 
@@ -119,17 +120,11 @@ liquibase {
     val changeLogTs = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))!!
     val diffChangeLogFile = "$changesDir/change-$changeLogTs.xml"
 
-    val liquibaseDefaultArguments = mapOf(
-        "driver" to "org.postgresql.Driver",
-        "url" to "jdbc:postgresql://localhost:5432/quiz",
-        "username" to "postgres",
-        "password" to "postgres",
-        "referenceUrl" to "hibernate:spring:fm.force.quiz?" +
-            "dialect=org.hibernate.dialect.PostgreSQL95Dialect&" +
-            "hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&" +
-            "hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy",
-        "defaultSchemaName" to "",
-        "logLevel" to "debug",
+    val props = Properties().apply {
+        load(FileInputStream("liquibase.properties"))
+    }
+
+    val liquibaseDefaultArguments = props.toMap() + mapOf(
         "classpath" to "$buildDir/classes/kotlin/main"
     )
 

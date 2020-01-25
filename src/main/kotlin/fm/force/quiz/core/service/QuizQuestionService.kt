@@ -87,8 +87,7 @@ class QuizQuestionService(
 
     @Transactional
     override fun buildSearchSpec(search: QuizQuestionSearchDTO?): Specification<QuizQuestion> {
-        val ownerEquals = SpecificationBuilder.fk(authenticationFacade::user, QuizQuestion_.owner)
-        return Specification.where(ownerEquals)
+        return SpecificationBuilder.fk(authenticationFacade::user, QuizQuestion_.owner)
     }
 
     @Transactional
