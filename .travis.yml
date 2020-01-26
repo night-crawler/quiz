@@ -34,6 +34,13 @@ before_deploy:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - ./gradlew jibDockerBuild
 
+deploy:
+  provider: script
+  script: docker push ncrawler/quiz
+  on:
+    branch: master
+    tags: true
+
 before_cache:
   - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
