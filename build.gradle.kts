@@ -5,9 +5,14 @@ import java.util.Properties
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 
+group = "fm.force"
+version = "0.0.1-SNAPSHOT"
+java.sourceCompatibility = JavaVersion.VERSION_11
+
 plugins {
     val kotlinVersion: String by System.getProperties()
     val springBootVersion: String by System.getProperties()
+    val jibVersion: String by System.getProperties()
 
     jacoco
 
@@ -26,11 +31,8 @@ plugins {
     id("org.asciidoctor.convert") version "2.4.0"
 
     id("org.jlleitschuh.gradle.ktlint") version "9.1.1"
+    id("com.google.cloud.tools.jib") version jibVersion
 }
-
-group = "fm.force"
-version = "0.0.1-SNAPSHOT"
-java.sourceCompatibility = JavaVersion.VERSION_11
 
 val snippetsDir = file("build/generated-snippets")
 val kotlinVersion: String by System.getProperties()
@@ -197,5 +199,26 @@ ktlint {
     filter {
         exclude("**/generated/**")
         include("**/kotlin/**")
+    }
+}
+
+jib {
+    from {
+        image = "openjdk:11-jre-slim"
+    }
+    to {
+        image = "ncrawler/${project.name}"
+        tags = setOf(version as String, "latest")
+        auth {
+            username = System.getenv("DOCKER_USERNAME")
+            password = System.getenv("DOCKER_PASSWORD")
+        }
+    }
+    container {
+        labels = mapOf(
+            "maintainer" to "Igor Kalishevsky <lilo.panic@gmail.com>"
+        )
+        jvmFlags = listOf("-Xms512m")
+        ports = listOf("8181")
     }
 }
