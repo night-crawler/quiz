@@ -9,6 +9,8 @@ plugins {
     val kotlinVersion: String by System.getProperties()
     val springBootVersion: String by System.getProperties()
 
+    jacoco
+
     idea
     java
     kotlin("jvm") version kotlinVersion
@@ -141,22 +143,41 @@ liquibase {
     runList = project.ext.get("runList")
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "11"
+
+tasks {
+    withType<KotlinCompile> {
+        kotlinOptions {
+            freeCompilerArgs = listOf("-Xjsr305=strict")
+            jvmTarget = "11"
+        }
+    }
+
+    test {
+        outputs.dir(snippetsDir)
+        useJUnitPlatform()
+    }
+
+    asciidoctor {
+        inputs.dir(snippetsDir)
+        dependsOn(test)
+    }
+
+    create<JacocoReport>("codeCoverageReport") {
+        executionData(fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec"))
+
+        sourceSets(sourceSets["main"])
+
+        reports {
+            xml.isEnabled = true
+            xml.destination = file("$buildDir/reports/jacoco/report.xml")
+            html.isEnabled = true
+            csv.isEnabled = false
+        }
+
+        dependsOn(project.getTasksByName("test", false))
     }
 }
 
-tasks.test {
-    outputs.dir(snippetsDir)
-    useJUnitPlatform()
-}
-
-tasks.asciidoctor {
-    inputs.dir(snippetsDir)
-    dependsOn(tasks.test)
-}
 
 ktlint {
     verbose.set(true)
