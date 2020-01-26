@@ -209,10 +209,6 @@ jib {
     to {
         image = "ncrawler/${project.name}"
         tags = setOf(version as String, "latest")
-        auth {
-            username = System.getenv("DOCKER_USERNAME")
-            password = System.getenv("DOCKER_PASSWORD")
-        }
     }
     container {
         labels = mapOf(
