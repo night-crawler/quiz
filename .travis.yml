@@ -1,0 +1,23 @@
+dist: bionic
+language: java
+jdk:
+  - openjdk11
+
+services:
+  - postgresql
+
+addons:
+  postgresql: "10"
+  apt:
+    packages:
+      - postgresql-10
+      - postgresql-client-10
+env:
+  global:
+    - PGPORT=5432
+    - SPRING_DATASOURCE_PASSWORD=
+
+before_script:
+  - psql -c "CREATE DATABASE quiz;" -U postgres
+  - psql -c "CREATE DATABASE quizTest;" -U postgres
+  - ./gradlew test

@@ -124,7 +124,7 @@ liquibase {
     val diffChangeLogFile = "$changesDir/change-$changeLogTs.xml"
 
     val props = Properties().apply {
-        load(FileInputStream("liquibase.properties"))
+        load(FileInputStream("$mainResourcesDir/liquibase.properties"))
     }
 
     val liquibaseDefaultArguments = props.toMap() + mapOf(
