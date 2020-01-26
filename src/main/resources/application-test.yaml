@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/quizTest
+    url: jdbc:postgresql://localhost:5432/quiztest
     username: postgres
     password: postgres
   liquibase:

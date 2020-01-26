@@ -19,7 +19,7 @@ env:
 
 before_script:
   - psql -c "CREATE DATABASE quiz OWNER postgres;" -U postgres
-  - psql -c "CREATE DATABASE quizTest OWNER postgres;" -U postgres
+  - psql -c "CREATE DATABASE quiztest OWNER postgres;" -U postgres
   - ./gradlew test --info --stacktrace --console=plain --max-workers=1 --no-daemon --build-cache -Dkotlin.colors.enabled=false
 
 before_cache:
