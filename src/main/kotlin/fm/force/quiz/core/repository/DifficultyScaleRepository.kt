@@ -5,4 +5,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.stereotype.Repository
 
 @Repository
-interface DifficultyScaleRepository : CustomJpaRepository<DifficultyScale, Long>, JpaSpecificationExecutor<DifficultyScale>, CommonRepository<DifficultyScale>
+interface DifficultyScaleRepository :
+    CustomJpaRepository<DifficultyScale, Long>,
+    JpaSpecificationExecutor<DifficultyScale>,
+    CommonRepository<DifficultyScale>

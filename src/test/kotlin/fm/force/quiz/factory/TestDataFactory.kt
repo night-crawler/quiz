@@ -24,7 +24,7 @@ import fm.force.quiz.core.repository.QuizSessionRepository
 import fm.force.quiz.core.repository.TagRepository
 import fm.force.quiz.core.repository.TopicRepository
 import fm.force.quiz.security.entity.User
-import fm.force.quiz.security.repository.JpaUserRepository
+import fm.force.quiz.security.repository.UserRepository
 import java.time.Duration
 import java.time.Instant
 import kotlin.random.Random
@@ -33,7 +33,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class TestDataFactory(
-    private val jpaUserRepository: JpaUserRepository,
+    private val userRepository: UserRepository,
     private val answerRepository: AnswerRepository,
     private val tagRepository: TagRepository,
     private val topicRepository: TopicRepository,
@@ -50,7 +50,7 @@ class TestDataFactory(
     fun getUser(
         username: String = getRandomString(16),
         email: String = "$username@example.com"
-    ) = jpaUserRepository.save(User(username = username, email = email))
+    ) = userRepository.save(User(username = username, email = email))
 
     @Transactional
     fun getAnswer(
@@ -217,7 +217,11 @@ class TestDataFactory(
 
         question: Question = getQuestion(owner = owner, text = text),
         quiz: Quiz = getQuiz(owner = owner, questions = listOf(question)),
-        quizSession: QuizSession = getQuizSession(owner = owner, quiz = quiz, doInstantiateQuizSessionQuestions = false),
+        quizSession: QuizSession = getQuizSession(
+            owner = owner,
+            quiz = quiz,
+            doInstantiateQuizSessionQuestions = false
+        ),
 
         seq: Int = Random.nextInt(1000)
     ): QuizSessionQuestion {

@@ -24,8 +24,16 @@ open class DifficultyScaleRangeServiceTest(
                 row(DifficultyScaleRangePatchDTO(difficultyScale = -1)),
                 row(DifficultyScaleRangePatchDTO(title = "")),
                 row(DifficultyScaleRangePatchDTO(min = -1)),
+
                 // swap min & max
-                row(DifficultyScaleRangePatchDTO(difficultyScale = range.difficultyScale.id, min = validationProps.maxUpper, max = 1, title = "sample sample"))
+                row(
+                    DifficultyScaleRangePatchDTO(
+                        difficultyScale = range.difficultyScale.id,
+                        min = validationProps.maxUpper,
+                        max = 1,
+                        title = "sample sample"
+                    )
+                )
             ) {
                 shouldThrow<ValidationError> { service.create(it) }
             }

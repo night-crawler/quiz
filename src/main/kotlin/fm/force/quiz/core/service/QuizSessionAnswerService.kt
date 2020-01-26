@@ -46,7 +46,8 @@ class QuizSessionAnswerService(
             { it.quizSessionQuestion.quizSession.id == it.quizSession.id },
             "quizQuestion", "", msgWrongQuizQuestion
         )
-        .constraintOnTarget(// todo: make a query
+        .constraintOnTarget(
+            // todo: make a query
             { it.answers.map { a -> a.quizSession.id }.toSet() == setOf(it.quizSession.id) },
             "answers", "", msgWrongAnswers
         )

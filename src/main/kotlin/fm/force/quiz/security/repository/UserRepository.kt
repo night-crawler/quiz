@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface JpaUserRepository : JpaRepository<User, Long> {
+interface UserRepository : JpaRepository<User, Long> {
     fun findByEmail(email: String): User?
     fun findByEmailOrUsername(email: String, username: String): User?
     fun findByEmailAndPassword(email: String, password: String): User?

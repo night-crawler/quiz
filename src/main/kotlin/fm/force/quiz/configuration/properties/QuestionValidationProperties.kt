@@ -10,4 +10,9 @@ class QuestionValidationProperties {
     var maxAnswers: Int = 10
     var maxTags: Int = 20
     var maxTopics: Int = 20
+
+    val textRange get() = minTextLength..Int.MAX_VALUE
+    val answersRange get() = 1..maxAnswers
+    val tagsRange get() = 0..maxTags
+    val topicsRange get() = 0..maxTopics
 }

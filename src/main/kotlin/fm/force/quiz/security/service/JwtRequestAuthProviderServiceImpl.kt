@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service
 @Service
 class JwtRequestAuthProviderServiceImpl(val jwtProviderService: JwtProviderService) : JwtRequestAuthProviderService() {
     private val bearer = "bearer "
-    override fun authorizeRequest(request: HttpServletRequest?): Authentication {
+    override fun authenticateRequest(request: HttpServletRequest?): Authentication {
         request ?: throw JwtAuthenticationException("It must never happen")
 
         val authHeader = request.getHeader("authorization")

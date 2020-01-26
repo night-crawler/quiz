@@ -3,7 +3,7 @@ package fm.force.quiz.security.controller
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import fm.force.quiz.TestConfiguration
 import fm.force.quiz.YamlPropertyLoaderFactory
-import fm.force.quiz.security.configuration.PasswordConfigurationProperties
+import fm.force.quiz.security.configuration.properties.PasswordConfigurationProperties
 import fm.force.quiz.security.dto.LoginRequestDTO
 import fm.force.quiz.security.dto.RegisterRequestDTO
 import io.kotlintest.specs.WordSpec
@@ -58,7 +58,8 @@ class AuthControllersTest(
         }
 
         "POST /auth/login" should {
-            "fail because profile was not activated by default" {
+            "fail because profile has not been activated" {
+                passwordConfigurationProperties.userIsEnabledAfterCreation = false
                 val failCreds = LoginRequestDTO("user-fail@example.com", "samplesample")
                 performPost("/auth/register", failCreds)
                     .andExpect(status().isCreated)

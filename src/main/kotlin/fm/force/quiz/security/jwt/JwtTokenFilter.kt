@@ -20,13 +20,14 @@ class JwtTokenFilter(
     *     failureHandler.onAuthenticationFailure(httpRequest, httpResponse, exc)
     */
 
-    /* sometimes spring calls doFilter twice after an auth failure */
     override fun doFilter(request: ServletRequest?, response: ServletResponse?, chain: FilterChain?) {
         val httpRequest = request as HttpServletRequest?
         val path = httpRequest?.requestURI
 
         try {
-            SecurityContextHolder.getContext().authentication = jwtRequestAuthProviderService.authorizeRequest(httpRequest)
+            SecurityContextHolder.getContext().authentication =
+                jwtRequestAuthProviderService.authenticateRequest(httpRequest)
+
             niceLogger.debug("Request `{}` was authenticated by JWT token", path)
         } catch (exc: AuthenticationException) {
             niceLogger.debug("Request `{}` authentication failed: `{}`", path, exc.localizedMessage)

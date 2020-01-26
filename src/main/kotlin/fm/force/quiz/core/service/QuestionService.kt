@@ -44,11 +44,11 @@ class QuestionService(
             optionalSubset(QuestionPatchDTO::answers, QuestionPatchDTO::correctAnswers)
         }
 
-        .stringConstraint(QuestionPatchDTO::text, validationProps.minTextLength..Int.MAX_VALUE)
-        .ownedFksConstraint(QuestionPatchDTO::answers, answerRepository, 1..validationProps.maxAnswers, ::ownerId)
-        .ownedFksConstraint(QuestionPatchDTO::correctAnswers, answerRepository, 1..validationProps.maxAnswers, ::ownerId)
-        .ownedFksConstraint(QuestionPatchDTO::tags, tagRepository, 0..validationProps.maxTags, ::ownerId)
-        .ownedFksConstraint(QuestionPatchDTO::topics, topicRepository, 0..validationProps.maxTopics, ::ownerId)
+        .stringConstraint(QuestionPatchDTO::text, validationProps.textRange)
+        .ownedFksConstraint(QuestionPatchDTO::answers, answerRepository, validationProps.answersRange, ::ownerId)
+        .ownedFksConstraint(QuestionPatchDTO::correctAnswers, answerRepository, validationProps.answersRange, ::ownerId)
+        .ownedFksConstraint(QuestionPatchDTO::tags, tagRepository, validationProps.tagsRange, ::ownerId)
+        .ownedFksConstraint(QuestionPatchDTO::topics, topicRepository, validationProps.topicsRange, ::ownerId)
         .intConstraint(QuestionPatchDTO::difficulty, 0..Int.MAX_VALUE)
         .build()
 
@@ -77,18 +77,28 @@ class QuestionService(
     @Transactional
     override fun patch(id: Long, patchDTO: QuestionPatchDTO): Question {
         validatePatch(patchDTO)
-        val question = getOwnedEntity(id)
-        val modifiedQuestion = with(patchDTO) {
-            if (text != null) question.text = text
-            if (answers != null) question.answers = answerRepository.findEntitiesById(answers).toMutableSet()
-            if (correctAnswers != null) question.correctAnswers = answerRepository.findEntitiesById(correctAnswers).toMutableSet()
-            if (tags != null) question.tags = tagRepository.findEntitiesById(tags).toMutableSet()
-            if (topics != null) question.topics = topicRepository.findEntitiesById(topics).toMutableSet()
-            if (difficulty != null) question.difficulty = difficulty
 
-            question
+        val modifiedQuestion = getOwnedEntity(id).apply {
+            if (patchDTO.text != null)
+                text = patchDTO.text
+
+            if (patchDTO.answers != null)
+                answers = answerRepository.findEntitiesById(patchDTO.answers).toMutableSet()
+
+            if (patchDTO.correctAnswers != null)
+                correctAnswers = answerRepository.findEntitiesById(patchDTO.correctAnswers).toMutableSet()
+
+            if (patchDTO.tags != null)
+                tags = tagRepository.findEntitiesById(patchDTO.tags).toMutableSet()
+
+            if (patchDTO.topics != null)
+                topics = topicRepository.findEntitiesById(patchDTO.topics).toMutableSet()
+
+            if (patchDTO.difficulty != null)
+                difficulty = patchDTO.difficulty
         }
         modifiedQuestion.updatedAt = Instant.now()
+
         validateEntity(modifiedQuestion)
         return repository.save(modifiedQuestion)
     }

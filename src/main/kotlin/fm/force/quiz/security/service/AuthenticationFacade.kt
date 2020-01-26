@@ -5,9 +5,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
 
 @Component
-class AuthenticationFacade(
-    private val jwtAuthService: JwtAuthService
-) {
+class AuthenticationFacade(private val jwtAuthService: JwtAuthService) {
     val principal
         get() =
             SecurityContextHolder.getContext().authentication.principal as JwtUserDetails

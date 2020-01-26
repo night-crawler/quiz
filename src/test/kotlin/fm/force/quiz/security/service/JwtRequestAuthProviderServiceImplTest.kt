@@ -23,7 +23,7 @@ open class JwtRequestAuthProviderServiceImplTest(
                 val request = MockHttpServletRequest()
                 request.addHeader("Authorization", "Bearer $token")
 
-                jwtRequestAuthProviderService.authorizeRequest(request)
+                jwtRequestAuthProviderService.authenticateRequest(request)
             }
         }
     }

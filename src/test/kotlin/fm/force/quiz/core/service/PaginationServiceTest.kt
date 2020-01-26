@@ -26,9 +26,21 @@ open class PaginationServiceTest(
 
         "correct pagination query" {
             forall(
-                row(PaginationQuery(page = null, pageSize = null), PaginationParams(page = 0, pageSize = props.minPageSize)),
-                row(PaginationQuery(page = 1, pageSize = null), PaginationParams(page = 0, pageSize = props.minPageSize)),
-                row(PaginationQuery(page = 1, pageSize = props.maxPageSize), PaginationParams(page = 0, pageSize = props.maxPageSize))
+                row(
+                    PaginationQuery(page = null, pageSize = null),
+                    PaginationParams(page = 0, pageSize = props.minPageSize)
+                ),
+
+                row(
+                    PaginationQuery(page = 1, pageSize = null),
+                    PaginationParams(page = 0, pageSize = props.minPageSize)
+                ),
+
+                row(
+                    PaginationQuery(page = 1, pageSize = props.maxPageSize),
+                    PaginationParams(page = 0, pageSize = props.maxPageSize)
+                )
+
             ) { query, pagination ->
                 paginationService.getPagination(query) shouldBe pagination
             }

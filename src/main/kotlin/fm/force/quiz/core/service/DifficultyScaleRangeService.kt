@@ -60,9 +60,9 @@ class DifficultyScaleRangeService(
             }
         }
 
-        .stringConstraint(DifficultyScaleRangePatchDTO::title, validationProps.minTitleLength..validationProps.maxTitleLength)
-        .intConstraint(DifficultyScaleRangePatchDTO::min, 0..validationProps.minUpper)
-        .intConstraint(DifficultyScaleRangePatchDTO::max, 1..validationProps.maxUpper)
+        .stringConstraint(DifficultyScaleRangePatchDTO::title, validationProps.titleRange)
+        .intConstraint(DifficultyScaleRangePatchDTO::min, validationProps.minRange)
+        .intConstraint(DifficultyScaleRangePatchDTO::max, validationProps.maxRange)
 
         .ownedFkConstraint(DifficultyScaleRangePatchDTO::difficultyScale, difficultyScaleRepository, ::ownerId)
         .build()
@@ -75,7 +75,13 @@ class DifficultyScaleRangeService(
 
         with(SpecificationBuilder) {
             if (search.difficultyScale != null)
-                spec = spec.and(fk(difficultyScaleRepository.getEntity(search.difficultyScale), DifficultyScaleRange_.difficultyScale))!!
+                spec = spec.and(
+                    fk(
+                        difficultyScaleRepository.getEntity(search.difficultyScale),
+                        DifficultyScaleRange_.difficultyScale
+                    )
+                )!!
+
             if (search.title != null) {
                 spec = spec.and(ciContains(search.title, DifficultyScaleRange_.title))!!
             }

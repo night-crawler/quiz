@@ -25,16 +25,32 @@ class QuizSessionQuestionService(
 ) : QuizSessionQuestionType(quizSessionQuestionRepository) {
 
     override fun buildSearchSpec(search: QuizSessionQuestionSearchDTO?): Specification<QuizSessionQuestion> {
-        val ownerEquals = SpecificationBuilder.fk(authenticationFacade::user, QuizSessionQuestion_.owner)
+        val ownerEquals = SpecificationBuilder.fk(
+            authenticationFacade::user, QuizSessionQuestion_.owner
+        )
+
         if (search == null) return ownerEquals
 
         var spec = ownerEquals
         with(SpecificationBuilder) {
             val quizSessionId = search.quizSession
+
             if (search.originalQuestion != null)
-                spec = spec.and(fk(questionRepository.getEntity(search.originalQuestion), QuizSessionQuestion_.originalQuestion))!!
+                spec = spec.and(
+                    fk(
+                        questionRepository.getEntity(search.originalQuestion),
+                        QuizSessionQuestion_.originalQuestion
+                    )
+                )!!
+
             if (quizSessionId != null)
-                spec = spec.and(fk(quizSessionRepository.getEntity(quizSessionId), QuizSessionQuestion_.quizSession))!!
+                spec = spec.and(
+                    fk(
+                        quizSessionRepository.getEntity(quizSessionId),
+                        QuizSessionQuestion_.quizSession
+                    )
+                )!!
+
             if (search.text != null)
                 spec = spec.and(ciContains(search.text, QuizSessionQuestion_.text))!!
         }

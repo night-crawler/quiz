@@ -2,13 +2,13 @@
   "groups": [
     {
       "name": "force.security.auth",
-      "type": "fm.force.quiz.security.configuration.AuthConfigurationProperties",
-      "sourceType": "fm.force.quiz.security.configuration.AuthConfigurationProperties"
+      "type": "fm.force.quiz.security.configuration.properties.AuthConfigurationProperties",
+      "sourceType": "fm.force.quiz.security.configuration.properties.AuthConfigurationProperties"
     },
     {
       "name": "force.security.jwt",
-      "type": "fm.force.quiz.security.configuration.JwtConfigurationProperties",
-      "sourceType": "fm.force.quiz.security.configuration.JwtConfigurationProperties"
+      "type": "fm.force.quiz.security.configuration.properties.JwtConfigurationProperties",
+      "sourceType": "fm.force.quiz.security.configuration.properties.JwtConfigurationProperties"
     }
   ],
   "properties": [

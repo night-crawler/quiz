@@ -5,7 +5,6 @@ import fm.force.quiz.core.dto.PaginationQuery
 import fm.force.quiz.core.dto.QuizSessionAnswerPatchDTO
 import fm.force.quiz.core.dto.QuizSessionQuestionSearchDTO
 import fm.force.quiz.core.dto.SortQuery
-import fm.force.quiz.core.dto.toRestrictedDTO
 import fm.force.quiz.core.service.QuizSessionAnswerService
 import fm.force.quiz.core.service.QuizSessionQuestionService
 import fm.force.quiz.core.service.QuizSessionService

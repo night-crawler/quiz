@@ -16,8 +16,8 @@ import org.springframework.test.context.ContextConfiguration
 @PropertySource("classpath:application-test.yaml", factory = YamlPropertyLoaderFactory::class)
 @ContextConfiguration(classes = [TestConfiguration::class])
 open class UserRepositoryTest(
-    private val jpaUserRepository: JpaUserRepository,
-    private val jpaRoleRepository: JpaRoleRepository
+    private val userRepository: UserRepository,
+    private val roleRepository: RoleRepository
 ) : WordSpec() {
 
     private lateinit var adminRole: Role
@@ -27,58 +27,80 @@ open class UserRepositoryTest(
     private lateinit var testUsers: List<User>
 
     override fun beforeSpec(spec: Spec) {
-        adminRole = jpaRoleRepository.findByName("ADMIN")!!
-        teacherRole = jpaRoleRepository.findByName("TEACHER")!!
-        studentRole = jpaRoleRepository.findByName("STUDENT")!!
+        adminRole = roleRepository.findByName("ADMIN")!!
+        teacherRole = roleRepository.findByName("TEACHER")!!
+        studentRole = roleRepository.findByName("STUDENT")!!
 
         testUsers = listOf(
             User(username = "vasya", email = "vasya@force.fm"),
 
             User(username = "admin", password = "admin", email = "admin@force.fm", roles = setOf(adminRole)),
 
-            User(username = "student-1", password = "student-1", email = "student-1@force.fm", roles = setOf(studentRole)),
-            User(username = "student-2", password = "student-2", email = "student-2@force.fm", roles = setOf(studentRole)),
+            // two students with corresponding roles
+            User(
+                username = "student-1",
+                password = "student-1",
+                email = "student-1@force.fm",
+                roles = setOf(studentRole)
+            ),
+            User(
+                username = "student-2",
+                password = "student-2",
+                email = "student-2@force.fm",
+                roles = setOf(studentRole)
+            ),
 
-            User(username = "teacher-1", password = "teacher-1", email = "teacher-1@force.fm", roles = setOf(teacherRole)),
-            User(username = "teacher-2", password = "teacher-2", email = "teacher-2@force.fm", roles = setOf(teacherRole))
+            // two teachers with corresponding roles
+            User(
+                username = "teacher-1",
+                password = "teacher-1",
+                email = "teacher-1@force.fm",
+                roles = setOf(teacherRole)
+            ),
+            User(
+                username = "teacher-2",
+                password = "teacher-2",
+                email = "teacher-2@force.fm",
+                roles = setOf(teacherRole)
+            )
         )
 
-        jpaUserRepository.saveAll(testUsers)
+        userRepository.saveAll(testUsers)
     }
 
     init {
         "UserRepository" should {
             "find users by email" {
-                val user = jpaUserRepository.findByEmail("vasya@force.fm")
+                val user = userRepository.findByEmail("vasya@force.fm")
                 user.shouldNotBeNull()
             }
 
             "find users by id" {
-                val user = jpaUserRepository.findById(1)
+                val user = userRepository.findById(1)
                 user.shouldNotBeNull()
             }
 
             "find users by roles" {
-                val admins = jpaUserRepository.findUsersByRolesName("ADMIN")
+                val admins = userRepository.findUsersByRolesName("ADMIN")
                 admins.shouldHaveSize(1)
 
-                val students = jpaUserRepository.findUsersByRolesName("STUDENT")
+                val students = userRepository.findUsersByRolesName("STUDENT")
                 students.shouldHaveSize(2)
             }
 
             "find user by email and password" {
-                val user = jpaUserRepository.findByEmailAndPassword("admin@force.fm", "admin")
+                val user = userRepository.findByEmailAndPassword("admin@force.fm", "admin")
                 user.shouldNotBeNull()
             }
 
             "find users by a list of given roles" {
                 val expectedUserRoleNames = setOf("ADMIN", "STUDENT")
-                val users = jpaUserRepository.findUsersByRolesNameIn(expectedUserRoleNames)
+                val users = userRepository.findUsersByRolesNameIn(expectedUserRoleNames)
                 val actualUserRoleNames = users.map { it.roles }.flatten().map { it.name }.toSet()
                 actualUserRoleNames.shouldBe(expectedUserRoleNames)
 
                 // also, we need to have an ability to find users with no roles at all
-                val weirdos = jpaUserRepository.findUserByRolesIsEmpty()
+                val weirdos = userRepository.findUserByRolesIsEmpty()
                 // it's probable we are running after some other tests
                 weirdos.map { it.username }.toSet() shouldContain ("vasya")
             }

@@ -6,9 +6,10 @@ import org.springframework.stereotype.Service
 
 @Service
 @ConditionalOnMissingBean(type = ["PasswordHashGeneratorService"])
-class PasswordHashGeneratorService(
-    val passwordEncoder: PasswordEncoder
-) {
-    fun encode(password: String): String = passwordEncoder.encode(password)
-    fun matches(rawPassword: CharSequence?, encodedPassword: String?) = passwordEncoder.matches(rawPassword, encodedPassword)
+class PasswordHashGeneratorService(private val passwordEncoder: PasswordEncoder) {
+    fun encode(password: String): String =
+        passwordEncoder.encode(password)
+
+    fun matches(rawPassword: CharSequence?, encodedPassword: String?) =
+        passwordEncoder.matches(rawPassword, encodedPassword)
 }

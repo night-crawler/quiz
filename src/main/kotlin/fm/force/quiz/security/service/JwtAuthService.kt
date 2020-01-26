@@ -1,12 +1,12 @@
 package fm.force.quiz.security.service
 
-import fm.force.quiz.security.configuration.PasswordConfigurationProperties
+import fm.force.quiz.security.configuration.properties.PasswordConfigurationProperties
 import fm.force.quiz.security.dto.JwtResponseDTO
 import fm.force.quiz.security.dto.LoginRequestDTO
 import fm.force.quiz.security.dto.RegisterRequestDTO
 import fm.force.quiz.security.entity.User
 import fm.force.quiz.security.jwt.JwtUserDetails
-import fm.force.quiz.security.repository.JpaUserRepository
+import fm.force.quiz.security.repository.UserRepository
 import org.springframework.security.authentication.AccountExpiredException
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.authentication.CredentialsExpiredException
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class JwtAuthService(
-    private val jpaUserRepository: JpaUserRepository,
+    private val userRepository: UserRepository,
     private val jwtUserDetailsMapper: JwtUserDetailsMapper,
     private val hashGeneratorService: PasswordHashGeneratorService,
     private val jwtProviderService: JwtProviderService,
@@ -30,7 +30,7 @@ class JwtAuthService(
 
     fun getUser(username: String?): User {
         username ?: throw UsernameNotFoundException("Null user names are not supported")
-        return jpaUserRepository
+        return userRepository
             .findByEmailOrUsername(username, username)
             ?: throw UsernameNotFoundException("Username $username was not found")
     }
@@ -45,7 +45,7 @@ class JwtAuthService(
             password = hashGeneratorService.encode(request.password),
             isActive = isActive
         )
-        return jpaUserRepository.save(user)
+        return userRepository.save(user)
     }
 
     fun authenticate(request: LoginRequestDTO): JwtResponseDTO {

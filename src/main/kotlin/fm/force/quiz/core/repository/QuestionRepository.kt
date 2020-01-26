@@ -5,4 +5,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.stereotype.Repository
 
 @Repository
-interface QuestionRepository : CustomJpaRepository<Question, Long>, JpaSpecificationExecutor<Question>, CommonRepository<Question>
+interface QuestionRepository :
+    CustomJpaRepository<Question, Long>,
+    JpaSpecificationExecutor<Question>,
+    CommonRepository<Question>

@@ -74,7 +74,10 @@ data class ErrorResponse(
                     .map {
                         FieldError(
                             fieldName = it,
-                            message = "Entity with field name `$commaSeparatedFieldNames` exists: `$commaSeparatedFieldValues`",
+                            message =
+                                """
+                                Entity with field name `$commaSeparatedFieldNames` exists: `$commaSeparatedFieldValues`
+                                """.trimIndent(),
                             violatedValue = commaSeparatedFieldValues
                         )
                     }

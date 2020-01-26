@@ -9,7 +9,11 @@ import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 
 @Repository
-interface QuizQuestionRepository : CustomJpaRepository<QuizQuestion, Long>, JpaSpecificationExecutor<QuizQuestion>, CommonRepository<QuizQuestion> {
+interface QuizQuestionRepository :
+    CustomJpaRepository<QuizQuestion, Long>,
+    JpaSpecificationExecutor<QuizQuestion>,
+    CommonRepository<QuizQuestion> {
+
     fun countByQuizId(quizId: Long): Int
 
     @Modifying

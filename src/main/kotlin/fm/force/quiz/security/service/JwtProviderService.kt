@@ -1,6 +1,6 @@
 package fm.force.quiz.security.service
 
-import fm.force.quiz.security.configuration.JwtConfigurationProperties
+import fm.force.quiz.security.configuration.properties.JwtConfigurationProperties
 import fm.force.quiz.security.jwt.JwtUserDetails
 import io.jsonwebtoken.JwtException
 import io.jsonwebtoken.Jwts

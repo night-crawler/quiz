@@ -27,11 +27,17 @@ open class QuizSessionServiceTest(service: QuizSessionService) : AbstractCRUDSer
         }
 
         "should validate transitions" {
-            val invalidStateQuizSession = testDataFactory.getQuizSession(owner = user, isCancelled = true, isCompleted = true)
+            val invalidStateQuizSession = testDataFactory.getQuizSession(
+                owner = user, isCancelled = true, isCompleted = true
+            )
+
             shouldThrow<ValidationError> { service.cancel(invalidStateQuizSession.id) }
             shouldThrow<ValidationError> { service.complete(invalidStateQuizSession.id) }
 
-            val invalidValidDate = testDataFactory.getQuizSession(owner = user, validTill = Instant.now() - Duration.ofDays(2))
+            val invalidValidDate = testDataFactory.getQuizSession(
+                owner = user, validTill = Instant.now() - Duration.ofDays(2)
+            )
+
             shouldThrow<ValidationError> { service.complete(invalidValidDate.id) }
 
             testDataFactory.getQuizSession(owner = alien).id.let {

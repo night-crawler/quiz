@@ -27,6 +27,18 @@ force:
         - pattern: /auth/**
           authority: null
           anonymous: true
+        - pattern: /swagger**
+          authority: null
+          anonymous: true
+        - pattern: /**/springfox-swagger-ui/**
+          authority: null
+          anonymous: true
+        - pattern: /**/swagger-resources/**
+          authority: null
+          anonymous: true
+        - pattern: /**/api-docs/**
+          authority: null
+          anonymous: true
     jwt:
       secret: IAmVeryRobustAndUniqueSecret!!!one
       expire: 10000

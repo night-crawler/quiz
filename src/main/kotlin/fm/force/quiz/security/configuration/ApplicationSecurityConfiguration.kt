@@ -1,5 +1,6 @@
 package fm.force.quiz.security.configuration
 
+import fm.force.quiz.security.configuration.properties.AuthConfigurationProperties
 import fm.force.quiz.security.jwt.JwtConfigurer
 import fm.force.quiz.security.service.JwtRequestAuthProviderService
 import org.slf4j.Logger

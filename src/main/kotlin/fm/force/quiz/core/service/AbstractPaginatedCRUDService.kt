@@ -91,6 +91,9 @@ abstract class AbstractPaginatedCRUDService<EntType, RepoType, PatchType, DTOTyp
         return serializePage(page)
     }
 
-    open fun delete(id: Long) = getOwnedEntity(id).let { repository.delete(it) }
-    open fun patch(id: Long, patchDTO: PatchType): EntType = throw NotImplementedError("Patch method is not implemented")
+    open fun delete(id: Long) =
+        getOwnedEntity(id).let { repository.delete(it) }
+
+    open fun patch(id: Long, patchDTO: PatchType): EntType =
+        throw NotImplementedError("Patch method is not implemented")
 }

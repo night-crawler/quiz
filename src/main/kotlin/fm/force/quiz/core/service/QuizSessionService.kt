@@ -37,6 +37,9 @@ class QuizSessionService(
     private val quizSessionQuestionRepository: QuizSessionQuestionRepository,
     quizSessionRepository: QuizSessionRepository
 ) : QuizSessionServiceType(quizSessionRepository) {
+    private val msgAlreadyCancelled = "Session has already been cancelled"
+    private val msgAlreadyCompleted = "Session has already been completed"
+    private val msgSessionIsExpired = "Session is expired"
 
     override var dtoValidator = ValidatorBuilder.of<QuizSessionPatchDTO>()
         .fkConstraint(QuizSessionPatchDTO::quiz, quizRepository)
@@ -44,14 +47,14 @@ class QuizSessionService(
 
     override var entityValidator = ValidatorBuilder.of<QuizSession>()
         .konstraintOnGroup(TransitionConstraintGroup.CANCEL) {
-            konstraint(QuizSession::isCancelled) { isFalse.message("Session has already been cancelled, cannot cancel") }
-            konstraint(QuizSession::isCompleted) { isFalse.message("Session has already been completed, cannot cancel") }
+            konstraint(QuizSession::isCancelled) { isFalse.message(msgAlreadyCancelled) }
+            konstraint(QuizSession::isCompleted) { isFalse.message(msgAlreadyCompleted) }
         }
         .konstraintOnGroup(TransitionConstraintGroup.COMPLETE) {
-            konstraint(QuizSession::isCancelled) { isFalse.message("Session has already been cancelled, cannot complete") }
-            konstraint(QuizSession::isCompleted) { isFalse.message("Session has already been completed, cannot complete") }
+            konstraint(QuizSession::isCancelled) { isFalse.message(msgAlreadyCancelled) }
+            konstraint(QuizSession::isCompleted) { isFalse.message(msgAlreadyCompleted) }
         }
-        .instantConstraint(QuizSession::validTill, errorTemplate = "Session is no more valid")
+        .instantConstraint(QuizSession::validTill, errorTemplate = msgSessionIsExpired)
         .build()
 
     @Transactional
@@ -77,7 +80,9 @@ class QuizSessionService(
         val clonedAnswers = mutableListOf<QuizSessionQuestionAnswer>()
 
         entity.quiz.quizQuestions.forEach { qq ->
-            val (quizSessionQuestion, quizSessionQuestionAnswers) = cloneQuizQuestion(entity, qq)
+            val (quizSessionQuestion, quizSessionQuestionAnswers) =
+                cloneQuizQuestion(entity, qq)
+
             clonedQuestions.add(quizSessionQuestion)
             clonedAnswers.addAll(quizSessionQuestionAnswers)
         }
@@ -124,7 +129,12 @@ class QuizSessionService(
                 spec = spec.and(fk(quizRepository.getEntity((search.quiz)), QuizSession_.quiz))!!
 
             if (search.difficultyScale != null)
-                spec = spec.and(fk(difficultyScaleRepository.getEntity((search.difficultyScale)), QuizSession_.difficultyScale))!!
+                spec = spec.and(
+                    fk(
+                        difficultyScaleRepository.getEntity((search.difficultyScale)),
+                        QuizSession_.difficultyScale
+                    )
+                )!!
 
             if (search.isCancelled != null)
                 spec = spec.and(equals(search.isCancelled, QuizSession_.isCancelled))!!

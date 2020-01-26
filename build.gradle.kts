@@ -100,6 +100,9 @@ dependencies {
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     kapt("org.hibernate:hibernate-jpamodelgen:5.3.8.Final")
 
+    compile("io.springfox:springfox-swagger2:2.9.2")
+    compile("io.springfox:springfox-swagger-ui:2.9.2")
+
     testImplementation("io.kotlintest:kotlintest-runner-junit5:3.4.2")
     testCompile("io.kotlintest:kotlintest-extensions-spring:3.4.2")
     testImplementation("org.springframework.security:spring-security-test")

@@ -3,7 +3,7 @@ package fm.force.quiz.security.crypto
 import de.mkammerer.argon2.Argon2
 import de.mkammerer.argon2.Argon2Factory
 import de.mkammerer.argon2.Argon2Helper
-import fm.force.quiz.security.configuration.Argon2PasswordConfigurationProperties
+import fm.force.quiz.security.configuration.properties.Argon2PasswordConfigurationProperties
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component

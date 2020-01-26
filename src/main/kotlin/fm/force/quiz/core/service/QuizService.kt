@@ -102,10 +102,18 @@ class QuizService(
     override fun patch(id: Long, patchDTO: QuizPatchDTO): Quiz {
         validatePatch(patchDTO)
         val modified = getOwnedEntity(id).apply {
-            if (patchDTO.title != null) title = patchDTO.title
-            if (patchDTO.topics != null) topics = topicRepository.findEntitiesById(patchDTO.topics).toMutableSet()
-            if (patchDTO.tags != null) tags = tagRepository.findEntitiesById(patchDTO.tags).toMutableSet()
-            if (patchDTO.difficultyScale != null) difficultyScale = difficultyScaleRepository.getEntity(patchDTO.difficultyScale)
+            if (patchDTO.title != null)
+                title = patchDTO.title
+
+            if (patchDTO.topics != null)
+                topics = topicRepository.findEntitiesById(patchDTO.topics).toMutableSet()
+
+            if (patchDTO.tags != null)
+                tags = tagRepository.findEntitiesById(patchDTO.tags).toMutableSet()
+
+            if (patchDTO.difficultyScale != null)
+                difficultyScale = difficultyScaleRepository.getEntity(patchDTO.difficultyScale)
+
             updatedAt = Instant.now()
         }
         return repository.save(modified)

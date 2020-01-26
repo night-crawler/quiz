@@ -15,7 +15,10 @@ import org.springframework.stereotype.Service
 
 @Service
 class SortingService(val validationProps: SortingValidationProperties) {
-    private val whenSortIsPresent = ConstraintCondition<SortQuery> { sortQuery, _: ConstraintGroup? -> sortQuery.sort != null }
+    private val whenSortIsPresent = ConstraintCondition<SortQuery> { sortQuery, _: ConstraintGroup? ->
+        sortQuery.sort != null
+    }
+
     val validator = ValidatorBuilder.of<SortQuery>()
         .konstraintOnCondition(whenSortIsPresent) {
             konstraint(SortQuery::sort) {
@@ -23,7 +26,7 @@ class SortingService(val validationProps: SortingValidationProperties) {
                     "The `sort` parameter must contain max ${validationProps.maxSortingFields} items"
                 )
             }
-                .forEach(SortQuery::sort, "sort", nonEmptyString)
+            forEach(SortQuery::sort, "sort", nonEmptyString)
         }
         .build()
 
@@ -51,9 +54,15 @@ class SortingService(val validationProps: SortingValidationProperties) {
             val property = parts.last()
             when {
                 parts.size > 2 || property == "-" ->
-                    throw ValidationError(SortingViolations(it, "Sorting argument `{0}` must not contain more than one '-'"))
+                    throw ValidationError(
+                        SortingViolations(
+                            it, "Sorting argument `{0}` must not contain more than one '-'"
+                        )
+                    )
+
                 property.isEmpty() ->
                     throw ValidationError(SortingViolations(it, "`{0}` must contain a field name"))
+
                 checkAllowedFields && !allowedFields.contains(property) ->
                     throw ValidationError(SortingViolations(it, "Sorting by `{0}` is not allowed"))
             }
