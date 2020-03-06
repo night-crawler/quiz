@@ -1,6 +1,7 @@
 package fm.force.quiz.security.configuration
 
 import fm.force.quiz.security.configuration.properties.AuthConfigurationProperties
+import fm.force.quiz.security.configuration.properties.CorsConfigurationProperties
 import fm.force.quiz.security.jwt.JwtConfigurer
 import fm.force.quiz.security.service.JwtRequestAuthProviderService
 import org.slf4j.Logger
@@ -14,13 +15,15 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @EnableWebSecurity
 class ApplicationSecurityConfiguration(
     private val jwtRequestAuthProviderService: JwtRequestAuthProviderService,
-    private val config: AuthConfigurationProperties
+    private val config: AuthConfigurationProperties,
+    private val corsConfigurationProperties: CorsConfigurationProperties
 ) : WebSecurityConfigurerAdapter(true) {
     val logger: Logger = LoggerFactory.getLogger(ApplicationSecurityConfiguration::class.java)
 
     override fun configure(http: HttpSecurity) {
         logger.debug("Applying security access patterns: ${config.access}")
         http
+            .cors().configurationSource(corsConfigurationProperties.source).and()
             .httpBasic().disable()
             .csrf().disable()
             .sessionManagement().disable()

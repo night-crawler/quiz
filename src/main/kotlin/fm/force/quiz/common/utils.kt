@@ -1,6 +1,7 @@
 package fm.force.quiz.common
 
 import java.util.BitSet
+import javax.servlet.http.HttpServletRequest
 
 val ALPHABET = ('a'..'z') + ('A'..'Z') + ('0'..'9')
 
@@ -33,3 +34,5 @@ fun Long.maxSignificantValue(): Long {
 
 fun <T> Collection<T>?.toCustomSet(): Set<T> =
     this?.map { it }?.toSet() ?: setOf()
+
+fun HttpServletRequest.logRepr() = "$method $requestURI"

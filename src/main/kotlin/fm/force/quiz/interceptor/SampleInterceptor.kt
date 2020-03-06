@@ -1,5 +1,6 @@
 package fm.force.quiz.interceptor
 
+import fm.force.quiz.common.logRepr
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import org.slf4j.Logger
@@ -13,7 +14,7 @@ class SampleInterceptor : HandlerInterceptor {
     val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
-        logger.debug("[ø] Received a request to intercept: $request")
+        logger.debug("[ø] Received a request to intercept: ${request.logRepr()}")
         return true
     }
 
@@ -23,7 +24,7 @@ class SampleInterceptor : HandlerInterceptor {
         handler: Any,
         modelAndView: ModelAndView?
     ) {
-        logger.debug("[ø] Handled a request $request, $response")
+        logger.debug("[ø] Handled a request ${request.logRepr()}, $response")
     }
 
     override fun afterCompletion(
