@@ -136,7 +136,6 @@ fun ErrorResponse.Companion.of(ex: ConstraintViolationException): ErrorResponse 
     )
 }
 
-
 fun ErrorResponse.Companion.of(ex: MethodArgumentNotValidException): ErrorResponse {
     val globalErrors = ex.bindingResult.globalErrors.map {
         ErrorMessage("${it.objectName}: ${it.defaultMessage ?: ""}")

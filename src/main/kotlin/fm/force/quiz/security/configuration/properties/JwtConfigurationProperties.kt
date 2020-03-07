@@ -1,11 +1,11 @@
 package fm.force.quiz.security.configuration.properties
 
+import java.time.Duration
+import javax.annotation.PostConstruct
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.time.Duration
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Configuration
-import javax.annotation.PostConstruct
 
 @Configuration
 @ConfigurationProperties(prefix = "force.security.jwt")

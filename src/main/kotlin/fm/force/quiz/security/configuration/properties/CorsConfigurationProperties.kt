@@ -26,13 +26,15 @@ class CorsConfigurationProperties {
     }
 
     // add a reasonable default for development purposes
-    var configs: List<CorsConfigurationWrapper> = listOf(CorsConfigurationWrapper().apply {
-        path = "/**"
-        allowedOrigins = listOf("http://localhost:3001")
-        allowedMethods = listOf(CorsConfiguration.ALL)
-        allowedHeaders = listOf(CorsConfiguration.ALL)
-        allowCredentials = true
-    })
+    var configs: List<CorsConfigurationWrapper> = listOf(
+        CorsConfigurationWrapper().apply {
+            path = "/**"
+            allowedOrigins = listOf("http://localhost:3001")
+            allowedMethods = listOf(CorsConfiguration.ALL)
+            allowedHeaders = listOf(CorsConfiguration.ALL)
+            allowCredentials = true
+        }
+    )
 
     val source get() = UrlBasedCorsConfigurationSource().apply {
         configs.map { registerCorsConfiguration(it.path, it) }
