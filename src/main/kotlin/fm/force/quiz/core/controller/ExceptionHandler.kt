@@ -1,6 +1,7 @@
 package fm.force.quiz.core.controller
 
 import fm.force.quiz.core.dto.ErrorResponse
+import fm.force.quiz.core.dto.of
 import fm.force.quiz.core.exception.NotFoundException
 import fm.force.quiz.core.exception.ValidationError
 import org.hibernate.exception.ConstraintViolationException
