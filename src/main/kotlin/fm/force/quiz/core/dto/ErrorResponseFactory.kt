@@ -8,6 +8,7 @@ import fm.force.quiz.core.exception.ValidationError
 import org.hibernate.exception.ConstraintViolationException
 import org.springframework.data.mapping.PropertyReferenceException
 import org.springframework.http.converter.HttpMessageNotReadableException
+import org.springframework.security.authentication.DisabledException
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.web.bind.MethodArgumentNotValidException
 
@@ -38,9 +39,8 @@ fun ErrorResponse.Companion.of(ex: MissingKotlinParameterException) = ErrorRespo
     type = ErrorResponse.Type.VALIDATION,
     errors = listOf(
         FieldError(
-            ex.parameter.name
-                ?: "",
-            "Field is required"
+            fieldName = ex.parameter.name ?: "",
+            message = "Field is required"
         )
     )
 )
@@ -131,6 +131,12 @@ fun ErrorResponse.Companion.of(ex: MethodArgumentNotValidException): ErrorRespon
         errors = globalErrors + fieldErrors
     )
 }
+
+fun ErrorResponse.Companion.of(ex: DisabledException) = ErrorResponse(
+    exception = ex.javaClass.simpleName,
+    type = ErrorResponse.Type.GENERAL,
+    errors = listOf(ErrorMessage(ex.localizedMessage))
+)
 
 fun ConstraintViolation.toFieldError() = FieldError(
     fieldName = name(),

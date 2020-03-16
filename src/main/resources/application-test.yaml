@@ -22,7 +22,7 @@ force:
           anonymous: true
     jwt:
       secret: IAmVeryRobustAndUniqueSecret!!!one
-      expire: 10000
+      accessTokenExpire: 10000
       issuer: quiz
     password:
       iterations: 4

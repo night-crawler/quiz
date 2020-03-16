@@ -33,7 +33,7 @@ abstract class AbstractCRUDServiceTest : StringSpec() {
         user = testDataFactory.getUser()
         alien = testDataFactory.getUser()
 
-        Mockito.`when`(authFacade.principal).thenReturn(jwtUserDetailsMapper.fromUser(user))
+        Mockito.`when`(authFacade.principal).thenReturn(jwtUserDetailsMapper.of(user))
         Mockito.`when`(authFacade.user).thenReturn(user)
     }
 }

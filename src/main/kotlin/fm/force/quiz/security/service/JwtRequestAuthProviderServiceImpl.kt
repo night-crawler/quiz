@@ -24,7 +24,7 @@ class JwtRequestAuthProviderServiceImpl(val jwtProviderService: JwtProviderServi
         }
 
         val token = authHeader.substring(bearer.length)
-        val jwtUserDetails = jwtProviderService.validate(token)
+        val jwtUserDetails = jwtProviderService.extractUserDetailsFromAccessToken(token)
             ?: throw JwtAuthenticationException("Provided token is invalid")
 
         return UsernamePasswordAuthenticationToken(jwtUserDetails, "", jwtUserDetails.authorities)

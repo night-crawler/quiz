@@ -6,7 +6,7 @@ import fm.force.quiz.common.getRandomString
 import fm.force.quiz.security.dto.LoginRequestDTO
 import fm.force.quiz.security.dto.RegisterRequestDTO
 import fm.force.quiz.security.entity.User
-import fm.force.quiz.security.service.JwtAuthService
+import fm.force.quiz.security.service.AuthService
 import io.kotlintest.TestCase
 import io.kotlintest.provided.fm.force.quiz.util.JMapper
 import io.kotlintest.specs.WordSpec
@@ -64,7 +64,7 @@ abstract class AbstractControllerTest : WordSpec() {
     lateinit var mockMvc: MockMvc
 
     @Autowired
-    lateinit var jwtAuthService: JwtAuthService
+    lateinit var authService: AuthService
 
     lateinit var user: User
     lateinit var client: AuthenticatedTestClient
@@ -72,8 +72,8 @@ abstract class AbstractControllerTest : WordSpec() {
     override fun beforeTest(testCase: TestCase) {
         val email = "user-${getRandomString()}@example.com"
         val password = getRandomString()
-        user = jwtAuthService.register(RegisterRequestDTO(email, password), isActive = true)
-        val userJwt = jwtAuthService.authenticate(LoginRequestDTO(email, password))
-        client = AuthenticatedTestClient(mockMvc, userJwt.token)
+        user = authService.register(RegisterRequestDTO(email, password), isActive = true)
+        val userJwt = authService.login(LoginRequestDTO(email, password))
+        client = AuthenticatedTestClient(mockMvc, userJwt.accessToken)
     }
 }

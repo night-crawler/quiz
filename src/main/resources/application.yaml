@@ -41,7 +41,8 @@ force:
           anonymous: true
     jwt:
       secret: IAmVeryRobustAndUniqueSecret!!!one
-      expire: P90D
+      accessTokenExpire: 1M
+      refreshTokenExpire: 180D
       issuer: quiz
     password:
       iterations: 4

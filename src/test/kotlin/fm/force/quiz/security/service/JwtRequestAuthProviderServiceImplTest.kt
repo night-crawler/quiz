@@ -15,10 +15,10 @@ open class JwtRequestAuthProviderServiceImplTest(
     init {
         "JwtRequestAuthProviderService" should {
             "check stuff" {
-                val details = jwtUserDetailsFactory.fromEmpty().apply {
+                val details = jwtUserDetailsFactory.of().apply {
                     username = "example"
                 }
-                val token = jwtProviderService.issue(details)
+                val token = jwtProviderService.issueAccessToken(details)
 
                 val request = MockHttpServletRequest()
                 request.addHeader("Authorization", "Bearer $token")

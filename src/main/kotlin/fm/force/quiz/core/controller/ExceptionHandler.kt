@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
+import org.springframework.security.authentication.DisabledException
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ControllerAdvice
@@ -43,6 +44,10 @@ class ExceptionHandler : ResponseEntityExceptionHandler() {
     @ExceptionHandler(ValidationError::class)
     fun handleValidationError(ex: ValidationError, request: WebRequest) =
         ResponseEntity(ErrorResponse.of(ex), HttpStatus.BAD_REQUEST)
+
+    @ExceptionHandler(DisabledException::class)
+    fun handleDisabledException(ex: DisabledException, request: WebRequest) =
+        ResponseEntity(ErrorResponse.of(ex), HttpStatus.FORBIDDEN)
 
     override fun handleHttpMessageNotReadable(
         ex: HttpMessageNotReadableException,
