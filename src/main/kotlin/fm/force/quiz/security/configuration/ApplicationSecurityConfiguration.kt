@@ -16,7 +16,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 class ApplicationSecurityConfiguration(
     private val jwtRequestAuthProviderService: JwtRequestAuthProviderService,
     private val config: AuthConfigurationProperties,
-    private val corsConfigurationProperties: CorsConfigurationProperties
+    private val corsConfigurationProperties: CorsConfigurationProperties,
+    private val securityAuthenticationEntryPoint: SecurityAuthenticationEntryPoint
 ) : WebSecurityConfigurerAdapter(true) {
     val logger: Logger = LoggerFactory.getLogger(ApplicationSecurityConfiguration::class.java)
 
@@ -29,7 +30,7 @@ class ApplicationSecurityConfiguration(
             .sessionManagement().disable()
             .headers()
             .and().anonymous()
-            .and().exceptionHandling()
+            .and().exceptionHandling().authenticationEntryPoint(securityAuthenticationEntryPoint)
             .and().authorizeRequests()
             .apply {
                 config.access.forEach {

@@ -9,6 +9,7 @@ import org.hibernate.exception.ConstraintViolationException
 import org.springframework.data.mapping.PropertyReferenceException
 import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.security.authentication.DisabledException
+import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.web.bind.MethodArgumentNotValidException
 
@@ -26,6 +27,12 @@ fun ErrorResponse.Companion.of(ex: MismatchedInputException) = ErrorResponse(
         // if there's an outlier in an array of Ints: ["a", 1, 2], there will be an empty fieldName in path
         .filter { !it.fieldName.isNullOrBlank() }
         .map { FieldError(it.fieldName, "Field has a wrong type") }
+)
+
+fun ErrorResponse.Companion.of(ex: AuthenticationException) = ErrorResponse(
+    exception = ex.javaClass.simpleName,
+    type = ErrorResponse.Type.GENERAL,
+    errors = listOf(ErrorMessage(ex.localizedMessage))
 )
 
 fun ErrorResponse.Companion.of(ex: Throwable) = ErrorResponse(

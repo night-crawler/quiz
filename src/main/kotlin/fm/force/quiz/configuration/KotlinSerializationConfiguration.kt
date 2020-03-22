@@ -4,6 +4,7 @@ import fm.force.quiz.core.dto.ErrorMessage
 import fm.force.quiz.core.dto.FieldError
 import fm.force.quiz.core.dto.GenericError
 import kotlinx.serialization.UnstableDefault
+import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.modules.SerializersModule
 import org.springframework.context.annotation.Bean
@@ -33,4 +34,7 @@ class KotlinSerializationConfiguration {
             FieldError::class with FieldError.serializer()
         }
     }
+
+    @Bean
+    fun kotlinXJson() = Json(kotlinJsonConfiguration(), serializersModule())
 }

@@ -2,9 +2,7 @@ package fm.force.quiz.common.http.converter
 
 import java.nio.charset.StandardCharsets
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.json.JsonDecodingException
-import kotlinx.serialization.modules.SerialModule
 import org.springframework.http.HttpInputMessage
 import org.springframework.http.HttpOutputMessage
 import org.springframework.http.MediaType
@@ -19,11 +17,9 @@ import org.springframework.util.StreamUtils
  * https://github.com/spring-projects/spring-framework/pull/24436/files
  */
 class KotlinSerializationJsonHttpMessageConverter(
-    jsonConfiguration: JsonConfiguration = JsonConfiguration.Stable,
-    serialModule: SerialModule
+    private val json: Json
 ) : AbstractHttpMessageConverter<Any>(MediaType.APPLICATION_JSON, MediaType("application", "*+json")) {
     private val resolver: KotlinSerializationResolver = KotlinSerializationResolver()
-    private val json: Json = Json(jsonConfiguration, serialModule)
 
     override fun supports(clazz: Class<*>) = try {
         resolver.resolve(clazz)

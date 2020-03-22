@@ -36,7 +36,8 @@ class CorsConfigurationProperties {
         }
     )
 
-    val source get() = UrlBasedCorsConfigurationSource().apply {
-        configs.map { registerCorsConfiguration(it.path, it) }
-    }
+    val source
+        get() = UrlBasedCorsConfigurationSource().apply {
+            configs.map { registerCorsConfiguration(it.path, it) }
+        }
 }

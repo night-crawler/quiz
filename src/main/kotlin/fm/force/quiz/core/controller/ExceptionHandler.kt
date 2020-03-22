@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.security.authentication.DisabledException
+import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ControllerAdvice
@@ -21,13 +22,17 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @ControllerAdvice
 class ExceptionHandler : ResponseEntityExceptionHandler() {
+    @ExceptionHandler(AuthenticationException::class)
+    fun handleAuthenticationException(ex: AuthenticationException) =
+        ResponseEntity(ErrorResponse.of(ex), HttpStatus.UNAUTHORIZED)
+
     @ExceptionHandler(EmptyResultDataAccessException::class)
     fun handleEmptyResultDataAccessException(ex: EmptyResultDataAccessException) =
         ResponseEntity(ErrorResponse.of(ex), HttpStatus.NOT_FOUND)
 
     @ExceptionHandler(UsernameNotFoundException::class)
     fun handleUsernameNotFoundException(ex: UsernameNotFoundException) =
-        ResponseEntity(ErrorResponse.of(ex), HttpStatus.FORBIDDEN)
+        ResponseEntity(ErrorResponse.of(ex), HttpStatus.UNAUTHORIZED)
 
     @ExceptionHandler(ConstraintViolationException::class)
     fun handleConstraintViolationException(ex: ConstraintViolationException) =
