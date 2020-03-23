@@ -2,7 +2,6 @@ package fm.force.quiz.core.dto
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer
-import fm.force.quiz.core.entity.QuizQuestion
 import java.time.Instant
 
 data class QuizQuestionFullDTO(
@@ -31,17 +30,3 @@ data class QuizQuestionPatchDTO(
 data class QuizQuestionSearchDTO(
     val quiz: Long
 ) : DTOSearchMarker
-
-fun QuizQuestion.toFullDTO() = QuizQuestionFullDTO(
-    id = id,
-    seq = seq,
-    question = question.toFullDTO(),
-    createdAt = createdAt,
-    updatedAt = updatedAt
-)
-
-fun QuizQuestion.toRestrictedDTO() = QuizQuestionRestrictedDTO(
-    id = id,
-    seq = seq,
-    question = question.toRestrictedDTO()
-)

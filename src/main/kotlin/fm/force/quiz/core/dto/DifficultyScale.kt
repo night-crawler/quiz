@@ -2,7 +2,6 @@ package fm.force.quiz.core.dto
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer
-import fm.force.quiz.core.entity.DifficultyScale
 import java.time.Instant
 
 data class DifficultyScaleFullDTO(
@@ -24,17 +23,3 @@ data class DifficultyScalePatchDTO(
     val name: String? = null,
     val max: Int? = null
 ) : DTOMarker
-
-fun DifficultyScale.toFullDTO() = DifficultyScaleFullDTO(
-    id = id,
-    name = name,
-    difficultyScaleRanges = difficultyScaleRanges.map { it.toFullDTO() },
-    createdAt = createdAt,
-    updatedAt = updatedAt
-)
-
-fun DifficultyScale.toRestrictedDTO() = DifficultyScaleRestrictedDTO(
-    id = id,
-    name = name,
-    difficultyScaleRanges = difficultyScaleRanges.map { it.toRestrictedDTO() }
-)

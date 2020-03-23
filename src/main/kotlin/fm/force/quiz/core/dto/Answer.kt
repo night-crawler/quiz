@@ -2,7 +2,6 @@ package fm.force.quiz.core.dto
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer
-import fm.force.quiz.core.entity.Answer
 import java.time.Instant
 
 data class AnswerFullDTO(
@@ -20,12 +19,3 @@ data class AnswerRestrictedDTO(
 ) : DTORestrictedSerializationMarker
 
 data class AnswerPatchDTO(val text: String) : DTOMarker
-
-fun Answer.toFullDTO() = AnswerFullDTO(
-    id = id,
-    text = text,
-    createdAt = createdAt,
-    updatedAt = updatedAt
-)
-
-fun Answer.toRestrictedDTO() = AnswerRestrictedDTO(id = id, text = text)

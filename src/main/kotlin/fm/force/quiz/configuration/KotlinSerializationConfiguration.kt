@@ -3,6 +3,9 @@ package fm.force.quiz.configuration
 import fm.force.quiz.core.dto.ErrorMessage
 import fm.force.quiz.core.dto.FieldError
 import fm.force.quiz.core.dto.GenericError
+import fm.force.quiz.core.dto.InstantSerializer
+import fm.force.quiz.core.dto.LongAsStringSerializer
+import java.time.Instant
 import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
@@ -33,6 +36,8 @@ class KotlinSerializationConfiguration {
             ErrorMessage::class with ErrorMessage.serializer()
             FieldError::class with FieldError.serializer()
         }
+        contextual(Instant::class, InstantSerializer)
+        contextual(Long::class, LongAsStringSerializer)
     }
 
     @Bean

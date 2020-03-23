@@ -2,7 +2,6 @@ package fm.force.quiz.core.dto
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer
-import fm.force.quiz.core.entity.QuizSession
 import java.time.Instant
 
 data class QuizSessionFullDTO(
@@ -34,16 +33,3 @@ data class QuizSessionSearchDTO(
     val isCompleted: Boolean? = null,
     val isCancelled: Boolean? = null
 ) : DTOSearchMarker
-
-fun QuizSession.toFullDTO() = QuizSessionFullDTO(
-    id = id,
-    quiz = quiz.id,
-    difficultyScale = difficultyScale?.id,
-    validTill = validTill,
-    isCompleted = isCompleted,
-    isCancelled = isCancelled,
-    completedAt = completedAt,
-    cancelledAt = cancelledAt,
-    createdAt = createdAt,
-    updatedAt = updatedAt
-)

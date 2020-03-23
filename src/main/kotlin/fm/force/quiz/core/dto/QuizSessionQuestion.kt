@@ -1,7 +1,5 @@
 package fm.force.quiz.core.dto
 
-import fm.force.quiz.core.entity.QuizSessionQuestion
-
 data class QuizSessionQuestionFullDTO(
     val id: Long
 ) : DTOFullSerializationMarker
@@ -22,14 +20,3 @@ data class QuizSessionQuestionSearchDTO(
     val originalQuestion: Long? = null,
     val text: String? = null
 ) : DTOSearchMarker
-
-fun QuizSessionQuestion.toFullDTO() = QuizSessionQuestionFullDTO(
-    id = id
-)
-
-fun QuizSessionQuestion.toRestrictedDTO() = QuizSessionQuestionRestrictedDTO(
-    id = id,
-    text = text,
-    answers = answers.map { it.toRestrictedDTO() },
-    seq = seq
-)

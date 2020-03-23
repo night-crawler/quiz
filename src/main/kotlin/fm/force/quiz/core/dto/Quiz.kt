@@ -2,7 +2,6 @@ package fm.force.quiz.core.dto
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer
-import fm.force.quiz.core.entity.Quiz
 import java.time.Instant
 
 data class QuizFullDTO(
@@ -36,24 +35,3 @@ data class QuizRestrictedDTO(
     val quizQuestions: Collection<QuizQuestionRestrictedDTO>,
     val difficultyScale: DifficultyScaleRestrictedDTO?
 ) : DTORestrictedSerializationMarker
-
-fun Quiz.toFullDTO() = QuizFullDTO(
-    id = id,
-    title = title,
-    tags = tags.map { it.toFullDTO() },
-    topics = topics.map { it.toFullDTO() },
-    quizQuestions = quizQuestions.map { it.toFullDTO() },
-    difficultyScale = difficultyScale?.toFullDTO(),
-    createdAt = createdAt,
-    updatedAt = updatedAt
-)
-
-fun Quiz.toRestrictedDTO() = QuizRestrictedDTO(
-    id = id,
-    owner = owner.id,
-    title = title,
-    tags = tags.map { it.toRestrictedDTO() },
-    topics = topics.map { it.toRestrictedDTO() },
-    quizQuestions = quizQuestions.map { it.toRestrictedDTO() },
-    difficultyScale = difficultyScale?.toRestrictedDTO()
-)
