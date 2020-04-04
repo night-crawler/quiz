@@ -3,7 +3,6 @@ package fm.force.quiz.core.dto
 import kotlinx.serialization.ContextualSerialization
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import java.time.Instant
 
 @Serializable
 @SerialName("TagFullDTO")
@@ -13,9 +12,9 @@ data class TagFullDTO(
     val name: String,
     val slug: String,
     @ContextualSerialization
-    val createdAt: Instant,
+    val createdAt: InstantAlias,
     @ContextualSerialization
-    val updatedAt: Instant
+    val updatedAt: InstantAlias
 ) : DTOFullSerializationMarker
 
 @Serializable

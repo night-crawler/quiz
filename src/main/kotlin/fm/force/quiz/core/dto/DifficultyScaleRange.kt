@@ -2,7 +2,6 @@ package fm.force.quiz.core.dto
 
 import kotlinx.serialization.ContextualSerialization
 import kotlinx.serialization.Serializable
-import java.time.Instant
 
 @Serializable
 data class DifficultyScaleRangeFullDTO(
@@ -17,10 +16,10 @@ data class DifficultyScaleRangeFullDTO(
     val max: Int,
 
     @ContextualSerialization
-    val createdAt: Instant,
+    val createdAt: InstantAlias,
 
     @ContextualSerialization
-    val updatedAt: Instant
+    val updatedAt: InstantAlias
 ) : DTOFullSerializationMarker
 
 @Serializable

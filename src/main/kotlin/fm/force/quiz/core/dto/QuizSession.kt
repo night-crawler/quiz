@@ -28,10 +28,10 @@ data class QuizSessionFullDTO(
     val cancelledAt: Instant? = null,
 
     @ContextualSerialization
-    val createdAt: Instant,
+    val createdAt: InstantAlias,
 
     @ContextualSerialization
-    val updatedAt: Instant
+    val updatedAt: InstantAlias
 ) : DTOFullSerializationMarker
 
 @Serializable
