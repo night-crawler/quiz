@@ -29,7 +29,7 @@ data class ErrorResponse(
     val errors: List<GenericError> = emptyList()
 ) {
     enum class Type {
-        VALIDATION, GENERAL, AUTH
+        VALIDATION, GENERAL, AUTH, INTERNAL
     }
 
     companion object

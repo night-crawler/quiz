@@ -1,23 +1,32 @@
 package fm.force.quiz.core.dto
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer
+import kotlinx.serialization.ContextualSerialization
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import java.time.Instant
 
+@Serializable
+@SerialName("TagFullDTO")
 data class TagFullDTO(
-    @JsonSerialize(using = ToStringSerializer::class)
+    @ContextualSerialization
     val id: Long,
     val name: String,
     val slug: String,
+    @ContextualSerialization
     val createdAt: Instant,
+    @ContextualSerialization
     val updatedAt: Instant
 ) : DTOFullSerializationMarker
 
+@Serializable
+@SerialName("TagRestrictedDTO")
 data class TagRestrictedDTO(
-    @JsonSerialize(using = ToStringSerializer::class)
+    @ContextualSerialization
     val id: Long,
     val name: String,
     val slug: String
 ) : DTORestrictedSerializationMarker
 
+@Serializable
+@SerialName("TagPatchDTO")
 data class TagPatchDTO(val name: String) : DTOMarker

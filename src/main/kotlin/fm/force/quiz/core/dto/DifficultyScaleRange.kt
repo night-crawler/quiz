@@ -1,29 +1,38 @@
 package fm.force.quiz.core.dto
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer
+import kotlinx.serialization.ContextualSerialization
+import kotlinx.serialization.Serializable
 import java.time.Instant
 
+@Serializable
 data class DifficultyScaleRangeFullDTO(
-    @JsonSerialize(using = ToStringSerializer::class)
+    @ContextualSerialization
     val id: Long,
-    @JsonSerialize(using = ToStringSerializer::class)
+
+    @ContextualSerialization
     val difficultyScale: Long,
+
     val title: String,
     val min: Int,
     val max: Int,
+
+    @ContextualSerialization
     val createdAt: Instant,
+
+    @ContextualSerialization
     val updatedAt: Instant
 ) : DTOFullSerializationMarker
 
+@Serializable
 data class DifficultyScaleRangeRestrictedDTO(
-    @JsonSerialize(using = ToStringSerializer::class)
+    @ContextualSerialization
     val id: Long,
     val title: String,
     val min: Int,
     val max: Int
 ) : DTORestrictedSerializationMarker
 
+@Serializable
 data class DifficultyScaleRangePatchDTO(
     val difficultyScale: Long? = null,
     val title: String? = null,
@@ -31,6 +40,7 @@ data class DifficultyScaleRangePatchDTO(
     val max: Int? = null
 ) : DTOMarker
 
+@Serializable
 data class DifficultyScaleRangeSearchDTO(
     val difficultyScale: Long? = null,
     val title: String? = null

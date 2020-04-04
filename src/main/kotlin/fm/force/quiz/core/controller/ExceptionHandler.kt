@@ -1,5 +1,6 @@
 package fm.force.quiz.core.controller
 
+import fm.force.quiz.core.dto.ErrorMessage
 import fm.force.quiz.core.dto.ErrorResponse
 import fm.force.quiz.core.dto.of
 import fm.force.quiz.core.exception.NotFoundException
@@ -11,6 +12,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
+import org.springframework.http.converter.HttpMessageNotWritableException
 import org.springframework.security.authentication.DisabledException
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.userdetails.UsernameNotFoundException
@@ -64,6 +66,15 @@ class ExceptionHandler : ResponseEntityExceptionHandler() {
         headers,
         status
     )
+
+    override fun handleHttpMessageNotWritable(
+        ex: HttpMessageNotWritableException,
+        headers: HttpHeaders,
+        status: HttpStatus,
+        request: WebRequest
+    ): ResponseEntity<Any> {
+        return ResponseEntity(ErrorResponse.of(ex), HttpStatus.INTERNAL_SERVER_ERROR)
+    }
 
     override fun handleMethodArgumentNotValid(
         ex: MethodArgumentNotValidException,

@@ -8,6 +8,7 @@ import fm.force.quiz.core.exception.ValidationError
 import org.hibernate.exception.ConstraintViolationException
 import org.springframework.data.mapping.PropertyReferenceException
 import org.springframework.http.converter.HttpMessageNotReadableException
+import org.springframework.http.converter.HttpMessageNotWritableException
 import org.springframework.security.authentication.DisabledException
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.userdetails.UsernameNotFoundException
@@ -148,4 +149,10 @@ fun ErrorResponse.Companion.of(ex: DisabledException) = ErrorResponse(
 fun ConstraintViolation.toFieldError() = FieldError(
     fieldName = name(),
     message = message()
+)
+
+fun ErrorResponse.Companion.of(ex: HttpMessageNotWritableException) = ErrorResponse(
+    exception = ex.javaClass.simpleName,
+    type = ErrorResponse.Type.INTERNAL,
+    errors = listOf(ErrorMessage(ex.localizedMessage))
 )

@@ -1,33 +1,48 @@
 package fm.force.quiz.core.dto
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer
+import kotlinx.serialization.ContextualSerialization
+import kotlinx.serialization.Serializable
 import java.time.Instant
 
+@Serializable
 data class QuizSessionFullDTO(
-    @JsonSerialize(using = ToStringSerializer::class)
+    @ContextualSerialization
     val id: Long,
 
-    @JsonSerialize(using = ToStringSerializer::class)
+    @ContextualSerialization
     val quiz: Long,
 
-    @JsonSerialize(using = ToStringSerializer::class)
+    @ContextualSerialization
     val difficultyScale: Long?,
 
+    @ContextualSerialization
     val validTill: Instant,
+
     val isCompleted: Boolean = false,
     val isCancelled: Boolean = false,
+
+    @ContextualSerialization
     val completedAt: Instant? = null,
+
+    @ContextualSerialization
     val cancelledAt: Instant? = null,
+
+    @ContextualSerialization
     val createdAt: Instant,
+
+    @ContextualSerialization
     val updatedAt: Instant
 ) : DTOFullSerializationMarker
 
+@Serializable
 data class QuizSessionPatchDTO(
+    @ContextualSerialization
     var quiz: Long
 ) : DTOSerializationMarker
 
+@Serializable
 data class QuizSessionSearchDTO(
+    @ContextualSerialization
     val quiz: Long? = null,
     val difficultyScale: Long? = null,
     val isCompleted: Boolean? = null,

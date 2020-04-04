@@ -16,6 +16,7 @@ import fm.force.quiz.core.entity.Topic
 import fm.force.quiz.security.entity.Role
 import fm.force.quiz.security.entity.User
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.Sort
 
 fun Answer.toFullDTO() = AnswerFullDTO(
     id = id,
@@ -57,11 +58,17 @@ fun DifficultyScaleRange.toRestrictedDTO() = DifficultyScaleRangeRestrictedDTO(
     max = max
 )
 
-inline fun <T : BaseQuizEntity> Page<out T>.toDTO(serialize: (T) -> Any) = PageDTO(
+fun Sort.toDTO() = SortDTO(
+    isSorted = isSorted,
+    isEmpty = isEmpty,
+    isUnsorted = isUnsorted
+)
+
+inline fun <T : BaseQuizEntity> Page<out T>.toDTO(serialize: (T) -> DTOMarker) = PageDTO(
     numberOfElements = numberOfElements,
     totalElements = totalElements,
     totalPages = totalPages,
-    sort = sort,
+    sort = sort.toDTO(),
     pageSize = size,
     isFirst = isFirst,
     isLast = isLast,
