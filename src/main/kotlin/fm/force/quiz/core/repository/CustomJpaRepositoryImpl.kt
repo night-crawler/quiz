@@ -5,7 +5,7 @@ import javax.persistence.EntityManager
 import org.springframework.data.jpa.repository.support.JpaEntityInformation
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository
 
-open class CustomJpaRepositoryImpl<T, ID>(
+class CustomJpaRepositoryImpl<T, ID>(
     val entityInformation: JpaEntityInformation<T, ID>,
     val entityManager: EntityManager
 ) : SimpleJpaRepository<T, ID>(entityInformation, entityManager), CustomJpaRepository<T, ID> {

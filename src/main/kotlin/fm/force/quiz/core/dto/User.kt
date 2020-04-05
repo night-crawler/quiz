@@ -23,5 +23,5 @@ data class UserFullDTO(
     @ContextualSerialization
     val createdAt: InstantAlias,
     @ContextualSerialization
-    val updatedAt: InstantAliasAlias
+    val updatedAt: InstantAlias
 ) : DTOFullSerializationMarker

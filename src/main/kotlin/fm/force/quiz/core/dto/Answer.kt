@@ -24,6 +24,5 @@ data class AnswerRestrictedDTO(
     val text: String
 ) : DTORestrictedSerializationMarker
 
-
 @Serializable
 data class AnswerPatchDTO(val text: String) : DTOMarker

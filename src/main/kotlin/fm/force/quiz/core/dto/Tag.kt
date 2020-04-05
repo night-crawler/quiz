@@ -11,8 +11,10 @@ data class TagFullDTO(
     val id: Long,
     val name: String,
     val slug: String,
+
     @ContextualSerialization
     val createdAt: InstantAlias,
+
     @ContextualSerialization
     val updatedAt: InstantAlias
 ) : DTOFullSerializationMarker

@@ -60,8 +60,8 @@ fun DifficultyScaleRange.toRestrictedDTO() = DifficultyScaleRangeRestrictedDTO(
 
 fun Sort.toDTO() = SortDTO(
     isSorted = isSorted,
-    isEmpty = isEmpty,
-    isUnsorted = isUnsorted
+    isUnsorted = isUnsorted,
+    isEmpty = isEmpty
 )
 
 inline fun <T : BaseQuizEntity> Page<out T>.toDTO(serialize: (T) -> DTOMarker) = PageDTO(

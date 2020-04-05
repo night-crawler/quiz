@@ -63,7 +63,7 @@ class KotlinSerializationConfiguration {
             QuizSessionAnswerFullDTO::class with QuizSessionAnswerFullDTO.serializer()
             QuizSessionAnswerRestrictedDTO::class with QuizSessionAnswerRestrictedDTO.serializer()
             QuizSessionAnswerPatchDTO::class with QuizSessionAnswerPatchDTO.serializer()
-            
+
             QuizSessionQuestionFullDTO::class with QuizSessionQuestionFullDTO.serializer()
             QuizSessionQuestionRestrictedDTO::class with QuizSessionQuestionRestrictedDTO.serializer()
             QuizSessionQuestionPatchDTO::class with QuizSessionQuestionPatchDTO.serializer()
@@ -74,11 +74,10 @@ class KotlinSerializationConfiguration {
             TagFullDTO::class with TagFullDTO.serializer()
             TagRestrictedDTO::class with TagRestrictedDTO.serializer()
             TagPatchDTO::class with TagPatchDTO.serializer()
-            
+
             TopicFullDTO::class with TopicFullDTO.serializer()
             TopicRestrictedDTO::class with TopicRestrictedDTO.serializer()
             TopicPatchDTO::class with TopicPatchDTO.serializer()
-
         }
         contextual(Instant::class, InstantSerializer)
         contextual(Long::class, LongAsStringSerializer)

@@ -12,7 +12,7 @@ class AuthenticationFacade(private val authService: AuthService) {
 
     val jwtUserDetails
         get() =
-            authService.loadUserByUsername(principal.username) as JwtUserDetails
+            authService.loadUserByUsername(principal.username)
 
     val user get() = authService.getUser(principal.username)
 }

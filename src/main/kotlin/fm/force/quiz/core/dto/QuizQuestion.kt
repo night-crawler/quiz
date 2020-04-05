@@ -3,7 +3,6 @@ package fm.force.quiz.core.dto
 import kotlinx.serialization.ContextualSerialization
 import kotlinx.serialization.Serializable
 
-
 @Serializable
 data class QuizQuestionFullDTO(
     @ContextualSerialization

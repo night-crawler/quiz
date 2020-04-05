@@ -16,7 +16,7 @@ class KotlinSerializationResolver {
             serializerByTypeToken(type)
         } catch (exc: Exception) {
             if (MISSES_CACHE[type] == null) {
-                logger.debug("[ø] Serializer was not found for: $type")
+                logger.debug("[ø] Serializer was not found for: $type; exception: $exc")
                 MISSES_CACHE[type] = 0
             }
 

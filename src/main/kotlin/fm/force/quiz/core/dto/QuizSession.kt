@@ -1,8 +1,8 @@
 package fm.force.quiz.core.dto
 
+import java.time.Instant
 import kotlinx.serialization.ContextualSerialization
 import kotlinx.serialization.Serializable
-import java.time.Instant
 
 @Serializable
 data class QuizSessionFullDTO(
@@ -16,16 +16,16 @@ data class QuizSessionFullDTO(
     val difficultyScale: Long?,
 
     @ContextualSerialization
-    val validTill: Instant,
+    val validTill: InstantAlias,
 
     val isCompleted: Boolean = false,
     val isCancelled: Boolean = false,
 
     @ContextualSerialization
-    val completedAt: Instant? = null,
+    val completedAt: InstantAlias? = null,
 
     @ContextualSerialization
-    val cancelledAt: Instant? = null,
+    val cancelledAt: InstantAlias? = null,
 
     @ContextualSerialization
     val createdAt: InstantAlias,
