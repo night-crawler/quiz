@@ -94,7 +94,7 @@ class AuthService(
 
     fun issueAccessTokenByRefreshToken(request: HttpServletRequest): JwtAccessTokenDTO {
         val cookie = request.cookies
-            .find { it.name == conf.refreshTokenCookieName }
+            ?.find { it.name == conf.refreshTokenCookieName }
             ?: throw BadCredentialsException("Authentication cookie was not found in the request header")
         val username = jwtProviderService.extractUsernameFromRefreshToken(cookie.value)
             ?: throw BadCredentialsException("Refresh token is invalid")

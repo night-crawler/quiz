@@ -3,6 +3,7 @@ package fm.force.quiz.configuration
 import fm.force.quiz.core.dto.*
 import java.time.Instant
 import kotlinx.serialization.UnstableDefault
+import kotlinx.serialization.internal.LongAsStringSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.modules.SerializersModule

@@ -1,6 +1,5 @@
 package fm.force.quiz.core.dto
 
-import java.time.Instant
 import kotlinx.serialization.ContextualSerialization
 import kotlinx.serialization.Serializable
 
