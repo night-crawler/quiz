@@ -12,9 +12,11 @@ import fm.force.quiz.core.dto.toDTO
 import fm.force.quiz.core.dto.toFullDTO
 import fm.force.quiz.core.entity.Tag
 import fm.force.quiz.core.entity.Tag_
+import fm.force.quiz.core.exception.NotFoundException
 import fm.force.quiz.core.exception.ValidationError
 import fm.force.quiz.core.repository.TagRepository
 import fm.force.quiz.core.validator.stringConstraint
+import org.springframework.dao.DataIntegrityViolationException
 import java.time.Instant
 import org.springframework.data.domain.Page
 import org.springframework.data.jpa.domain.Specification
@@ -24,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class TagService(
     validationProps: TagValidationProperties,
-    tagRepository: TagRepository
+    private val tagRepository: TagRepository
 ) : TagServiceType(repository = tagRepository) {
     companion object {
         private val slugifier = Slugify()
@@ -54,6 +56,18 @@ class TagService(
     override fun validateEntity(entity: Tag) {
         entityValidator.validate(entity).throwIfInvalid { ValidationError(it) }
         slugValidator.validate(entity).throwIfInvalid { ValidationError(it) }
+    }
+
+    fun getByName(patchDTO: TagPatchDTO): Tag =
+        tagRepository
+            .findByNameAndOwner(patchDTO.name, authenticationFacade.user)
+            .orElseThrow { NotFoundException(patchDTO.name, this::class) }
+
+    @Transactional
+    fun getOrCreateTag(patchDTO: TagPatchDTO) : Tag = try {
+        getByName(patchDTO)
+    } catch (ex: DataIntegrityViolationException) {
+        create(patchDTO)
     }
 
     override fun create(createDTO: TagPatchDTO): Tag {
