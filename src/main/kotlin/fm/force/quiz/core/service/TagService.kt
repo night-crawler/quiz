@@ -64,10 +64,10 @@ class TagService(
             .orElseThrow { NotFoundException(patchDTO.name, this::class) }
 
     @Transactional
-    fun getOrCreateTag(patchDTO: TagPatchDTO) : Tag = try {
-        getByName(patchDTO)
-    } catch (ex: DataIntegrityViolationException) {
-        create(patchDTO)
+    fun getOrCreate(patchDTO: TagPatchDTO) : Pair<Tag, Boolean> = try {
+        getByName(patchDTO) to false
+    } catch (ex: NotFoundException) {
+        create(patchDTO) to true
     }
 
     override fun create(createDTO: TagPatchDTO): Tag {

@@ -10,6 +10,7 @@ import fm.force.quiz.core.exception.NotFoundException
 import fm.force.quiz.core.exception.ValidationError
 import io.kotlintest.data.forall
 import io.kotlintest.matchers.collections.shouldHaveSize
+import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.tables.row
 
@@ -43,6 +44,14 @@ open class TopicServiceTest(
                 SearchQueryDTO("conT")
             )
             page.content shouldHaveSize 5
+        }
+
+        "should get or create topic by name" {
+            val (_, created) = topicService.getOrCreate(TopicPatchDTO("random-100500"))
+            created shouldBe true
+
+            val (_, dupCreated) = topicService.getOrCreate(TopicPatchDTO("random-100500"))
+            dupCreated shouldBe false
         }
     }
 }

@@ -1,9 +1,11 @@
 package fm.force.quiz.core.dto
 
 import kotlinx.serialization.ContextualSerialization
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
+@SerialName("TopicFullDTO")
 data class TopicFullDTO(
     @ContextualSerialization
     val id: Long,
@@ -17,6 +19,7 @@ data class TopicFullDTO(
 ) : DTOFullSerializationMarker
 
 @Serializable
+@SerialName("TopicRestrictedDTO")
 data class TopicRestrictedDTO(
     @ContextualSerialization
     val id: Long,
@@ -25,4 +28,5 @@ data class TopicRestrictedDTO(
 ) : DTORestrictedSerializationMarker
 
 @Serializable
+@SerialName("TopicPatchDTO")
 data class TopicPatchDTO(val title: String) : DTOMarker

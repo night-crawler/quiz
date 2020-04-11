@@ -3,56 +3,23 @@ package fm.force.quiz.core.controller
 import fm.force.quiz.TestConfiguration
 import fm.force.quiz.YamlPropertyLoaderFactory
 import fm.force.quiz.common.getRandomString
+import fm.force.quiz.core.dto.DTOMarker
 import fm.force.quiz.security.dto.LoginRequestDTO
 import fm.force.quiz.security.dto.RegisterRequestDTO
 import fm.force.quiz.security.entity.User
 import fm.force.quiz.security.service.AuthService
+import fm.force.quiz.util.entityId
+import fm.force.quiz.util.expectOkOrPrint
 import io.kotlintest.TestCase
-import io.kotlintest.provided.fm.force.quiz.util.JMapper
 import io.kotlintest.specs.WordSpec
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.PropertySource
-import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-
-class AuthenticatedTestClient(private val mockMvc: MockMvc, private val token: String) {
-    private fun post(uri: String, content: String) =
-        mockMvc.perform(
-            MockMvcRequestBuilders.post(uri)
-                .header("authorization", "Bearer $token")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(content)
-        )
-
-    private fun patch(uri: String, content: String) =
-        mockMvc.perform(
-            MockMvcRequestBuilders.patch(uri)
-                .header("authorization", "Bearer $token")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(content)
-        )
-
-    fun get(uri: String) =
-        mockMvc.perform(
-            MockMvcRequestBuilders.get(uri)
-                .header("authorization", "Bearer $token")
-                .contentType(MediaType.APPLICATION_JSON)
-        )
-
-    fun delete(uri: String) =
-        mockMvc.perform(
-            MockMvcRequestBuilders.delete(uri)
-                .header("authorization", "Bearer $token")
-        )
-
-    fun post(uri: String, dto: Any) = this.post(uri, JMapper.writeValueAsString(dto))
-    fun patch(uri: String, dto: Any) = this.patch(uri, JMapper.writeValueAsString(dto))
-}
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @ContextConfiguration(classes = [TestConfiguration::class])
@@ -75,5 +42,22 @@ abstract class AbstractControllerTest : WordSpec() {
         user = authService.register(RegisterRequestDTO(email, password), isActive = true)
         val userJwt = authService.login(LoginRequestDTO(email, password))
         client = AuthenticatedTestClient(mockMvc, userJwt.accessToken)
+    }
+
+    fun smokeTestCRUD(path: String, create: DTOMarker, patch: DTOMarker) {
+        val id = client.post(path, create)
+            .andDo(expectOkOrPrint)
+            .andExpect(MockMvcResultMatchers.status().isCreated)
+            .andReturn().response.entityId
+        client
+            .get(path)
+            .andDo(expectOkOrPrint)
+            .andExpect(MockMvcResultMatchers.status().is2xxSuccessful)
+        client
+            .patch("$path/$id", patch)
+            .andDo(expectOkOrPrint)
+        client
+            .delete("$path/$id")
+            .andDo(expectOkOrPrint)
     }
 }

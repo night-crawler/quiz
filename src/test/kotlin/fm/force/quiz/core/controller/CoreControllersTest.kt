@@ -1,7 +1,6 @@
 package fm.force.quiz.core.controller
 
 import fm.force.quiz.core.dto.AnswerPatchDTO
-import fm.force.quiz.core.dto.DTOMarker
 import fm.force.quiz.core.dto.DifficultyScalePatchDTO
 import fm.force.quiz.core.dto.DifficultyScaleRangePatchDTO
 import fm.force.quiz.core.dto.QuestionPatchDTO
@@ -9,12 +8,9 @@ import fm.force.quiz.core.dto.QuizPatchDTO
 import fm.force.quiz.core.dto.QuizQuestionPatchDTO
 import fm.force.quiz.core.dto.QuizSessionAnswerPatchDTO
 import fm.force.quiz.core.dto.QuizSessionPatchDTO
-import fm.force.quiz.core.dto.TagPatchDTO
-import fm.force.quiz.core.dto.TopicPatchDTO
 import fm.force.quiz.core.repository.QuizSessionQuestionRepository
 import fm.force.quiz.core.repository.QuizSessionRepository
 import fm.force.quiz.factory.TestDataFactory
-import fm.force.quiz.util.entityId
 import fm.force.quiz.util.expectOkOrPrint
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
@@ -25,12 +21,6 @@ class CoreControllersTest(
 ) : AbstractControllerTest() {
     init {
         "CRUD controllers" should {
-            "/tags" {
-                smokeTestCRUD("/tags", TagPatchDTO("sample"), TagPatchDTO("Patched"))
-            }
-            "/topics" {
-                smokeTestCRUD("/topics", TopicPatchDTO("sample"), TopicPatchDTO("Patched"))
-            }
             "/answers" {
                 smokeTestCRUD("/answers", AnswerPatchDTO("sample"), AnswerPatchDTO("Patched"))
             }
@@ -138,22 +128,5 @@ class CoreControllersTest(
                     .andExpect(status().is2xxSuccessful)
             }
         }
-    }
-
-    fun smokeTestCRUD(path: String, create: DTOMarker, patch: DTOMarker) {
-        val id = client.post(path, create)
-            .andDo(expectOkOrPrint)
-            .andExpect(status().isCreated)
-            .andReturn().response.entityId
-        client
-            .get(path)
-            .andDo(expectOkOrPrint)
-            .andExpect(status().is2xxSuccessful)
-        client
-            .patch("$path/$id", patch)
-            .andDo(expectOkOrPrint)
-        client
-            .delete("$path/$id")
-            .andDo(expectOkOrPrint)
     }
 }

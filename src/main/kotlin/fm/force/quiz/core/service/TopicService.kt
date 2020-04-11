@@ -11,18 +11,19 @@ import fm.force.quiz.core.dto.toDTO
 import fm.force.quiz.core.dto.toFullDTO
 import fm.force.quiz.core.entity.Topic
 import fm.force.quiz.core.entity.Topic_
+import fm.force.quiz.core.exception.NotFoundException
 import fm.force.quiz.core.repository.TopicRepository
 import fm.force.quiz.core.validator.stringConstraint
-import java.time.Instant
 import org.springframework.data.domain.Page
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.Instant
 
 @Service
 class TopicService(
     validationProps: TopicValidationProperties,
-    topicRepository: TopicRepository
+    private val topicRepository: TopicRepository
 ) : TopicServiceType(repository = topicRepository) {
     override var entityValidator = ValidatorBuilder.of<Topic>()
         .stringConstraint(Topic::title, validationProps.minTitleLength..validationProps.maxTitleLength)
@@ -53,6 +54,18 @@ class TopicService(
         topic.updatedAt = Instant.now()
         validateEntity(topic)
         return repository.save(topic)
+    }
+
+    fun getByTitle(patchDTO: TopicPatchDTO): Topic =
+        topicRepository
+            .findByTitleAndOwner(patchDTO.title, authenticationFacade.user)
+            .orElseThrow { NotFoundException(patchDTO.title, this::class) }
+
+    @Transactional
+    fun getOrCreate(patchDTO: TopicPatchDTO): Pair<Topic, Boolean> = try {
+        getByTitle(patchDTO) to false
+    } catch (ex: NotFoundException) {
+        create(patchDTO) to true
     }
 
     @Transactional(readOnly = true)

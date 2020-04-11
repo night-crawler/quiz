@@ -75,5 +75,13 @@ open class TagServiceTest(
             )
             p1.content shouldHaveSize 5
         }
+
+        "should get or create tag by name" {
+            val (_, created) = tagService.getOrCreate(TagPatchDTO("random-100500"))
+            created shouldBe true
+
+            val (_, dupCreated) = tagService.getOrCreate(TagPatchDTO("random-100500"))
+            dupCreated shouldBe false
+        }
     }
 }
