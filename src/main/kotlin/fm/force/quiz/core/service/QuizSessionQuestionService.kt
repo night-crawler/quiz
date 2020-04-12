@@ -1,12 +1,12 @@
 package fm.force.quiz.core.service
 
 import fm.force.quiz.common.SpecificationBuilder
-import fm.force.quiz.core.dto.PageDTO
-import fm.force.quiz.core.dto.QuizSessionQuestionPatchDTO
-import fm.force.quiz.core.dto.QuizSessionQuestionRestrictedDTO
-import fm.force.quiz.core.dto.QuizSessionQuestionSearchDTO
-import fm.force.quiz.core.dto.toDTO
-import fm.force.quiz.core.dto.toRestrictedDTO
+import fm.force.quiz.common.dto.PageDTO
+import fm.force.quiz.common.dto.QuizSessionQuestionPatchDTO
+import fm.force.quiz.common.dto.QuizSessionQuestionRestrictedDTO
+import fm.force.quiz.common.dto.QuizSessionQuestionSearchDTO
+import fm.force.quiz.common.mapper.toDTO
+import fm.force.quiz.common.mapper.toRestrictedDTO
 import fm.force.quiz.core.entity.QuizSessionQuestion
 import fm.force.quiz.core.entity.QuizSessionQuestion_
 import fm.force.quiz.core.repository.QuestionRepository

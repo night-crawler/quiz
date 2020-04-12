@@ -1,6 +1,6 @@
 package io.kotlintest.provided.fm.force.quiz.core.service
 
-import fm.force.quiz.core.dto.QuizQuestionPatchDTO
+import fm.force.quiz.common.dto.QuizQuestionPatchDTO
 import fm.force.quiz.core.entity.QuizQuestion
 import fm.force.quiz.core.exception.ValidationError
 import fm.force.quiz.core.repository.QuizQuestionRepository

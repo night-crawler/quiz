@@ -1,10 +1,10 @@
 package fm.force.quiz.core.controller
 
-import fm.force.quiz.core.dto.PageDTO
-import fm.force.quiz.core.dto.PaginationQuery
-import fm.force.quiz.core.dto.QuizSessionAnswerPatchDTO
-import fm.force.quiz.core.dto.QuizSessionQuestionSearchDTO
-import fm.force.quiz.core.dto.SortQuery
+import fm.force.quiz.common.dto.PageDTO
+import fm.force.quiz.common.dto.PaginationQuery
+import fm.force.quiz.common.dto.QuizSessionAnswerPatchDTO
+import fm.force.quiz.common.dto.QuizSessionQuestionSearchDTO
+import fm.force.quiz.common.dto.SortQuery
 import fm.force.quiz.core.service.QuizSessionAnswerService
 import fm.force.quiz.core.service.QuizSessionQuestionService
 import fm.force.quiz.core.service.QuizSessionService

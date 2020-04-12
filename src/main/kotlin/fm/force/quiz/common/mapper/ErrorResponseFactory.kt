@@ -1,8 +1,11 @@
-package fm.force.quiz.core.dto
+package fm.force.quiz.common.mapper
 
 import am.ik.yavi.core.ConstraintViolation
 import com.fasterxml.jackson.databind.exc.MismatchedInputException
 import com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException
+import fm.force.quiz.common.dto.ErrorMessage
+import fm.force.quiz.common.dto.ErrorResponse
+import fm.force.quiz.common.dto.FieldError
 import fm.force.quiz.core.exception.NotFoundException
 import fm.force.quiz.core.exception.ValidationError
 import org.hibernate.exception.ConstraintViolationException

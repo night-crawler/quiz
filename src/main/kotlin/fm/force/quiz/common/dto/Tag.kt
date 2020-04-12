@@ -1,14 +1,15 @@
-package fm.force.quiz.core.dto
+package fm.force.quiz.common.dto
 
+import fm.force.quiz.common.serializer.InstantAlias
 import kotlinx.serialization.ContextualSerialization
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class AnswerFullDTO(
+data class TagFullDTO(
     @ContextualSerialization
     val id: Long,
-
-    val text: String,
+    val name: String,
+    val slug: String,
 
     @ContextualSerialization
     val createdAt: InstantAlias,
@@ -18,11 +19,12 @@ data class AnswerFullDTO(
 ) : DTOFullSerializationMarker
 
 @Serializable
-data class AnswerRestrictedDTO(
+data class TagRestrictedDTO(
     @ContextualSerialization
     val id: Long,
-    val text: String
+    val name: String,
+    val slug: String
 ) : DTORestrictedSerializationMarker
 
 @Serializable
-data class AnswerPatchDTO(val text: String) : DTOMarker
+data class TagPatchDTO(val name: String) : DTOMarker

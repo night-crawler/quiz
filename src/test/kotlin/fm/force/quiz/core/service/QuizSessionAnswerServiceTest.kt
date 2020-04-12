@@ -1,6 +1,6 @@
 package fm.force.quiz.core.service
 
-import fm.force.quiz.core.dto.QuizSessionAnswerPatchDTO
+import fm.force.quiz.common.dto.QuizSessionAnswerPatchDTO
 import fm.force.quiz.core.exception.ValidationError
 import fm.force.quiz.core.repository.QuizSessionQuestionRepository
 import fm.force.quiz.core.repository.QuizSessionRepository

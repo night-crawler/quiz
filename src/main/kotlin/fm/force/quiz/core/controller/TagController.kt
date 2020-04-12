@@ -1,7 +1,7 @@
 package fm.force.quiz.core.controller
 
-import fm.force.quiz.core.dto.TagFullDTO
-import fm.force.quiz.core.dto.TagPatchDTO
+import fm.force.quiz.common.dto.TagFullDTO
+import fm.force.quiz.common.dto.TagPatchDTO
 import fm.force.quiz.core.service.TagService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

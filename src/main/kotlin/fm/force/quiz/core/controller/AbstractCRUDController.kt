@@ -1,10 +1,10 @@
 package fm.force.quiz.core.controller
 
-import fm.force.quiz.core.dto.DTOSearchMarker
-import fm.force.quiz.core.dto.DTOSerializationMarker
-import fm.force.quiz.core.dto.PageDTO
-import fm.force.quiz.core.dto.PaginationQuery
-import fm.force.quiz.core.dto.SortQuery
+import fm.force.quiz.common.dto.DTOSearchMarker
+import fm.force.quiz.common.dto.DTOSerializationMarker
+import fm.force.quiz.common.dto.PageDTO
+import fm.force.quiz.common.dto.PaginationQuery
+import fm.force.quiz.common.dto.SortQuery
 import fm.force.quiz.core.repository.CommonRepository
 import fm.force.quiz.core.repository.CustomJpaRepository
 import fm.force.quiz.core.service.AbstractPaginatedCRUDService

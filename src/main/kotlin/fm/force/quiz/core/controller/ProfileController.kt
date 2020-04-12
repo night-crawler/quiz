@@ -1,6 +1,6 @@
 package fm.force.quiz.core.controller
 
-import fm.force.quiz.core.dto.toFullDTO
+import fm.force.quiz.common.mapper.toFullDTO
 import fm.force.quiz.security.service.AuthenticationFacade
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping

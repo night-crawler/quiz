@@ -1,7 +1,7 @@
 package fm.force.quiz.core.controller
 
-import fm.force.quiz.core.dto.TopicFullDTO
-import fm.force.quiz.core.dto.TopicPatchDTO
+import fm.force.quiz.common.dto.TopicFullDTO
+import fm.force.quiz.common.dto.TopicPatchDTO
 import fm.force.quiz.core.service.TopicService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -24,5 +24,4 @@ class TopicController(topicService: TopicService) : TopicControllerType(topicSer
         val status = if (isCreated) HttpStatus.CREATED else HttpStatus.OK
         return ResponseEntity(topicFullDTO, status)
     }
-
 }

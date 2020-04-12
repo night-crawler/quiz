@@ -1,9 +1,9 @@
 package fm.force.quiz.core.service
 
-import fm.force.quiz.core.dto.PaginationQuery
-import fm.force.quiz.core.dto.QuizSessionPatchDTO
-import fm.force.quiz.core.dto.QuizSessionSearchDTO
-import fm.force.quiz.core.dto.SortQuery
+import fm.force.quiz.common.dto.PaginationQuery
+import fm.force.quiz.common.dto.QuizSessionPatchDTO
+import fm.force.quiz.common.dto.QuizSessionSearchDTO
+import fm.force.quiz.common.dto.SortQuery
 import fm.force.quiz.core.exception.NotFoundException
 import fm.force.quiz.core.exception.ValidationError
 import io.kotlintest.data.forall

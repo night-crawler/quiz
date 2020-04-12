@@ -1,7 +1,7 @@
 package fm.force.quiz.core.controller
 
+import fm.force.quiz.common.dto.TopicPatchDTO
 import fm.force.quiz.common.getRandomString
-import fm.force.quiz.core.dto.TopicPatchDTO
 import fm.force.quiz.util.expectOkOrPrint
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 

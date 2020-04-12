@@ -3,20 +3,19 @@ package fm.force.quiz.core.service
 import am.ik.yavi.builder.ValidatorBuilder
 import com.github.slugify.Slugify
 import fm.force.quiz.common.SpecificationBuilder
+import fm.force.quiz.common.dto.PageDTO
+import fm.force.quiz.common.dto.SearchQueryDTO
+import fm.force.quiz.common.dto.TagFullDTO
+import fm.force.quiz.common.dto.TagPatchDTO
+import fm.force.quiz.common.mapper.toDTO
+import fm.force.quiz.common.mapper.toFullDTO
 import fm.force.quiz.configuration.properties.TagValidationProperties
-import fm.force.quiz.core.dto.PageDTO
-import fm.force.quiz.core.dto.SearchQueryDTO
-import fm.force.quiz.core.dto.TagFullDTO
-import fm.force.quiz.core.dto.TagPatchDTO
-import fm.force.quiz.core.dto.toDTO
-import fm.force.quiz.core.dto.toFullDTO
 import fm.force.quiz.core.entity.Tag
 import fm.force.quiz.core.entity.Tag_
 import fm.force.quiz.core.exception.NotFoundException
 import fm.force.quiz.core.exception.ValidationError
 import fm.force.quiz.core.repository.TagRepository
 import fm.force.quiz.core.validator.stringConstraint
-import org.springframework.dao.DataIntegrityViolationException
 import java.time.Instant
 import org.springframework.data.domain.Page
 import org.springframework.data.jpa.domain.Specification
@@ -64,7 +63,7 @@ class TagService(
             .orElseThrow { NotFoundException(patchDTO.name, this::class) }
 
     @Transactional
-    fun getOrCreate(patchDTO: TagPatchDTO) : Pair<Tag, Boolean> = try {
+    fun getOrCreate(patchDTO: TagPatchDTO): Pair<Tag, Boolean> = try {
         getByName(patchDTO) to false
     } catch (ex: NotFoundException) {
         create(patchDTO) to true

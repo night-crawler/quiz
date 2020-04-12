@@ -1,13 +1,13 @@
 package fm.force.quiz.core.controller
 
-import fm.force.quiz.core.dto.AnswerPatchDTO
-import fm.force.quiz.core.dto.DifficultyScalePatchDTO
-import fm.force.quiz.core.dto.DifficultyScaleRangePatchDTO
-import fm.force.quiz.core.dto.QuestionPatchDTO
-import fm.force.quiz.core.dto.QuizPatchDTO
-import fm.force.quiz.core.dto.QuizQuestionPatchDTO
-import fm.force.quiz.core.dto.QuizSessionAnswerPatchDTO
-import fm.force.quiz.core.dto.QuizSessionPatchDTO
+import fm.force.quiz.common.dto.AnswerPatchDTO
+import fm.force.quiz.common.dto.DifficultyScalePatchDTO
+import fm.force.quiz.common.dto.DifficultyScaleRangePatchDTO
+import fm.force.quiz.common.dto.QuestionPatchDTO
+import fm.force.quiz.common.dto.QuizPatchDTO
+import fm.force.quiz.common.dto.QuizQuestionPatchDTO
+import fm.force.quiz.common.dto.QuizSessionAnswerPatchDTO
+import fm.force.quiz.common.dto.QuizSessionPatchDTO
 import fm.force.quiz.core.repository.QuizSessionQuestionRepository
 import fm.force.quiz.core.repository.QuizSessionRepository
 import fm.force.quiz.factory.TestDataFactory

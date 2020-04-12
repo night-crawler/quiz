@@ -5,8 +5,8 @@ import am.ik.yavi.builder.konstraint
 import am.ik.yavi.builder.konstraintOnCondition
 import am.ik.yavi.core.ConstraintCondition
 import am.ik.yavi.core.ConstraintGroup
+import fm.force.quiz.common.dto.SortQuery
 import fm.force.quiz.configuration.properties.SortingValidationProperties
-import fm.force.quiz.core.dto.SortQuery
 import fm.force.quiz.core.exception.SortingViolations
 import fm.force.quiz.core.exception.ValidationError
 import fm.force.quiz.core.validator.nonEmptyString

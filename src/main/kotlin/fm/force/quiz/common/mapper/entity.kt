@@ -1,5 +1,6 @@
-package fm.force.quiz.core.dto
+package fm.force.quiz.common.mapper
 
+import fm.force.quiz.common.dto.*
 import fm.force.quiz.core.entity.Answer
 import fm.force.quiz.core.entity.BaseQuizEntity
 import fm.force.quiz.core.entity.DifficultyScale

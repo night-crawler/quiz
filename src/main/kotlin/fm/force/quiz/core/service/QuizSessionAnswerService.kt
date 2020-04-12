@@ -1,12 +1,12 @@
 package fm.force.quiz.core.service
 
 import am.ik.yavi.builder.ValidatorBuilder
+import fm.force.quiz.common.dto.PageDTO
+import fm.force.quiz.common.dto.QuizSessionAnswerPatchDTO
+import fm.force.quiz.common.dto.QuizSessionAnswerRestrictedDTO
+import fm.force.quiz.common.mapper.toDTO
+import fm.force.quiz.common.mapper.toRestrictedDTO
 import fm.force.quiz.configuration.properties.QuestionValidationProperties
-import fm.force.quiz.core.dto.PageDTO
-import fm.force.quiz.core.dto.QuizSessionAnswerPatchDTO
-import fm.force.quiz.core.dto.QuizSessionAnswerRestrictedDTO
-import fm.force.quiz.core.dto.toDTO
-import fm.force.quiz.core.dto.toRestrictedDTO
 import fm.force.quiz.core.entity.QuizSessionAnswer
 import fm.force.quiz.core.repository.QuizSessionAnswerRepository
 import fm.force.quiz.core.repository.QuizSessionQuestionAnswerRepository

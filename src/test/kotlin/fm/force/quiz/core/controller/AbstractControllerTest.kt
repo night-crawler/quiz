@@ -2,8 +2,8 @@ package fm.force.quiz.core.controller
 
 import fm.force.quiz.TestConfiguration
 import fm.force.quiz.YamlPropertyLoaderFactory
+import fm.force.quiz.common.dto.DTOMarker
 import fm.force.quiz.common.getRandomString
-import fm.force.quiz.core.dto.DTOMarker
 import fm.force.quiz.security.dto.LoginRequestDTO
 import fm.force.quiz.security.dto.RegisterRequestDTO
 import fm.force.quiz.security.entity.User

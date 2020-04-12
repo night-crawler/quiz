@@ -1,4 +1,4 @@
-package fm.force.quiz.core.dto
+package fm.force.quiz.common.dto
 
 data class PaginationParams(val page: Int, val pageSize: Int)
 data class PaginationQuery(

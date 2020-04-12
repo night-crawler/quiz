@@ -1,11 +1,11 @@
 package fm.force.quiz.core.service
 
+import fm.force.quiz.common.dto.DifficultyScalePatchDTO
+import fm.force.quiz.common.dto.PaginationQuery
+import fm.force.quiz.common.dto.SearchQueryDTO
+import fm.force.quiz.common.dto.SortQuery
 import fm.force.quiz.common.getRandomString
 import fm.force.quiz.configuration.properties.DifficultyScaleValidationProperties
-import fm.force.quiz.core.dto.DifficultyScalePatchDTO
-import fm.force.quiz.core.dto.PaginationQuery
-import fm.force.quiz.core.dto.SearchQueryDTO
-import fm.force.quiz.core.dto.SortQuery
 import fm.force.quiz.core.exception.ValidationError
 import io.kotlintest.data.forall
 import io.kotlintest.matchers.collections.shouldHaveSize

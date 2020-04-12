@@ -1,8 +1,8 @@
 package fm.force.quiz.core.service
 
+import fm.force.quiz.common.dto.PaginationParams
+import fm.force.quiz.common.dto.PaginationQuery
 import fm.force.quiz.configuration.properties.PaginationValidationProperties
-import fm.force.quiz.core.dto.PaginationParams
-import fm.force.quiz.core.dto.PaginationQuery
 import fm.force.quiz.core.exception.ValidationError
 import io.kotlintest.data.forall
 import io.kotlintest.shouldBe

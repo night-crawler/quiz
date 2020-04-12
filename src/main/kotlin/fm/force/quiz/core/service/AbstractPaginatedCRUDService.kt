@@ -1,11 +1,11 @@
 package fm.force.quiz.core.service
 
 import am.ik.yavi.core.Validator
-import fm.force.quiz.core.dto.DTOSearchMarker
-import fm.force.quiz.core.dto.DTOSerializationMarker
-import fm.force.quiz.core.dto.PageDTO
-import fm.force.quiz.core.dto.PaginationQuery
-import fm.force.quiz.core.dto.SortQuery
+import fm.force.quiz.common.dto.DTOSearchMarker
+import fm.force.quiz.common.dto.DTOSerializationMarker
+import fm.force.quiz.common.dto.PageDTO
+import fm.force.quiz.common.dto.PaginationQuery
+import fm.force.quiz.common.dto.SortQuery
 import fm.force.quiz.core.exception.NotFoundException
 import fm.force.quiz.core.exception.ValidationError
 import fm.force.quiz.core.repository.CommonRepository

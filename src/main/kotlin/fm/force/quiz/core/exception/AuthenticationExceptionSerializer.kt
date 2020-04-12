@@ -1,7 +1,7 @@
 package fm.force.quiz.core.exception
 
-import fm.force.quiz.core.dto.ErrorResponse
-import fm.force.quiz.core.dto.of
+import fm.force.quiz.common.dto.ErrorResponse
+import fm.force.quiz.common.mapper.of
 import fm.force.quiz.security.configuration.IAuthenticationExceptionSerializer
 import kotlinx.serialization.json.Json
 import org.springframework.security.core.AuthenticationException

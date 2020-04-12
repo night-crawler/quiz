@@ -1,5 +1,6 @@
-package fm.force.quiz.core.dto
+package fm.force.quiz.common.dto
 
+import fm.force.quiz.common.serializer.InstantAlias
 import kotlinx.serialization.ContextualSerialization
 import kotlinx.serialization.Serializable
 

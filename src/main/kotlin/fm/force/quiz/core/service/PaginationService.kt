@@ -1,9 +1,9 @@
 package fm.force.quiz.core.service
 
 import am.ik.yavi.builder.ValidatorBuilder
+import fm.force.quiz.common.dto.PaginationParams
+import fm.force.quiz.common.dto.PaginationQuery
 import fm.force.quiz.configuration.properties.PaginationValidationProperties
-import fm.force.quiz.core.dto.PaginationParams
-import fm.force.quiz.core.dto.PaginationQuery
 import fm.force.quiz.core.exception.ValidationError
 import fm.force.quiz.core.validator.intConstraint
 import org.springframework.stereotype.Service

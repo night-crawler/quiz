@@ -1,6 +1,6 @@
 package fm.force.quiz.core.service
 
-import fm.force.quiz.core.dto.*
+import fm.force.quiz.common.dto.*
 import fm.force.quiz.core.entity.Answer
 import fm.force.quiz.core.entity.DifficultyScale
 import fm.force.quiz.core.entity.DifficultyScaleRange

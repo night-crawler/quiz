@@ -2,23 +2,23 @@ package fm.force.quiz.core.service
 
 import am.ik.yavi.builder.ValidatorBuilder
 import fm.force.quiz.common.SpecificationBuilder
+import fm.force.quiz.common.dto.PageDTO
+import fm.force.quiz.common.dto.SearchQueryDTO
+import fm.force.quiz.common.dto.TopicFullDTO
+import fm.force.quiz.common.dto.TopicPatchDTO
+import fm.force.quiz.common.mapper.toDTO
+import fm.force.quiz.common.mapper.toFullDTO
 import fm.force.quiz.configuration.properties.TopicValidationProperties
-import fm.force.quiz.core.dto.PageDTO
-import fm.force.quiz.core.dto.SearchQueryDTO
-import fm.force.quiz.core.dto.TopicFullDTO
-import fm.force.quiz.core.dto.TopicPatchDTO
-import fm.force.quiz.core.dto.toDTO
-import fm.force.quiz.core.dto.toFullDTO
 import fm.force.quiz.core.entity.Topic
 import fm.force.quiz.core.entity.Topic_
 import fm.force.quiz.core.exception.NotFoundException
 import fm.force.quiz.core.repository.TopicRepository
 import fm.force.quiz.core.validator.stringConstraint
+import java.time.Instant
 import org.springframework.data.domain.Page
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.time.Instant
 
 @Service
 class TopicService(
