@@ -28,7 +28,7 @@ class CoreControllersTest(
                 val answerIds = (1..5).map { testDataFactory.getAnswer(owner = user) }.map { it.id }.toMutableSet()
                 smokeTestCRUD(
                     "/questions",
-                    QuestionPatchDTO("sample", answers = answerIds, correctAnswers = answerIds),
+                    QuestionPatchDTO(title = "sample", text = "sample", answers = answerIds, correctAnswers = answerIds),
                     QuestionPatchDTO("Patched")
                 )
             }

@@ -75,6 +75,7 @@ class TestDataFactory(
     fun getQuestion(
         owner: User = getUser(),
         text: String = getRandomString(16),
+        title: String = getRandomString(16),
         answers: MutableSet<Answer> = (1..5).map { getAnswer(owner = owner) }.toMutableSet(),
         topics: MutableSet<Topic> = (1..5).map { getTopic(owner = owner) }.toMutableSet(),
         tags: MutableSet<Tag> = (1..5).map { getTag(owner = owner) }.toMutableSet(),
@@ -83,6 +84,7 @@ class TestDataFactory(
         Question(
             owner = owner,
             text = text,
+            title = title,
             answers = answers,
             topics = topics,
             correctAnswers = mutableSetOf(answers.random()),

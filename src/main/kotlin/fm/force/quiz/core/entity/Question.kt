@@ -16,6 +16,9 @@ data class Question(
     @ManyToOne val owner: User,
 
     @Column(columnDefinition = "TEXT")
+    var title: String,
+
+    @Column(columnDefinition = "TEXT")
     var text: String,
 
     @ManyToMany(targetEntity = Answer::class, fetch = FetchType.LAZY)

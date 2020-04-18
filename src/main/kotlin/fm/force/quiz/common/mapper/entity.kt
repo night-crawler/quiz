@@ -66,6 +66,7 @@ fun Sort.toDTO() = SortDTO(
 )
 
 inline fun <T : BaseQuizEntity> Page<out T>.toDTO(serialize: (T) -> DTOMarker) = PageDTO(
+    currentPage = number + 1,
     numberOfElements = numberOfElements,
     totalElements = totalElements,
     totalPages = totalPages,
@@ -78,6 +79,7 @@ inline fun <T : BaseQuizEntity> Page<out T>.toDTO(serialize: (T) -> DTOMarker) =
 
 fun Question.toFullDTO() = QuestionFullDTO(
     id = id,
+    title = title,
     text = text,
     answers = answers.map { it.toFullDTO() },
     correctAnswers = correctAnswers.map { it.toFullDTO() },
@@ -90,6 +92,7 @@ fun Question.toFullDTO() = QuestionFullDTO(
 
 fun Question.toRestrictedDTO() = QuestionRestrictedDTO(
     id = id,
+    title = title,
     text = text,
     answers = answers.map { it.toRestrictedDTO() },
     difficulty = difficulty

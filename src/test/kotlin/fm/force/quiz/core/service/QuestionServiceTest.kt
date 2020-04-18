@@ -30,9 +30,36 @@ open class QuestionServiceTest(questionService: QuestionService) : AbstractCRUDS
     init {
         "should validate" {
             forall(
-                row(QuestionPatchDTO("sample", setOf(1, 2), setOf(3, 4), setOf(5), setOf(6))),
-                row(QuestionPatchDTO("", setOf(1, 22), setOf(1, 33), setOf(44), setOf(66))),
-                row(QuestionPatchDTO("", emptySet(), emptySet(), emptySet(), emptySet()))
+                row(
+                    QuestionPatchDTO(
+                        title = "sample",
+                        text = "sample text",
+                        answers = setOf(1, 2),
+                        correctAnswers = setOf(3, 4),
+                        tags = setOf(5),
+                        topics = setOf(6)
+                    )
+                ),
+                row(
+                    QuestionPatchDTO(
+                        title = "",
+                        text = "sample",
+                        answers = setOf(1, 22),
+                        correctAnswers = setOf(1, 33),
+                        tags = setOf(44),
+                        topics = setOf(66)
+                    )
+                ),
+                row(
+                    QuestionPatchDTO(
+                        title = "sample",
+                        text = "",
+                        answers = emptySet(),
+                        correctAnswers = emptySet(),
+                        tags = emptySet(),
+                        topics = emptySet()
+                    )
+                )
             ) {
                 shouldThrow<ValidationError> { questionService.validatePatch(it) }
             }
@@ -72,6 +99,7 @@ open class QuestionServiceTest(questionService: QuestionService) : AbstractCRUDS
             val question = testDataFactory.getQuestion(owner = user)
 
             val patchDTO = QuestionPatchDTO(
+                title = "new title",
                 text = "new text",
                 answers = setOf(answer.id),
                 correctAnswers = setOf(answer.id),
@@ -81,6 +109,7 @@ open class QuestionServiceTest(questionService: QuestionService) : AbstractCRUDS
             )
 
             val updatedQuestion = questionService.patch(question.id, patchDTO)
+            updatedQuestion.title shouldBe "new title"
             updatedQuestion.text shouldBe "new text"
             updatedQuestion.answers shouldBe mutableSetOf(answer)
             updatedQuestion.correctAnswers shouldBe mutableSetOf(answer)

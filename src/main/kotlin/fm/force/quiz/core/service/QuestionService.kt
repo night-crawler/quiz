@@ -38,12 +38,14 @@ class QuestionService(
 
     override var dtoValidator = ValidatorBuilder.of<QuestionPatchDTO>()
         .konstraintOnGroup(CRUDConstraintGroup.CREATE) {
+            mandatory(QuestionPatchDTO::title)
             mandatory(QuestionPatchDTO::text)
             mandatory(QuestionPatchDTO::answers)
             mandatory(QuestionPatchDTO::correctAnswers)
             optionalSubset(QuestionPatchDTO::answers, QuestionPatchDTO::correctAnswers)
         }
 
+        .stringConstraint(QuestionPatchDTO::title, validationProps.textRange)
         .stringConstraint(QuestionPatchDTO::text, validationProps.textRange)
         .ownedFksConstraint(QuestionPatchDTO::answers, answerRepository, validationProps.answersRange, ::ownerId)
         .ownedFksConstraint(QuestionPatchDTO::correctAnswers, answerRepository, validationProps.answersRange, ::ownerId)
@@ -64,6 +66,7 @@ class QuestionService(
             Question(
                 owner = authenticationFacade.user,
                 text = text!!,
+                title = title!!,
                 answers = answerRepository.findEntitiesById(answers).toMutableSet(),
                 correctAnswers = answerRepository.findEntitiesById(correctAnswers).toMutableSet(),
                 tags = tagRepository.findEntitiesById(tags).toMutableSet(),
@@ -79,6 +82,9 @@ class QuestionService(
         validatePatch(patchDTO)
 
         val modifiedQuestion = getOwnedEntity(id).apply {
+            if (patchDTO.title != null)
+                title = patchDTO.title
+
             if (patchDTO.text != null)
                 text = patchDTO.text
 
