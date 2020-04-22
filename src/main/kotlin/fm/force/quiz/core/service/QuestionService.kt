@@ -114,7 +114,11 @@ class QuestionService(
         val needle = search?.query
         if (needle.isNullOrEmpty()) return ownerEquals
 
-        return ownerEquals.and(SpecificationBuilder.ciContains(needle, Question_.text))!!
+        return ownerEquals.and(
+            SpecificationBuilder
+                .ciContains(needle, Question_.text)
+                .or(SpecificationBuilder.ciContains(needle, Question_.title))
+        )!!
     }
 
     @Transactional(readOnly = true)
