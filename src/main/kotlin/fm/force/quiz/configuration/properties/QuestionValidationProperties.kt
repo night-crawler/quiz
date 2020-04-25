@@ -15,4 +15,5 @@ class QuestionValidationProperties {
     val answersRange get() = 1..maxAnswers
     val tagsRange get() = 0..maxTags
     val topicsRange get() = 0..maxTopics
+    val helpRange get() = 0..Int.MAX_VALUE
 }

@@ -23,7 +23,13 @@ data class QuizSessionQuestion(
     val answers: List<QuizSessionQuestionAnswer> = listOf(),
 
     @Column(columnDefinition = "TEXT")
+    var title: String,
+
+    @Column(columnDefinition = "TEXT")
     var text: String,
+
+    @Column(columnDefinition = "TEXT")
+    var help: String,
 
     val seq: Int
 ) : BaseQuizEntity() {

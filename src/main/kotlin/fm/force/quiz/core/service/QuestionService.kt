@@ -40,6 +40,7 @@ class QuestionService(
         .konstraintOnGroup(CRUDConstraintGroup.CREATE) {
             mandatory(QuestionPatchDTO::title)
             mandatory(QuestionPatchDTO::text)
+            mandatory(QuestionPatchDTO::help)
             mandatory(QuestionPatchDTO::answers)
             mandatory(QuestionPatchDTO::correctAnswers)
             optionalSubset(QuestionPatchDTO::answers, QuestionPatchDTO::correctAnswers)
@@ -47,6 +48,7 @@ class QuestionService(
 
         .stringConstraint(QuestionPatchDTO::title, validationProps.textRange)
         .stringConstraint(QuestionPatchDTO::text, validationProps.textRange)
+        .stringConstraint(QuestionPatchDTO::help, validationProps.helpRange)
         .ownedFksConstraint(QuestionPatchDTO::answers, answerRepository, validationProps.answersRange, ::ownerId)
         .ownedFksConstraint(QuestionPatchDTO::correctAnswers, answerRepository, validationProps.answersRange, ::ownerId)
         .ownedFksConstraint(QuestionPatchDTO::tags, tagRepository, validationProps.tagsRange, ::ownerId)
@@ -65,8 +67,9 @@ class QuestionService(
         val question = with(createDTO) {
             Question(
                 owner = authenticationFacade.user,
-                text = text!!,
                 title = title!!,
+                text = text!!,
+                help = help!!,
                 answers = answerRepository.findEntitiesById(answers).toMutableSet(),
                 correctAnswers = answerRepository.findEntitiesById(correctAnswers).toMutableSet(),
                 tags = tagRepository.findEntitiesById(tags).toMutableSet(),

@@ -31,13 +31,15 @@ open class DifficultyScaleServiceTest(
                 row(DifficultyScalePatchDTO(max = 0)),
                 row(DifficultyScalePatchDTO(max = validationProps.allowedMax, name = "")),
 
-                row(DifficultyScalePatchDTO(
-                    max = validationProps.allowedMax,
-                    name = getRandomString(),
-                    ranges = listOf(
-                        DifficultyScaleRangePatchDTO(title = "easy", min = -1, max = -2)
+                row(
+                    DifficultyScalePatchDTO(
+                        max = validationProps.allowedMax,
+                        name = getRandomString(),
+                        ranges = listOf(
+                            DifficultyScaleRangePatchDTO(title = "easy", min = -1, max = -2)
+                        )
                     )
-                ))
+                )
 
             ) {
                 shouldThrow<ValidationError> { difficultyScaleService.create(it) }
@@ -67,11 +69,13 @@ open class DifficultyScaleServiceTest(
             val createDTO = DifficultyScalePatchDTO(
                 name = getRandomString(validationProps.maxNameLength),
                 max = validationProps.allowedMax,
-                ranges = listOf(DifficultyScaleRangePatchDTO(
-                    title = "sample title",
-                    min = 1,
-                    max = 2
-                ))
+                ranges = listOf(
+                    DifficultyScaleRangePatchDTO(
+                        title = "sample title",
+                        min = 1,
+                        max = 2
+                    )
+                )
             )
 
             val entity = difficultyScaleService.create(createDTO)
@@ -84,11 +88,13 @@ open class DifficultyScaleServiceTest(
             val patch = DifficultyScalePatchDTO(
                 name = getRandomString(validationProps.maxNameLength),
                 max = validationProps.allowedMax,
-                ranges = listOf(DifficultyScaleRangePatchDTO(
-                    title = "sample title",
-                    min = 1,
-                    max = 2
-                ))
+                ranges = listOf(
+                    DifficultyScaleRangePatchDTO(
+                        title = "sample title",
+                        min = 1,
+                        max = 2
+                    )
+                )
             )
             val entity = difficultyScaleService.patch(scale.id, patch)
             entity.max shouldBe patch.max

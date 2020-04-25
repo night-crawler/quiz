@@ -21,6 +21,9 @@ data class Question(
     @Column(columnDefinition = "TEXT")
     var text: String,
 
+    @Column(columnDefinition = "TEXT")
+    var help: String,
+
     @ManyToMany(targetEntity = Answer::class, fetch = FetchType.LAZY)
     @JoinTable(
         name = "questions__rel_answers__answers",

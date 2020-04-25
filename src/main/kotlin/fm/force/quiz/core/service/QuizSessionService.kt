@@ -100,7 +100,9 @@ class QuizSessionService(
             owner = owner,
             quizSession = entity,
             originalQuestion = quizQuestion.question,
+            title = quizQuestion.question.title,
             text = quizQuestion.question.text,
+            help = quizQuestion.question.help,
             seq = quizQuestion.seq
         )
 

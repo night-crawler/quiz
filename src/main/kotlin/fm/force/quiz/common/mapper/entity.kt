@@ -83,6 +83,7 @@ fun Question.toFullDTO() = QuestionFullDTO(
     id = id,
     title = title,
     text = text,
+    help = help,
     answers = answers.map { it.toFullDTO() },
     correctAnswers = correctAnswers.map { it.toFullDTO() },
     tags = tags.map { it.toFullDTO() },
@@ -96,6 +97,7 @@ fun Question.toRestrictedDTO() = QuestionRestrictedDTO(
     id = id,
     title = title,
     text = text,
+    help = help,
     answers = answers.map { it.toRestrictedDTO() },
     difficulty = difficulty
 )
@@ -165,7 +167,9 @@ fun QuizSessionQuestion.toFullDTO() = QuizSessionQuestionFullDTO(
 
 fun QuizSessionQuestion.toRestrictedDTO() = QuizSessionQuestionRestrictedDTO(
     id = id,
+    title = title,
     text = text,
+    help = help,
     answers = answers.map { it.toRestrictedDTO() },
     seq = seq
 )

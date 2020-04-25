@@ -74,8 +74,9 @@ class TestDataFactory(
     @Transactional
     fun getQuestion(
         owner: User = getUser(),
-        text: String = getRandomString(16),
         title: String = getRandomString(16),
+        text: String = getRandomString(16),
+        help: String = getRandomString(16),
         answers: MutableSet<Answer> = (1..5).map { getAnswer(owner = owner) }.toMutableSet(),
         topics: MutableSet<Topic> = (1..5).map { getTopic(owner = owner) }.toMutableSet(),
         tags: MutableSet<Tag> = (1..5).map { getTag(owner = owner) }.toMutableSet(),
@@ -85,6 +86,7 @@ class TestDataFactory(
             owner = owner,
             text = text,
             title = title,
+            help = help,
             answers = answers,
             topics = topics,
             correctAnswers = mutableSetOf(answers.random()),
@@ -215,7 +217,9 @@ class TestDataFactory(
     fun getQuizSessionQuestion(
         owner: User = getUser(),
 
+        title: String = getRandomString(),
         text: String = getRandomString(),
+        help: String = getRandomString(),
 
         question: Question = getQuestion(owner = owner, text = text),
         quiz: Quiz = getQuiz(owner = owner, questions = listOf(question)),
@@ -232,7 +236,10 @@ class TestDataFactory(
                 owner = owner,
                 quizSession = quizSession,
                 originalQuestion = question,
-                text = text, seq = seq
+                title = title,
+                text = text,
+                help = help,
+                seq = seq
             )
         )
 

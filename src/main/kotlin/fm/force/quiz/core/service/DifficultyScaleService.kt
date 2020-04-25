@@ -1,14 +1,12 @@
 package fm.force.quiz.core.service
 
 import am.ik.yavi.builder.ValidatorBuilder
-import am.ik.yavi.builder.konstraint
 import am.ik.yavi.builder.konstraintOnGroup
 import fm.force.quiz.common.SpecificationBuilder
 import fm.force.quiz.common.dto.DifficultyScaleFullDTO
 import fm.force.quiz.common.dto.DifficultyScalePatchDTO
 import fm.force.quiz.common.dto.DifficultyScaleRangePatchDTO
 import fm.force.quiz.common.dto.PageDTO
-import fm.force.quiz.common.dto.QuizPatchDTO
 import fm.force.quiz.common.dto.SearchQueryDTO
 import fm.force.quiz.common.mapper.toDTO
 import fm.force.quiz.common.mapper.toFullDTO
@@ -22,7 +20,6 @@ import fm.force.quiz.core.repository.DifficultyScaleRepository
 import fm.force.quiz.core.validator.collectionConstraint
 import fm.force.quiz.core.validator.intConstraint
 import fm.force.quiz.core.validator.mandatory
-import fm.force.quiz.core.validator.ownedFksConstraint
 import fm.force.quiz.core.validator.stringConstraint
 import java.time.Instant
 import org.springframework.data.domain.Page
@@ -91,8 +88,11 @@ class DifficultyScaleService(
     }
 
     @Transactional
-    fun createRanges(entity: DifficultyScale, ranges: Collection<DifficultyScaleRangePatchDTO>): MutableSet<DifficultyScaleRange> {
-       val difficultyScaleRanges = ranges.map {
+    fun createRanges(
+        entity: DifficultyScale,
+        ranges: Collection<DifficultyScaleRangePatchDTO>
+    ): MutableSet<DifficultyScaleRange> {
+        val difficultyScaleRanges = ranges.map {
             DifficultyScaleRange(
                 owner = authenticationFacade.user,
                 difficultyScale = entity,
