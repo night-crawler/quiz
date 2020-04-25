@@ -19,7 +19,7 @@ data class DifficultyScale(
     var max: Int = 9,
 
     @OneToMany(mappedBy = "difficultyScale")
-    val difficultyScaleRanges: MutableSet<DifficultyScaleRange> = mutableSetOf()
+    var difficultyScaleRanges: MutableSet<DifficultyScaleRange> = mutableSetOf()
 ) : BaseQuizEntity() {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

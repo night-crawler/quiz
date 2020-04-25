@@ -9,4 +9,5 @@ class DifficultyScaleValidationProperties {
     var allowedMax = Int.MAX_VALUE
     var maxNameLength = 80
     var minNameLength = 3
+    var maxRanges = 100
 }

@@ -129,7 +129,7 @@ fun <T, V : Int?> ValidatorBuilder<T>.intConstraint(
     return this
 }
 
-fun <T, C : Collection<Long>?> ValidatorBuilder<T>.collectionConstraint(
+fun <T, E, C : Collection<E>?> ValidatorBuilder<T>.collectionConstraint(
     property: KProperty1<T, C>,
     range: ClosedRange<Int>,
     chain: ValidatorBuilder<T>.(ValidatorBuilder<T>) -> Unit = { }

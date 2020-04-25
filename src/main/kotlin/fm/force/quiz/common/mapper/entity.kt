@@ -31,6 +31,7 @@ fun Answer.toRestrictedDTO() = AnswerRestrictedDTO(id = id, text = text)
 fun DifficultyScale.toFullDTO() = DifficultyScaleFullDTO(
     id = id,
     name = name,
+    max = max,
     difficultyScaleRanges = difficultyScaleRanges.map { it.toFullDTO() },
     createdAt = createdAt,
     updatedAt = updatedAt
@@ -39,6 +40,7 @@ fun DifficultyScale.toFullDTO() = DifficultyScaleFullDTO(
 fun DifficultyScale.toRestrictedDTO() = DifficultyScaleRestrictedDTO(
     id = id,
     name = name,
+    max = max,
     difficultyScaleRanges = difficultyScaleRanges.map { it.toRestrictedDTO() }
 )
 

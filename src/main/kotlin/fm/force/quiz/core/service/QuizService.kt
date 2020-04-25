@@ -71,6 +71,15 @@ class QuizService(
         repository.refresh(entity).toRestrictedDTO()
 
     @Transactional
+    override fun delete(id: Long) {
+        getOwnedEntity(id).let {
+            quizQuestionRepository.deleteAll(it.quizQuestions)
+            repository.flush()
+            repository.delete(it)
+        }
+    }
+
+    @Transactional
     override fun create(createDTO: QuizPatchDTO): Quiz {
         validateCreate(createDTO)
         var entity = with(createDTO) {
@@ -83,19 +92,26 @@ class QuizService(
             )
         }
         entity = repository.save(entity)
+        createDTO.questions?.let {
+            entity.quizQuestions = createQuizQuestions(entity, it)
+        }
+        return entity
+    }
+
+    @Transactional
+    fun createQuizQuestions(quiz: Quiz, questionIds: Collection<Long>): MutableList<QuizQuestion> {
         val quizQuestions = questionRepository
-            .findEntitiesById(createDTO.questions)
+            .findEntitiesById(questionIds)
             .mapIndexed { index, question ->
                 QuizQuestion(
                     owner = authenticationFacade.user,
-                    quiz = entity,
+                    quiz = quiz,
                     question = question,
                     seq = index
                 )
             }.toMutableList()
         quizQuestionRepository.saveAll(quizQuestions)
-        entity.quizQuestions = quizQuestions
-        return entity
+        return quizQuestions
     }
 
     @Transactional
@@ -113,6 +129,12 @@ class QuizService(
 
             if (patchDTO.difficultyScale != null)
                 difficultyScale = difficultyScaleRepository.getEntity(patchDTO.difficultyScale)
+
+            if (patchDTO.questions != null) {
+                quizQuestionRepository.deleteAll(quizQuestions)
+                repository.flush()
+                quizQuestions = createQuizQuestions(this, patchDTO.questions)
+            }
 
             updatedAt = Instant.now()
         }

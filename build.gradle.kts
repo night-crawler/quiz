@@ -29,7 +29,6 @@ plugins {
     id("org.liquibase.gradle") version "2.0.2"
     id("org.springframework.boot") version springBootVersion
     id("io.spring.dependency-management") version "1.0.9.RELEASE"
-    id("org.asciidoctor.convert") version "2.4.0"
 
     id("org.jlleitschuh.gradle.ktlint") version "9.1.1"
     id("com.google.cloud.tools.jib") version jibVersion
@@ -114,7 +113,6 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "com.vaadin.external.google", module = "android-json")
     }
-    testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
 }
 
 if (!project.hasProperty("runList")) {
@@ -157,11 +155,6 @@ tasks {
     test {
         outputs.dir(snippetsDir)
         useJUnitPlatform()
-    }
-
-    asciidoctor {
-        inputs.dir(snippetsDir)
-        dependsOn(test)
     }
 
     create<JacocoReport>("codeCoverageReport") {
