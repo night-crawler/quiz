@@ -15,22 +15,24 @@ import fm.force.quiz.configuration.properties.DifficultyScaleValidationPropertie
 import fm.force.quiz.core.entity.DifficultyScale
 import fm.force.quiz.core.entity.DifficultyScaleRange
 import fm.force.quiz.core.entity.DifficultyScale_
+import fm.force.quiz.core.exception.ArbitraryValidationError
+import fm.force.quiz.core.exception.NestedValidationError
 import fm.force.quiz.core.repository.DifficultyScaleRangeRepository
 import fm.force.quiz.core.repository.DifficultyScaleRepository
-import fm.force.quiz.core.validator.collectionConstraint
 import fm.force.quiz.core.validator.intConstraint
 import fm.force.quiz.core.validator.mandatory
 import fm.force.quiz.core.validator.stringConstraint
-import java.time.Instant
 import org.springframework.data.domain.Page
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.Instant
+
 
 @Service
 class DifficultyScaleService(
     difficultyScaleRepository: DifficultyScaleRepository,
-    validationProps: DifficultyScaleValidationProperties,
+    private val validationProps: DifficultyScaleValidationProperties,
     rangeValidationProps: DifficultyScaleRangeValidationProperties,
     private val rangeRepository: DifficultyScaleRangeRepository
 ) : DifficultyScaleServiceType(repository = difficultyScaleRepository) {
@@ -42,7 +44,6 @@ class DifficultyScaleService(
         .intConstraint(DifficultyScaleRangePatchDTO::min, rangeValidationProps.minRange)
         .intConstraint(DifficultyScaleRangePatchDTO::max, rangeValidationProps.maxRange)
         .build()
-
     override var dtoValidator = ValidatorBuilder.of<DifficultyScalePatchDTO>()
         .konstraintOnGroup(CRUDConstraintGroup.CREATE) {
             mandatory(DifficultyScalePatchDTO::name)
@@ -50,9 +51,6 @@ class DifficultyScaleService(
         }
         .stringConstraint(DifficultyScalePatchDTO::name, validationProps.minNameLength..validationProps.maxNameLength)
         .intConstraint(DifficultyScalePatchDTO::max, 1..validationProps.allowedMax)
-        .collectionConstraint(DifficultyScalePatchDTO::ranges, 1..validationProps.maxRanges) {
-            forEach(DifficultyScalePatchDTO::ranges, DifficultyScalePatchDTO::ranges.name, rangeDtoValidator)
-        }
         .build()
 
     override fun buildSearchSpec(search: SearchQueryDTO?): Specification<DifficultyScale> {
@@ -69,6 +67,46 @@ class DifficultyScaleService(
     @Transactional(readOnly = true)
     override fun serializeEntity(entity: DifficultyScale): DifficultyScaleFullDTO =
         repository.refresh(entity).toFullDTO()
+
+    override fun validateCreate(createDTO: DifficultyScalePatchDTO) {
+        super.validateCreate(createDTO)
+        validateRanges(createDTO)
+    }
+
+    override fun validatePatch(patchDTO: DifficultyScalePatchDTO) {
+        super.validatePatch(patchDTO)
+        patchDTO.ranges?.let {
+            validateRanges(patchDTO)
+        }
+    }
+
+    private fun validateRanges(patchDTO: DifficultyScalePatchDTO) {
+        if (patchDTO.ranges.isNullOrEmpty() || patchDTO.ranges.size !in 1..validationProps.maxRanges) {
+            throw ArbitraryValidationError(
+                fieldName = DifficultyScalePatchDTO::ranges.name,
+                violatedValue = null,
+                message = "Provide 1..${validationProps.maxRanges} ranges"
+            )
+        }
+        patchDTO.ranges.forEachIndexed { index, range ->
+            val violations = rangeDtoValidator.validate(range)
+            if (violations.isNotEmpty()) {
+                throw NestedValidationError(
+                    prefix = "${DifficultyScalePatchDTO::ranges.name}[$index]",
+                    violations = violations
+                )
+            }
+        }
+    }
+
+    @Transactional
+    override fun delete(id: Long) {
+        getOwnedEntity(id).let {
+            rangeRepository.deleteAll(it.difficultyScaleRanges)
+            repository.flush()
+            repository.delete(it)
+        }
+    }
 
     @Transactional
     override fun create(createDTO: DifficultyScalePatchDTO): DifficultyScale {

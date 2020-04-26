@@ -100,8 +100,14 @@ class QuizService(
 
     @Transactional
     fun createQuizQuestions(quiz: Quiz, questionIds: Collection<Long>): MutableList<QuizQuestion> {
-        val quizQuestions = questionRepository
+        val questionsMap = questionRepository
             .findEntitiesById(questionIds)
+            .map { it.id to it }
+            .toMap()
+
+        val quizQuestions = questionIds
+            .distinct()
+            .mapNotNull { questionsMap[it] }
             .mapIndexed { index, question ->
                 QuizQuestion(
                     owner = authenticationFacade.user,
@@ -132,7 +138,7 @@ class QuizService(
 
             if (patchDTO.questions != null) {
                 quizQuestionRepository.deleteAll(quizQuestions)
-                repository.flush()
+                quizQuestionRepository.flush()
                 quizQuestions = createQuizQuestions(this, patchDTO.questions)
             }
 

@@ -6,6 +6,8 @@ import com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException
 import fm.force.quiz.common.dto.ErrorMessage
 import fm.force.quiz.common.dto.ErrorResponse
 import fm.force.quiz.common.dto.FieldError
+import fm.force.quiz.core.exception.ArbitraryValidationError
+import fm.force.quiz.core.exception.NestedValidationError
 import fm.force.quiz.core.exception.NotFoundException
 import fm.force.quiz.core.exception.ValidationError
 import org.hibernate.exception.ConstraintViolationException
@@ -149,8 +151,25 @@ fun ErrorResponse.Companion.of(ex: DisabledException) = ErrorResponse(
     errors = listOf(ErrorMessage(ex.localizedMessage))
 )
 
-fun ConstraintViolation.toFieldError() = FieldError(
-    fieldName = name(),
+fun ErrorResponse.Companion.of(ex: NestedValidationError) = ErrorResponse(
+    exception = ex.javaClass.simpleName,
+    type = ErrorResponse.Type.VALIDATION,
+    errors = ex.violations.map { it.toFieldError(prefix = ex.prefix) }
+)
+
+fun ErrorResponse.Companion.of(ex: ArbitraryValidationError) = ErrorResponse(
+    exception = ex.javaClass.simpleName,
+    type = ErrorResponse.Type.VALIDATION,
+    errors = listOf(FieldError(
+        fieldName = ex.fieldName,
+        message = ex.localizedMessage,
+        violatedValue = ex.violatedValue.toString()
+    ))
+)
+
+fun ConstraintViolation.toFieldError(prefix: String = "") = FieldError(
+    fieldName = listOf(prefix, name()).filter { it.isNotEmpty() }.joinToString("."),
+    violatedValue = violatedValue().toString(),
     message = message()
 )
 

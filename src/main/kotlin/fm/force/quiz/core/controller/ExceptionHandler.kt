@@ -2,6 +2,8 @@ package fm.force.quiz.core.controller
 
 import fm.force.quiz.common.dto.ErrorResponse
 import fm.force.quiz.common.mapper.of
+import fm.force.quiz.core.exception.ArbitraryValidationError
+import fm.force.quiz.core.exception.NestedValidationError
 import fm.force.quiz.core.exception.NotFoundException
 import fm.force.quiz.core.exception.ValidationError
 import org.hibernate.exception.ConstraintViolationException
@@ -49,6 +51,14 @@ class ExceptionHandler : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(ValidationError::class)
     fun handleValidationError(ex: ValidationError, request: WebRequest) =
+        ResponseEntity(ErrorResponse.of(ex), HttpStatus.BAD_REQUEST)
+
+    @ExceptionHandler(ArbitraryValidationError::class)
+    fun handleValidationError(ex: ArbitraryValidationError, request: WebRequest) =
+        ResponseEntity(ErrorResponse.of(ex), HttpStatus.BAD_REQUEST)
+
+    @ExceptionHandler(NestedValidationError::class)
+    fun handleValidationError(ex: NestedValidationError, request: WebRequest) =
         ResponseEntity(ErrorResponse.of(ex), HttpStatus.BAD_REQUEST)
 
     @ExceptionHandler(DisabledException::class)

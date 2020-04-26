@@ -91,6 +91,9 @@ class QuestionService(
             if (patchDTO.text != null)
                 text = patchDTO.text
 
+            if (patchDTO.help != null)
+                help = patchDTO.help
+
             if (patchDTO.answers != null)
                 answers = answerRepository.findEntitiesById(patchDTO.answers).toMutableSet()
 

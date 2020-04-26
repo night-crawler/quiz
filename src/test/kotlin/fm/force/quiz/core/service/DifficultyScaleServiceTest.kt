@@ -8,7 +8,6 @@ import fm.force.quiz.common.dto.SortQuery
 import fm.force.quiz.common.getRandomString
 import fm.force.quiz.configuration.properties.DifficultyScaleValidationProperties
 import fm.force.quiz.core.exception.ValidationError
-import fm.force.quiz.core.repository.DifficultyScaleRepository
 import io.kotlintest.data.forall
 import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.matchers.numerics.shouldBeGreaterThan
@@ -18,7 +17,6 @@ import io.kotlintest.shouldThrow
 import io.kotlintest.tables.row
 
 open class DifficultyScaleServiceTest(
-    difficultyScaleRepository: DifficultyScaleRepository,
     difficultyScaleService: DifficultyScaleService,
     validationProps: DifficultyScaleValidationProperties
 ) : AbstractCRUDServiceTest() {
@@ -47,7 +45,12 @@ open class DifficultyScaleServiceTest(
 
             val createDTO = DifficultyScalePatchDTO(
                 name = getRandomString(validationProps.maxNameLength),
-                max = validationProps.allowedMax
+                max = validationProps.allowedMax,
+                ranges = listOf(DifficultyScaleRangePatchDTO(
+                    title = "bla bla 1",
+                    min = 0,
+                    max = 2
+                ))
             )
 
             difficultyScaleService.validateCreate(createDTO)

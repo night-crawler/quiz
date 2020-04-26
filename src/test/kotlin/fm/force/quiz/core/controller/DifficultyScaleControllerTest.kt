@@ -10,7 +10,9 @@ class DifficultyScaleControllerTest(testDataFactory: TestDataFactory) : Abstract
             "/difficultyScales" {
                 smokeTestCRUD(
                     "/difficultyScales",
-                    DifficultyScalePatchDTO("sample", max = 20),
+                    DifficultyScalePatchDTO("sample", max = 20, ranges=listOf(
+                        DifficultyScaleRangePatchDTO(title = "sample title -222", min = 0, max = 2)
+                    )),
                     DifficultyScalePatchDTO("Patched")
                 )
             }

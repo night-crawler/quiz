@@ -59,16 +59,16 @@ class QuizSessionService(
 
     @Transactional
     override fun create(createDTO: QuizSessionPatchDTO): QuizSession {
-        val owner = authenticationFacade.user
         validateCreate(createDTO)
-        var entity = with(createDTO) {
-            QuizSession(
-                owner = owner,
-                quiz = quizRepository.getEntity(quiz),
-                isCancelled = false,
-                isCompleted = false
-            )
-        }
+
+        val quiz = quizRepository.getEntity(createDTO.quiz)
+        var entity = QuizSession(
+            owner = authenticationFacade.user,
+            quiz = quiz,
+            difficultyScale = quiz.difficultyScale,
+            isCancelled = false,
+            isCompleted = false
+        )
         entity = repository.save(entity)
         cloneQuizQuestions(entity)
 

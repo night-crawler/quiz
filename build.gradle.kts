@@ -94,7 +94,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0")
 
     implementation("com.github.slugify:slugify:2.4")
-    compile("am.ik.yavi:yavi:0.2.5")
+    compile("am.ik.yavi:yavi:0.4.0")
     compile("de.mkammerer:argon2-jvm:2.6")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")

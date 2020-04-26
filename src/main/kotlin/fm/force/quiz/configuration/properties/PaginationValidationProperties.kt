@@ -6,6 +6,6 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 @ConfigurationProperties(prefix = "force.quiz.validation.pagination")
 class PaginationValidationProperties {
-    var minPageSize: Int = 25
+    var minPageSize: Int = 10
     var maxPageSize: Int = 100
 }
