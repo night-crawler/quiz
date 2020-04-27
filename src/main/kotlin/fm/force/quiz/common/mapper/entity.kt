@@ -139,7 +139,7 @@ fun QuizQuestion.toRestrictedDTO() = QuizQuestionRestrictedDTO(
 
 fun QuizSession.toFullDTO() = QuizSessionFullDTO(
     id = id,
-    quiz = quiz.id,
+    quiz = quiz?.id,
     difficultyScale = difficultyScale?.id,
     validTill = validTill,
     isCompleted = isCompleted,

@@ -79,7 +79,7 @@ class QuizSessionService(
         val clonedQuestions = mutableListOf<QuizSessionQuestion>()
         val clonedAnswers = mutableListOf<QuizSessionQuestionAnswer>()
 
-        entity.quiz.quizQuestions.forEach { qq ->
+        entity.quiz?.quizQuestions?.forEach { qq ->
             val (quizSessionQuestion, quizSessionQuestionAnswers) =
                 cloneQuizQuestion(entity, qq)
 

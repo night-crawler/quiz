@@ -19,6 +19,8 @@ import fm.force.quiz.core.exception.ArbitraryValidationError
 import fm.force.quiz.core.exception.NestedValidationError
 import fm.force.quiz.core.repository.DifficultyScaleRangeRepository
 import fm.force.quiz.core.repository.DifficultyScaleRepository
+import fm.force.quiz.core.repository.QuizRepository
+import fm.force.quiz.core.repository.QuizSessionRepository
 import fm.force.quiz.core.validator.intConstraint
 import fm.force.quiz.core.validator.mandatory
 import fm.force.quiz.core.validator.stringConstraint
@@ -31,10 +33,12 @@ import java.time.Instant
 
 @Service
 class DifficultyScaleService(
-    difficultyScaleRepository: DifficultyScaleRepository,
     private val validationProps: DifficultyScaleValidationProperties,
-    rangeValidationProps: DifficultyScaleRangeValidationProperties,
-    private val rangeRepository: DifficultyScaleRangeRepository
+    private val rangeRepository: DifficultyScaleRangeRepository,
+    private val quizRepository: QuizRepository,
+    private val quizSessionRepository: QuizSessionRepository,
+    difficultyScaleRepository: DifficultyScaleRepository,
+    rangeValidationProps: DifficultyScaleRangeValidationProperties
 ) : DifficultyScaleServiceType(repository = difficultyScaleRepository) {
     private val rangeDtoValidator = ValidatorBuilder.of<DifficultyScaleRangePatchDTO>()
         .mandatory(DifficultyScaleRangePatchDTO::title)
@@ -103,6 +107,8 @@ class DifficultyScaleService(
     override fun delete(id: Long) {
         getOwnedEntity(id).let {
             rangeRepository.deleteAll(it.difficultyScaleRanges)
+            quizRepository.unsetDifficultyScaleId(it.id)
+            quizSessionRepository.unsetDifficultyScaleId(it.id)
             repository.flush()
             repository.delete(it)
         }

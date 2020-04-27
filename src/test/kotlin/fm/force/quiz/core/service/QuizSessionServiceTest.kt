@@ -64,7 +64,7 @@ open class QuizSessionServiceTest(service: QuizSessionService) : AbstractCRUDSer
 
         "should find" {
             val sessions = (1..5).map { testDataFactory.getQuizSession(owner = user) }
-            val quizzes = sessions.map { it.quiz }
+            val quizzes = sessions.map { it.quiz!! }
             val scales = sessions.mapNotNull { it.difficultyScale }
 
             service.cancel(sessions[0].id)

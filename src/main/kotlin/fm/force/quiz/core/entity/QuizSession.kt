@@ -13,7 +13,7 @@ import javax.persistence.Table
 @Table(name = "quiz_sessions")
 data class QuizSession(
     @ManyToOne val owner: User,
-    @ManyToOne val quiz: Quiz,
+    @ManyToOne val quiz: Quiz? = null,
     @ManyToOne var difficultyScale: DifficultyScale? = null,
 
     @OneToMany(mappedBy = "quizSession", cascade = [CascadeType.ALL])

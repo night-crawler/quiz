@@ -18,6 +18,7 @@ import fm.force.quiz.core.repository.DifficultyScaleRepository
 import fm.force.quiz.core.repository.QuestionRepository
 import fm.force.quiz.core.repository.QuizQuestionRepository
 import fm.force.quiz.core.repository.QuizRepository
+import fm.force.quiz.core.repository.QuizSessionRepository
 import fm.force.quiz.core.repository.TagRepository
 import fm.force.quiz.core.repository.TopicRepository
 import fm.force.quiz.core.validator.mandatory
@@ -37,6 +38,7 @@ class QuizService(
     private val questionRepository: QuestionRepository,
     private val difficultyScaleRepository: DifficultyScaleRepository,
     private val quizQuestionRepository: QuizQuestionRepository,
+    private val quizSessionRepository: QuizSessionRepository,
     validationProps: QuizValidationProperties,
     quizRepository: QuizRepository
 ) : QuizServiceType(repository = quizRepository) {
@@ -73,6 +75,7 @@ class QuizService(
     @Transactional
     override fun delete(id: Long) {
         getOwnedEntity(id).let {
+            quizSessionRepository.unsetQuizId(it.id)
             quizQuestionRepository.deleteAll(it.quizQuestions)
             repository.flush()
             repository.delete(it)
