@@ -73,16 +73,6 @@ class QuizService(
         repository.refresh(entity).toRestrictedDTO()
 
     @Transactional
-    override fun delete(id: Long) {
-        getOwnedEntity(id).let {
-            quizSessionRepository.unsetQuizId(it.id)
-            quizQuestionRepository.deleteAll(it.quizQuestions)
-            repository.flush()
-            repository.delete(it)
-        }
-    }
-
-    @Transactional
     override fun create(createDTO: QuizPatchDTO): Quiz {
         validateCreate(createDTO)
         var entity = with(createDTO) {

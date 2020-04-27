@@ -46,11 +46,13 @@ open class DifficultyScaleServiceTest(
             val createDTO = DifficultyScalePatchDTO(
                 name = getRandomString(validationProps.maxNameLength),
                 max = validationProps.allowedMax,
-                ranges = listOf(DifficultyScaleRangePatchDTO(
-                    title = "bla bla 1",
-                    min = 0,
-                    max = 2
-                ))
+                ranges = listOf(
+                    DifficultyScaleRangePatchDTO(
+                        title = "bla bla 1",
+                        min = 0,
+                        max = 2
+                    )
+                )
             )
 
             difficultyScaleService.validateCreate(createDTO)
@@ -104,6 +106,14 @@ open class DifficultyScaleServiceTest(
             entity.name shouldBe patch.name
             entity.updatedAt shouldNotBe scale.updatedAt
             entity.difficultyScaleRanges shouldHaveSize 1
+        }
+
+        "should cascade delete" {
+            val quizSession = testDataFactory.getQuizSession(owner = user)
+            difficultyScaleService.delete(quizSession.difficultyScale!!.id)
+
+            val quiz = testDataFactory.getQuiz(owner = user)
+            difficultyScaleService.delete(quiz.difficultyScale!!.id)
         }
     }
 }

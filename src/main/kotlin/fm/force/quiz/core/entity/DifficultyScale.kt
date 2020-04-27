@@ -1,6 +1,7 @@
 package fm.force.quiz.core.entity
 
 import fm.force.quiz.security.entity.User
+import javax.persistence.CascadeType
 import javax.persistence.Entity
 import javax.persistence.ManyToOne
 import javax.persistence.OneToMany
@@ -18,8 +19,8 @@ data class DifficultyScale(
     var name: String,
     var max: Int = 9,
 
-    @OneToMany(mappedBy = "difficultyScale")
-    var difficultyScaleRanges: MutableSet<DifficultyScaleRange> = mutableSetOf()
+    @OneToMany(mappedBy = "difficultyScale", cascade = [CascadeType.ALL])
+    var difficultyScaleRanges: MutableList<DifficultyScaleRange> = mutableListOf()
 ) : BaseQuizEntity() {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

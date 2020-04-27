@@ -21,6 +21,7 @@ data class DifficultyScaleRange(
     var max: Int = 10
 
 ) : BaseQuizEntity() {
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is DifficultyScaleRange) return false
@@ -41,5 +42,9 @@ data class DifficultyScaleRange(
         result = 31 * result + min
         result = 31 * result + max
         return result
+    }
+
+    override fun toString(): String {
+        return "DifficultyScaleRange(id=$id, owner=$owner, difficultyScale=$difficultyScale, title='$title', min=$min, max=$max)"
     }
 }

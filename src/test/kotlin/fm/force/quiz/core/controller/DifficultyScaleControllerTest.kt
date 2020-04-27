@@ -9,11 +9,14 @@ class DifficultyScaleControllerTest(testDataFactory: TestDataFactory) : Abstract
         "CRUD controllers" should {
             "/difficultyScales" {
                 smokeTestCRUD(
-                    "/difficultyScales",
-                    DifficultyScalePatchDTO("sample", max = 20, ranges=listOf(
-                        DifficultyScaleRangePatchDTO(title = "sample title -222", min = 0, max = 2)
-                    )),
-                    DifficultyScalePatchDTO("Patched")
+                    path = "/difficultyScales",
+                    create = DifficultyScalePatchDTO(
+                        "sample", max = 20,
+                        ranges = listOf(
+                            DifficultyScaleRangePatchDTO(title = "sample title -222", min = 0, max = 2)
+                        )
+                    ),
+                    patch = DifficultyScalePatchDTO("Patched")
                 )
             }
             "/difficultyScaleRanges" {
@@ -21,12 +24,12 @@ class DifficultyScaleControllerTest(testDataFactory: TestDataFactory) : Abstract
                     testDataFactory.getDifficultyScale(owner = user, createNRandomRanges = 0)
                 }.map { it.id }.toMutableSet()
                 smokeTestCRUD(
-                    "/difficultyScaleRanges",
-                    DifficultyScaleRangePatchDTO(
+                    path = "/difficultyScaleRanges",
+                    create = DifficultyScaleRangePatchDTO(
                         difficultyScale = difficultyScaleIds.random(),
                         title = "sample", min = 0, max = 1
                     ),
-                    DifficultyScaleRangePatchDTO(title = "Patched")
+                    patch = DifficultyScaleRangePatchDTO(title = "Patched")
                 )
             }
         }

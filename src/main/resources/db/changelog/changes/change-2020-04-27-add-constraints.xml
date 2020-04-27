@@ -1,0 +1,56 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="igorkalishevsky (generated)" id="ergsfgsdfgsdfg">
+
+        <dropForeignKeyConstraint
+                baseColumnNames="difficulty_scale_id" baseTableName="quiz_sessions" constraintName="FKgise2nldin1rqy611rd6ahk6"
+                referencedTableName="difficulty_scales"
+        />
+        <addForeignKeyConstraint
+                baseColumnNames="difficulty_scale_id" baseTableName="quiz_sessions" constraintName="FKgise2nldin1rqy611rd6ahk6"
+                deferrable="false"
+                initiallyDeferred="false" referencedColumnNames="id"
+                referencedTableName="difficulty_scales" validate="true"
+                onDelete="SET NULL"
+        />
+
+        <dropForeignKeyConstraint
+                baseColumnNames="difficulty_scale_id" baseTableName="quizzes"
+                constraintName="FK9tli57niekm9mnarkhadwgqyx"
+                referencedTableName="difficulty_scales"
+        />
+        <addForeignKeyConstraint
+                baseColumnNames="difficulty_scale_id" baseTableName="quizzes" constraintName="FK9tli57niekm9mnarkhadwgqyx"
+                deferrable="false"
+                initiallyDeferred="false" referencedColumnNames="id"
+                referencedTableName="difficulty_scales" validate="true"
+                onDelete="SET NULL"
+        />
+
+
+        <dropForeignKeyConstraint
+                baseColumnNames="quiz_id" baseTableName="quizzes__questions" constraintName="FKs30389bkkqmaqluvh0blg28ad"
+                referencedTableName="quizzes"
+        />
+        <addForeignKeyConstraint
+                baseColumnNames="quiz_id" baseTableName="quizzes__questions"
+                constraintName="FKs30389bkkqmaqluvh0blg28ad" deferrable="false" initiallyDeferred="false"
+                referencedColumnNames="id" referencedTableName="quizzes" validate="true"
+                onDelete="SET NULL"
+        />
+
+
+        <dropForeignKeyConstraint
+                baseColumnNames="quiz_id" baseTableName="quiz_sessions" constraintName="FKth8oxrekwmqh63ra9vr84cn17"
+                referencedTableName="quizzes"
+        />
+        <addForeignKeyConstraint
+                baseColumnNames="quiz_id" baseTableName="quiz_sessions" constraintName="FKth8oxrekwmqh63ra9vr84cn17"
+                deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="quizzes"
+                validate="true"
+                onDelete="SET NULL"
+        />
+    </changeSet>
+</databaseChangeLog>

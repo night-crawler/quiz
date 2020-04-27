@@ -24,12 +24,11 @@ import fm.force.quiz.core.repository.QuizSessionRepository
 import fm.force.quiz.core.validator.intConstraint
 import fm.force.quiz.core.validator.mandatory
 import fm.force.quiz.core.validator.stringConstraint
+import java.time.Instant
 import org.springframework.data.domain.Page
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.time.Instant
-
 
 @Service
 class DifficultyScaleService(
@@ -104,50 +103,34 @@ class DifficultyScaleService(
     }
 
     @Transactional
-    override fun delete(id: Long) {
-        getOwnedEntity(id).let {
-            rangeRepository.deleteAll(it.difficultyScaleRanges)
-            quizRepository.unsetDifficultyScaleId(it.id)
-            quizSessionRepository.unsetDifficultyScaleId(it.id)
-            repository.flush()
-            repository.delete(it)
-        }
-    }
-
-    @Transactional
     override fun create(createDTO: DifficultyScalePatchDTO): DifficultyScale {
         validateCreate(createDTO)
-        var entity = with(createDTO) {
+        val entity = with(createDTO) {
             DifficultyScale(
                 owner = authenticationFacade.user,
                 name = name!!,
                 max = max!!
             )
         }
-        entity = repository.save(entity)
+//        entity =
         createDTO.ranges?.let {
             entity.difficultyScaleRanges = createRanges(entity, it)
         }
-        return entity
+        return repository.save(entity)
     }
 
-    @Transactional
     fun createRanges(
         entity: DifficultyScale,
         ranges: Collection<DifficultyScaleRangePatchDTO>
-    ): MutableSet<DifficultyScaleRange> {
-        val difficultyScaleRanges = ranges.map {
-            DifficultyScaleRange(
-                owner = authenticationFacade.user,
-                difficultyScale = entity,
-                title = it.title!!,
-                min = it.min!!,
-                max = it.max!!
-            )
-        }.toMutableSet()
-        rangeRepository.saveAll(difficultyScaleRanges)
-        return difficultyScaleRanges
-    }
+    ): MutableList<DifficultyScaleRange> = ranges.map {
+        DifficultyScaleRange(
+            owner = authenticationFacade.user,
+            difficultyScale = entity,
+            title = it.title!!,
+            min = it.min!!,
+            max = it.max!!
+        )
+    }.toMutableList()
 
     @Transactional
     override fun patch(id: Long, patchDTO: DifficultyScalePatchDTO): DifficultyScale {
