@@ -3,6 +3,7 @@ package fm.force.quiz.core.controller
 import fm.force.quiz.common.dto.PageDTO
 import fm.force.quiz.common.dto.PaginationQuery
 import fm.force.quiz.common.dto.QuizSessionAnswerPatchDTO
+import fm.force.quiz.common.dto.QuizSessionAnswerSearchDTO
 import fm.force.quiz.common.dto.QuizSessionQuestionSearchDTO
 import fm.force.quiz.common.dto.SortQuery
 import fm.force.quiz.core.service.QuizSessionAnswerService
@@ -54,4 +55,14 @@ class QuizSessionController(
             .apply { session = sessionId }
             .let { quizSessionAnswerService.create(it) }
             .let { quizSessionAnswerService.serializeEntity(it) }
+
+    @GetMapping("{sessionId}/answers")
+    fun findAnswers(
+        @PathVariable sessionId: Long,
+        paginationQuery: PaginationQuery,
+        sortQuery: SortQuery
+    ): PageDTO {
+        val search = QuizSessionAnswerSearchDTO(quizSession = sessionId)
+        return quizSessionAnswerService.find(paginationQuery, sortQuery, search)
+    }
 }

@@ -8,9 +8,13 @@ import javax.persistence.JoinTable
 import javax.persistence.ManyToMany
 import javax.persistence.ManyToOne
 import javax.persistence.Table
+import javax.persistence.UniqueConstraint
 
 @Entity
-@Table(name = "quiz_session_answers")
+@Table(
+    name = "quiz_session_answers",
+    uniqueConstraints = [UniqueConstraint(columnNames = ["quiz_session_id", "quiz_session_question_id"])]
+)
 data class QuizSessionAnswer(
     @ManyToOne val owner: User,
     @ManyToOne val quizSession: QuizSession,

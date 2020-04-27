@@ -157,8 +157,8 @@ fun QuizSessionAnswer.toFullDTO() = QuizSessionAnswerFullDTO(
 fun QuizSessionAnswer.toRestrictedDTO() = QuizSessionAnswerRestrictedDTO(
     id = id,
     session = quizSession.id,
-    question = quizSessionQuestion.toRestrictedDTO(),
-    answers = answers.map { it.toRestrictedDTO() }
+    question = quizSessionQuestion.id,
+    answers = answers.map { it.id }.toSet()
 )
 
 fun QuizSessionQuestion.toFullDTO() = QuizSessionQuestionFullDTO(

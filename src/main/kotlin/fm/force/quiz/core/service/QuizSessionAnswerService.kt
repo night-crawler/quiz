@@ -1,13 +1,17 @@
 package fm.force.quiz.core.service
 
 import am.ik.yavi.builder.ValidatorBuilder
+import fm.force.quiz.common.SpecificationBuilder
 import fm.force.quiz.common.dto.PageDTO
 import fm.force.quiz.common.dto.QuizSessionAnswerPatchDTO
 import fm.force.quiz.common.dto.QuizSessionAnswerRestrictedDTO
+import fm.force.quiz.common.dto.QuizSessionAnswerSearchDTO
 import fm.force.quiz.common.mapper.toDTO
 import fm.force.quiz.common.mapper.toRestrictedDTO
 import fm.force.quiz.configuration.properties.QuestionValidationProperties
 import fm.force.quiz.core.entity.QuizSessionAnswer
+import fm.force.quiz.core.entity.QuizSessionAnswer_
+import fm.force.quiz.core.entity.QuizSessionQuestion_
 import fm.force.quiz.core.repository.QuizSessionAnswerRepository
 import fm.force.quiz.core.repository.QuizSessionQuestionAnswerRepository
 import fm.force.quiz.core.repository.QuizSessionQuestionRepository
@@ -15,6 +19,7 @@ import fm.force.quiz.core.repository.QuizSessionRepository
 import fm.force.quiz.core.validator.ownedFkConstraint
 import fm.force.quiz.core.validator.ownedFksConstraint
 import org.springframework.data.domain.Page
+import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -62,6 +67,21 @@ class QuizSessionAnswerService(
     @Transactional(readOnly = true)
     override fun serializeEntity(entity: QuizSessionAnswer): QuizSessionAnswerRestrictedDTO =
         repository.refresh(entity).toRestrictedDTO()
+
+    override fun buildSearchSpec(search: QuizSessionAnswerSearchDTO?): Specification<QuizSessionAnswer> {
+        if (search?.quizSession == null) {
+            throw IllegalArgumentException("Provide a session")
+        }
+
+        val ownerEquals = SpecificationBuilder.fk(
+            authenticationFacade::user, QuizSessionAnswer_.owner
+        )
+
+        return ownerEquals.and(SpecificationBuilder.fk(
+            quizSessionRepository.getEntity(search.quizSession),
+            QuizSessionAnswer_.quizSession
+        ))!!
+    }
 
     @Transactional
     override fun create(createDTO: QuizSessionAnswerPatchDTO): QuizSessionAnswer {
