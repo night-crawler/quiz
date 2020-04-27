@@ -160,11 +160,13 @@ fun ErrorResponse.Companion.of(ex: NestedValidationError) = ErrorResponse(
 fun ErrorResponse.Companion.of(ex: ArbitraryValidationError) = ErrorResponse(
     exception = ex.javaClass.simpleName,
     type = ErrorResponse.Type.VALIDATION,
-    errors = listOf(FieldError(
-        fieldName = ex.fieldName,
-        message = ex.localizedMessage,
-        violatedValue = ex.violatedValue.toString()
-    ))
+    errors = listOf(
+        FieldError(
+            fieldName = ex.fieldName,
+            message = ex.localizedMessage,
+            violatedValue = ex.violatedValue.toString()
+        )
+    )
 )
 
 fun ConstraintViolation.toFieldError(prefix: String = "") = FieldError(
