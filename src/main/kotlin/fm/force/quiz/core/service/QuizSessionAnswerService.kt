@@ -11,7 +11,6 @@ import fm.force.quiz.common.mapper.toRestrictedDTO
 import fm.force.quiz.configuration.properties.QuestionValidationProperties
 import fm.force.quiz.core.entity.QuizSessionAnswer
 import fm.force.quiz.core.entity.QuizSessionAnswer_
-import fm.force.quiz.core.entity.QuizSessionQuestion_
 import fm.force.quiz.core.repository.QuizSessionAnswerRepository
 import fm.force.quiz.core.repository.QuizSessionQuestionAnswerRepository
 import fm.force.quiz.core.repository.QuizSessionQuestionRepository
@@ -77,10 +76,12 @@ class QuizSessionAnswerService(
             authenticationFacade::user, QuizSessionAnswer_.owner
         )
 
-        return ownerEquals.and(SpecificationBuilder.fk(
-            quizSessionRepository.getEntity(search.quizSession),
-            QuizSessionAnswer_.quizSession
-        ))!!
+        return ownerEquals.and(
+            SpecificationBuilder.fk(
+                quizSessionRepository.getEntity(search.quizSession),
+                QuizSessionAnswer_.quizSession
+            )
+        )!!
     }
 
     @Transactional
