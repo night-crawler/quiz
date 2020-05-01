@@ -160,7 +160,8 @@ fun QuizSessionAnswer.toRestrictedDTO() = QuizSessionAnswerRestrictedDTO(
     session = quizSession.id,
     question = quizSessionQuestion.id,
     answers = answers.map { it.id }.toSet(),
-    correctAnswers = quizSessionQuestion.answers.filter { it.isCorrect }.map { it.id }.toSet()
+    correctAnswers = quizSessionQuestion.answers.filter { it.isCorrect }.map { it.id }.toSet(),
+    isCorrect = isCorrect
 )
 
 fun QuizSessionQuestion.toFullDTO() = QuizSessionQuestionFullDTO(
@@ -173,7 +174,8 @@ fun QuizSessionQuestion.toRestrictedDTO() = QuizSessionQuestionRestrictedDTO(
     text = text,
     help = help,
     answers = answers.map { it.toRestrictedDTO() },
-    seq = seq
+    seq = seq,
+    difficulty = difficulty
 )
 
 fun QuizSessionQuestionAnswer.toFullDTO() = QuizSessionQuestionAnswerFullDTO(

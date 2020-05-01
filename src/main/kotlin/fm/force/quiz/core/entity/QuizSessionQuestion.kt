@@ -31,6 +31,8 @@ data class QuizSessionQuestion(
     @Column(columnDefinition = "TEXT")
     var help: String,
 
+    var difficulty: Int,
+
     val seq: Int
 ) : BaseQuizEntity() {
     override fun equals(other: Any?): Boolean {

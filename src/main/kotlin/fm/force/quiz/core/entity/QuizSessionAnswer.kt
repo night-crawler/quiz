@@ -26,7 +26,8 @@ data class QuizSessionAnswer(
         joinColumns = [JoinColumn(name = "quiz_session_answer_id")],
         inverseJoinColumns = [JoinColumn(name = "quiz_session_question_answer_id")]
     )
-    val answers: Set<QuizSessionQuestionAnswer> = setOf()
+    val answers: Set<QuizSessionQuestionAnswer> = setOf(),
+    val isCorrect: Boolean
 ) : BaseQuizEntity() {
     override fun toString(): String {
         return "QuizSessionAnswer(owner=${owner.id}, quizSession=${quizSession.id}, quizSessionQuestion=${quizSessionQuestion.id}, answers=...)"

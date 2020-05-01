@@ -94,11 +94,17 @@ class QuizSessionAnswerService(
         val quizSessionQuestion = quizSessionQuestionRepository.getEntity(createDTO.question)
         val answers = quizSessionQuestionAnswerRepository.findAllById(createDTO.answers)
 
+        val isCorrect = quizSessionQuestion.answers
+            .filter { it.isCorrect }
+            .map { it.id }
+            .toSet() == createDTO.answers
+
         val entity = QuizSessionAnswer(
             owner = authenticationFacade.user,
             quizSession = quizSession,
             quizSessionQuestion = quizSessionQuestion,
-            answers = answers.toSet()
+            answers = answers.toSet(),
+            isCorrect = isCorrect
         )
         validateEntity(entity)
 

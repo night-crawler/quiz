@@ -242,7 +242,8 @@ class TestDataFactory(
                 title = title,
                 text = text,
                 help = help,
-                seq = seq
+                seq = seq,
+                difficulty = question.difficulty
             )
         )
 
@@ -265,6 +266,7 @@ class TestDataFactory(
     fun getQuizSessionAnswer(
         owner: User = getUser(),
         quiz: Quiz = getQuiz(owner = owner),
+        isCorrect: Boolean = true,
         quizSession: QuizSession = getQuizSession(
             owner = owner,
             quiz = quiz
@@ -277,6 +279,7 @@ class TestDataFactory(
     ) = QuizSessionAnswer(
         owner = owner,
         quizSession = quizSession,
-        quizSessionQuestion = quizSessionQuestion
+        quizSessionQuestion = quizSessionQuestion,
+        isCorrect = isCorrect
     ).let { quizSessionAnswerRepository.save(it) }
 }

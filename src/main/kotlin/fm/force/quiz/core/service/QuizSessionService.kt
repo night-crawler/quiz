@@ -103,7 +103,8 @@ class QuizSessionService(
             title = quizQuestion.question.title,
             text = quizQuestion.question.text,
             help = quizQuestion.question.help,
-            seq = quizQuestion.seq
+            seq = quizQuestion.seq,
+            difficulty = quizQuestion.question.difficulty
         )
 
         val correctAnswersMap = quizQuestion.question.correctAnswers.map { it.id to it }.toMap()

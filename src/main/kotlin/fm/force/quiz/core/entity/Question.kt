@@ -57,7 +57,7 @@ data class Question(
     var topics: MutableSet<Topic> = mutableSetOf(),
 
     /**
-     * Normalized difficulty in range []0;1e6)
+     * Normalized difficulty in range [0;1e6)
      */
     var difficulty: Int = 0
 
