@@ -24,4 +24,10 @@ data class QuizSession(
     var isCancelled: Boolean = false,
     var completedAt: Instant? = null,
     var cancelledAt: Instant? = null
-) : BaseQuizEntity()
+) : BaseQuizEntity() {
+    override fun toString(): String {
+        return "QuizSession(owner=$owner, quiz=${quiz?.id}, difficultyScale=${difficultyScale?.id}, " +
+            "validTill=$validTill, isCompleted=$isCompleted, isCancelled=$isCancelled, " +
+            "completedAt=$completedAt, cancelledAt=$cancelledAt)"
+    }
+}
