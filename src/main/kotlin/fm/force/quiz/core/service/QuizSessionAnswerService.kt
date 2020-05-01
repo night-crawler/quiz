@@ -21,6 +21,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.Instant
 
 @Service
 class QuizSessionAnswerService(
@@ -34,6 +35,7 @@ class QuizSessionAnswerService(
     private val msgWrongQuizQuestion = "Must belong to the same quiz as of the session's"
     private val msgWrongAnswers = "Answers must belong to the question"
     private val msgCancelled = "In order to answer the question, quiz session must be neither completed nor cancelled"
+    private val msgExpired = "In order to answer the question, quiz session must be neither completed nor cancelled"
 
     override var dtoValidator = ValidatorBuilder.of<QuizSessionAnswerPatchDTO>()
         .ownedFkConstraint(QuizSessionAnswerPatchDTO::session, quizSessionRepository, ::ownerId)
@@ -55,6 +57,7 @@ class QuizSessionAnswerService(
             { it.answers.map { a -> a.quizSession.id }.toSet() == setOf(it.quizSession.id) },
             "answers", "", msgWrongAnswers
         )
+        .constraintOnTarget({ it.quizSession.validTill >= Instant.now() }, "quizSession", "", msgExpired)
         .constraintOnTarget({ !it.quizSession.isCancelled }, "quizSession", "", msgCancelled)
         .constraintOnTarget({ !it.quizSession.isCompleted }, "quizSession", "", msgCancelled)
         .build()

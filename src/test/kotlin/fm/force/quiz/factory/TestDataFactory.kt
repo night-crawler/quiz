@@ -8,6 +8,7 @@ import fm.force.quiz.core.entity.Question
 import fm.force.quiz.core.entity.Quiz
 import fm.force.quiz.core.entity.QuizQuestion
 import fm.force.quiz.core.entity.QuizSession
+import fm.force.quiz.core.entity.QuizSessionAnswer
 import fm.force.quiz.core.entity.QuizSessionQuestion
 import fm.force.quiz.core.entity.QuizSessionQuestionAnswer
 import fm.force.quiz.core.entity.Tag
@@ -18,6 +19,7 @@ import fm.force.quiz.core.repository.DifficultyScaleRepository
 import fm.force.quiz.core.repository.QuestionRepository
 import fm.force.quiz.core.repository.QuizQuestionRepository
 import fm.force.quiz.core.repository.QuizRepository
+import fm.force.quiz.core.repository.QuizSessionAnswerRepository
 import fm.force.quiz.core.repository.QuizSessionQuestionAnswerRepository
 import fm.force.quiz.core.repository.QuizSessionQuestionRepository
 import fm.force.quiz.core.repository.QuizSessionRepository
@@ -25,11 +27,11 @@ import fm.force.quiz.core.repository.TagRepository
 import fm.force.quiz.core.repository.TopicRepository
 import fm.force.quiz.security.entity.User
 import fm.force.quiz.security.repository.UserRepository
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.time.Duration
 import java.time.Instant
 import kotlin.random.Random
-import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 @Service
 class TestDataFactory(
@@ -44,7 +46,8 @@ class TestDataFactory(
     private val quizQuestionRepository: QuizQuestionRepository,
     private val quizSessionRepository: QuizSessionRepository,
     private val quizSessionQuestionRepository: QuizSessionQuestionRepository,
-    private val quizSessionQuestionAnswerRepository: QuizSessionQuestionAnswerRepository
+    private val quizSessionQuestionAnswerRepository: QuizSessionQuestionAnswerRepository,
+    private val quizSessionAnswerRepository: QuizSessionAnswerRepository
 ) {
     @Transactional
     fun getUser(
@@ -195,7 +198,7 @@ class TestDataFactory(
         )
 
         if (doInstantiateQuizSessionQuestions) {
-            quiz.quizQuestions.forEachIndexed { index, it ->
+            quizSession.questions = quiz.quizQuestions.mapIndexed { index, it ->
                 val quizQuestion = quizQuestionRepository.refresh(it)
                 getQuizSessionQuestion(
                     owner = owner,
@@ -205,7 +208,7 @@ class TestDataFactory(
                     quizSession = quizSession,
                     seq = index
                 )
-            }
+            }.toMutableList()
         }
         return quizSession
     }
@@ -257,4 +260,23 @@ class TestDataFactory(
         quizSessionQuestionAnswerRepository.saveAll(qsqaList)
         return q
     }
+
+    @Transactional
+    fun getQuizSessionAnswer(
+        owner: User = getUser(),
+        quiz: Quiz = getQuiz(owner = owner),
+        quizSession: QuizSession = getQuizSession(
+            owner = owner,
+            quiz = quiz
+        ),
+        quizSessionQuestion: QuizSessionQuestion = getQuizSessionQuestion(
+            owner = owner,
+            quizSession = quizSession,
+            quiz = quiz
+        )
+    ) = QuizSessionAnswer(
+        owner = owner,
+        quizSession = quizSession,
+        quizSessionQuestion = quizSessionQuestion
+    ).let { quizSessionAnswerRepository.save(it) }
 }

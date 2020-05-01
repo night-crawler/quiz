@@ -189,4 +189,14 @@ class QuizSessionService(
     @Transactional
     override fun patch(id: Long, patchDTO: QuizSessionPatchDTO): QuizSession =
         getOwnedEntity(id)
+
+    @Transactional
+    fun getRemainingQuestionIds(id: Long) = getOwnedEntity(id).let {
+        quizSessionQuestionRepository.getRemainingQuestionIds(id)
+    }
+
+    @Transactional
+    fun getRemainingQuestionCount(id: Long) = getOwnedEntity(id).let {
+        quizSessionQuestionRepository.getRemainingQuestionCount(id)
+    }
 }

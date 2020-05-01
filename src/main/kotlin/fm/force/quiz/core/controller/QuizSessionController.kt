@@ -3,8 +3,11 @@ package fm.force.quiz.core.controller
 import fm.force.quiz.common.dto.PageDTO
 import fm.force.quiz.common.dto.PaginationQuery
 import fm.force.quiz.common.dto.QuizSessionAnswerPatchDTO
+import fm.force.quiz.common.dto.QuizSessionAnswerRestrictedDTO
 import fm.force.quiz.common.dto.QuizSessionAnswerSearchDTO
 import fm.force.quiz.common.dto.QuizSessionQuestionSearchDTO
+import fm.force.quiz.common.dto.RemainingSessionQuestionCount
+import fm.force.quiz.common.dto.RemainingSessionQuestions
 import fm.force.quiz.common.dto.SortQuery
 import fm.force.quiz.core.service.QuizSessionAnswerService
 import fm.force.quiz.core.service.QuizSessionQuestionService
@@ -50,11 +53,27 @@ class QuizSessionController(
     }
 
     @PostMapping("{sessionId}/doAnswer")
-    fun doAnswer(@PathVariable sessionId: Long, @RequestBody createDTO: QuizSessionAnswerPatchDTO) =
-        createDTO
+    fun doAnswer(@PathVariable sessionId: Long, @RequestBody createDTO: QuizSessionAnswerPatchDTO): QuizSessionAnswerRestrictedDTO {
+        val quizSessionAnswer = createDTO
             .apply { session = sessionId }
             .let { quizSessionAnswerService.create(it) }
-            .let { quizSessionAnswerService.serializeEntity(it) }
+
+        if (service.getRemainingQuestionIds(sessionId).isEmpty()) {
+            service.complete(sessionId)
+        }
+
+        return quizSessionAnswerService.serializeEntity(quizSessionAnswer)
+    }
+
+    @GetMapping("{sessionId}/remaining")
+    fun getRemainingQuestionIds(@PathVariable sessionId: Long) = RemainingSessionQuestions(
+        quizSessionQuestionIds = service.getRemainingQuestionIds(sessionId)
+    )
+
+    @GetMapping("{sessionId}/remainingCount")
+    fun getRemainingQuestionCount(@PathVariable sessionId: Long) = RemainingSessionQuestionCount(
+        service.getRemainingQuestionCount(sessionId)
+    )
 
     @GetMapping("{sessionId}/answers")
     fun findAnswers(

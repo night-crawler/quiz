@@ -17,7 +17,7 @@ data class QuizSession(
     @ManyToOne var difficultyScale: DifficultyScale? = null,
 
     @OneToMany(mappedBy = "quizSession", cascade = [CascadeType.ALL])
-    val questions: List<QuizSessionQuestion> = listOf(),
+    var questions: MutableList<QuizSessionQuestion> = mutableListOf(),
 
     var validTill: Instant = Instant.now() + Duration.ofDays(1),
     var isCompleted: Boolean = false,

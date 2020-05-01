@@ -79,5 +79,20 @@ open class QuizSessionServiceTest(service: QuizSessionService) : AbstractCRUDSer
                 service.find(PaginationQuery.default(), SortQuery.byIdDesc(), it).content shouldHaveSize 1
             }
         }
+
+        "should check completion" {
+            // by default there must be five questions
+            val session = testDataFactory.getQuizSession(owner = user)
+            val count = session.questions.size
+            session.questions.forEachIndexed { index, quizSessionQuestion ->
+                service.getRemainingQuestionIds(session.id).size shouldBe count - index
+                testDataFactory.getQuizSessionAnswer(
+                    owner = user,
+                    quiz = session.quiz!!,
+                    quizSession = session,
+                    quizSessionQuestion = quizSessionQuestion
+                )
+            }
+        }
     }
 }
