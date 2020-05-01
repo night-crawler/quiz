@@ -27,4 +27,8 @@ data class QuizSessionAnswer(
         inverseJoinColumns = [JoinColumn(name = "quiz_session_question_answer_id")]
     )
     val answers: Set<QuizSessionQuestionAnswer> = setOf()
-) : BaseQuizEntity()
+) : BaseQuizEntity() {
+    override fun toString(): String {
+        return "QuizSessionAnswer(owner=${owner.id}, quizSession=${quizSession.id}, quizSessionQuestion=${quizSessionQuestion.id}, answers=...)"
+    }
+}

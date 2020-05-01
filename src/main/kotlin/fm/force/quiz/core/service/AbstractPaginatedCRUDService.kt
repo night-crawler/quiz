@@ -47,7 +47,8 @@ abstract class AbstractPaginatedCRUDService<EntType, RepoType, PatchType, DTOTyp
     open fun validateEntity(entity: EntType) = entityValidator
         .validate(entity)
         .throwIfInvalid {
-            logger.debug("Entity validation failed: {}", entity)
+            // it's unsafe to call toString() here because of an unknown set of relations of the entity here
+            // logger.debug("Entity validation failed: {}", entity)
             ValidationError(it)
         }
 
