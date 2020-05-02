@@ -12,6 +12,7 @@ import fm.force.quiz.common.dto.SortQuery
 import fm.force.quiz.core.service.QuizSessionAnswerService
 import fm.force.quiz.core.service.QuizSessionQuestionService
 import fm.force.quiz.core.service.QuizSessionService
+import fm.force.quiz.core.service.ScoreService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController
 class QuizSessionController(
     private val quizSessionQuestionService: QuizSessionQuestionService,
     private val quizSessionAnswerService: QuizSessionAnswerService,
+    private val scoreService: ScoreService,
     quizSessionService: QuizSessionService
 ) : QuizSessionControllerType(quizSessionService) {
 
@@ -74,6 +76,10 @@ class QuizSessionController(
     fun getRemainingQuestionCount(@PathVariable sessionId: Long) = RemainingSessionQuestionCount(
         service.getRemainingQuestionCount(sessionId)
     )
+
+    @GetMapping("{sessionId}/report")
+    fun getReport(@PathVariable sessionId: Long) =
+        scoreService.getOrCreateReport(sessionId)
 
     @GetMapping("{sessionId}/answers")
     fun findAnswers(

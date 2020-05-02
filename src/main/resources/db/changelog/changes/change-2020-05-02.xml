@@ -1,0 +1,34 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="igorkalishevsky (generated)" id="1588440964916-3">
+        <createTable tableName="scores">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="scoresPK"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="count" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_correct" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="owner_id" type="BIGINT"/>
+            <column name="quiz_session_id" type="BIGINT"/>
+            <column name="tag_id" type="BIGINT"/>
+            <column name="topic_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1588440964916-4">
+        <addForeignKeyConstraint baseColumnNames="topic_id" baseTableName="scores" constraintName="FK9ew0ww0qa0tus278xitbqcdgb" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="topics" validate="true"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1588440964916-5">
+        <addForeignKeyConstraint baseColumnNames="owner_id" baseTableName="scores" constraintName="FKiieyy3ik9u3h5ccehld4bcsng" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1588440964916-6">
+        <addForeignKeyConstraint baseColumnNames="quiz_session_id" baseTableName="scores" constraintName="FKp54cj98vciitosku2cedp4me2" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="quiz_sessions" validate="true"/>
+    </changeSet>
+    <changeSet author="igorkalishevsky (generated)" id="1588440964916-7">
+        <addForeignKeyConstraint baseColumnNames="tag_id" baseTableName="scores" constraintName="FKq2r24mrsiwkip1os84le6nhop" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tags" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

@@ -4,14 +4,14 @@ import fm.force.quiz.security.entity.User
 import javax.persistence.Entity
 import javax.persistence.ManyToOne
 import javax.persistence.Table
-import javax.persistence.UniqueConstraint
 
 @Entity
-@Table(
-    name = "topics",
-    uniqueConstraints = [UniqueConstraint(columnNames = ["owner_id", "title"])]
-)
-data class Topic(
+@Table(name = "scores")
+data class Score(
     @ManyToOne val owner: User,
-    var title: String
+    @ManyToOne val quizSession: QuizSession,
+    @ManyToOne val tag: Tag?,
+    @ManyToOne val topic: Topic?,
+    var isCorrect: Boolean,
+    var count: Long
 ) : BaseQuizEntity()

@@ -49,6 +49,30 @@ class TestDataFactory(
     private val quizSessionQuestionAnswerRepository: QuizSessionQuestionAnswerRepository,
     private val quizSessionAnswerRepository: QuizSessionAnswerRepository
 ) {
+    val tagPool = mutableMapOf<User, MutableList<Tag>>()
+    val topicPool = mutableMapOf<User, MutableList<Topic>>()
+    val minPoolSize = 5
+
+    @Transactional
+    fun getTagFromPool(owner: User = getUser()): Tag {
+        val tags = tagPool.getOrPut(owner, { mutableListOf() })
+        return if (tags.size < minPoolSize) {
+            getTag(owner).also { tags.add(it) }
+        } else {
+            tags.random()
+        }
+    }
+
+    @Transactional
+    fun getTopicFromPool(owner: User = getUser()): Topic {
+        val topics = topicPool.getOrPut(owner, { mutableListOf() })
+        return if (topics.size < minPoolSize) {
+            getTopic(owner).also { topics.add(it) }
+        } else {
+            topics.random()
+        }
+    }
+
     @Transactional
     fun getUser(
         username: String = getRandomString(16),
@@ -81,8 +105,8 @@ class TestDataFactory(
         text: String = getRandomString(16),
         help: String = getRandomString(16),
         answers: MutableSet<Answer> = (1..5).map { getAnswer(owner = owner) }.toMutableSet(),
-        topics: MutableSet<Topic> = (1..5).map { getTopic(owner = owner) }.toMutableSet(),
-        tags: MutableSet<Tag> = (1..5).map { getTag(owner = owner) }.toMutableSet(),
+        topics: MutableSet<Topic> = (1..5).map { getTopicFromPool(owner = owner) }.toMutableSet(),
+        tags: MutableSet<Tag> = (1..5).map { getTagFromPool(owner = owner) }.toMutableSet(),
         difficulty: Int = Random.nextInt(1000)
     ) = questionRepository.save(
         Question(
@@ -151,10 +175,11 @@ class TestDataFactory(
     @Transactional
     fun getQuiz(
         owner: User = getUser(),
+        numQuestions: Int = 5,
         title: String = getRandomString(16),
-        questions: Collection<Question> = (1..5).map { getQuestion(owner = owner) },
-        topics: MutableSet<Topic> = (1..5).map { getTopic(owner = owner) }.toMutableSet(),
-        tags: MutableSet<Tag> = (1..5).map { getTag(owner = owner) }.toMutableSet(),
+        questions: Collection<Question> = (1..numQuestions).map { getQuestion(owner = owner) },
+        topics: MutableSet<Topic> = (1..5).map { getTopicFromPool(owner = owner) }.toMutableSet(),
+        tags: MutableSet<Tag> = (1..5).map { getTagFromPool(owner = owner) }.toMutableSet(),
         difficultyScale: DifficultyScale? = getDifficultyScale(owner = owner)
     ): Quiz {
         val quiz = quizRepository.save(
@@ -175,7 +200,8 @@ class TestDataFactory(
     @Transactional
     fun getQuizSession(
         owner: User = getUser(),
-        quiz: Quiz = getQuiz(owner = owner),
+        numQuestions: Int = 5,
+        quiz: Quiz = getQuiz(owner = owner, numQuestions = numQuestions),
         isCancelled: Boolean = false,
         isCompleted: Boolean = false,
         cancelledAt: Instant? = if (isCancelled) Instant.now() else null,
@@ -280,6 +306,7 @@ class TestDataFactory(
         owner = owner,
         quizSession = quizSession,
         quizSessionQuestion = quizSessionQuestion,
+        answers = quizSessionQuestion.answers.filter { it.isCorrect == isCorrect }.toSet(),
         isCorrect = isCorrect
     ).let { quizSessionAnswerRepository.save(it) }
 }

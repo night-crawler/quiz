@@ -15,7 +15,7 @@ import fm.force.quiz.configuration.properties.DifficultyScaleValidationPropertie
 import fm.force.quiz.core.entity.DifficultyScale
 import fm.force.quiz.core.entity.DifficultyScaleRange
 import fm.force.quiz.core.entity.DifficultyScale_
-import fm.force.quiz.core.exception.ArbitraryValidationError
+import fm.force.quiz.core.exception.ArbitraryFieldValidationError
 import fm.force.quiz.core.exception.NestedValidationError
 import fm.force.quiz.core.repository.DifficultyScaleRangeRepository
 import fm.force.quiz.core.repository.DifficultyScaleRepository
@@ -85,7 +85,7 @@ class DifficultyScaleService(
 
     private fun validateRanges(patchDTO: DifficultyScalePatchDTO) {
         if (patchDTO.ranges.isNullOrEmpty() || patchDTO.ranges.size !in 1..validationProps.maxRanges) {
-            throw ArbitraryValidationError(
+            throw ArbitraryFieldValidationError(
                 fieldName = DifficultyScalePatchDTO::ranges.name,
                 violatedValue = null,
                 message = "Provide 1..${validationProps.maxRanges} ranges"

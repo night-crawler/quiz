@@ -6,7 +6,7 @@ import com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException
 import fm.force.quiz.common.dto.ErrorMessage
 import fm.force.quiz.common.dto.ErrorResponse
 import fm.force.quiz.common.dto.FieldError
-import fm.force.quiz.core.exception.ArbitraryValidationError
+import fm.force.quiz.core.exception.ArbitraryFieldValidationError
 import fm.force.quiz.core.exception.NestedValidationError
 import fm.force.quiz.core.exception.NotFoundException
 import fm.force.quiz.core.exception.ValidationError
@@ -157,7 +157,7 @@ fun ErrorResponse.Companion.of(ex: NestedValidationError) = ErrorResponse(
     errors = ex.violations.map { it.toFieldError(prefix = ex.prefix) }
 )
 
-fun ErrorResponse.Companion.of(ex: ArbitraryValidationError) = ErrorResponse(
+fun ErrorResponse.Companion.of(ex: ArbitraryFieldValidationError) = ErrorResponse(
     exception = ex.javaClass.simpleName,
     type = ErrorResponse.Type.VALIDATION,
     errors = listOf(

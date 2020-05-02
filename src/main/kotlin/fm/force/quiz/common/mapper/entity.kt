@@ -12,6 +12,7 @@ import fm.force.quiz.core.entity.QuizSession
 import fm.force.quiz.core.entity.QuizSessionAnswer
 import fm.force.quiz.core.entity.QuizSessionQuestion
 import fm.force.quiz.core.entity.QuizSessionQuestionAnswer
+import fm.force.quiz.core.entity.Score
 import fm.force.quiz.core.entity.Tag
 import fm.force.quiz.core.entity.Topic
 import fm.force.quiz.security.entity.Role
@@ -230,3 +231,12 @@ fun User.toFullDTO() = UserFullDTO(
     createdAt = createdAt,
     updatedAt = updatedAt
 )
+
+fun Score.toRestrictedDTO() = ScoreRestrictedDTO(
+    tag = tag?.toRestrictedDTO(),
+    topic = topic?.toRestrictedDTO(),
+    isCorrect = isCorrect,
+    count = count
+)
+
+fun Collection<Score>.toRestrictedDTO() = map { it.toRestrictedDTO() }

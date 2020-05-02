@@ -22,7 +22,7 @@ class JwtConfigurationProperties {
     @PostConstruct
     fun postConstruct() {
         logger.info("[ø] JWT issuer: $issuer")
-        logger.info("[ø] JWT access token expire in: ${accessTokenExpire.seconds} seconds")
+        logger.info("[ø] JWT access token expires in: ${accessTokenExpire.seconds} seconds")
         logger.info("[ø] JWT refresh token expires in: ${refreshTokenExpire.seconds} seconds")
         logger.info("[ø] JWT Refresh cookie name: $refreshTokenCookieName")
         logger.info("[ø] JWT Refresh cookie path: $refreshTokenCookiePath")

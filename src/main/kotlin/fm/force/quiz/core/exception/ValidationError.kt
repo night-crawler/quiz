@@ -4,7 +4,7 @@ import am.ik.yavi.core.ConstraintViolations
 
 open class ValidationError(val violations: ConstraintViolations) : RuntimeException()
 
-class ArbitraryValidationError(
+class ArbitraryFieldValidationError(
     val fieldName: String,
     val violatedValue: Any? = null,
     message: String
