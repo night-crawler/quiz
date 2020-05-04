@@ -19,9 +19,9 @@ data class User(
     @Column(unique = true)
     val email: String,
 
-    val password: String = "",
+    var password: String = "",
 
-    val isActive: Boolean = false,
+    var isActive: Boolean = false,
 
     @ManyToMany(targetEntity = Role::class, fetch = FetchType.EAGER)
     @JoinTable(

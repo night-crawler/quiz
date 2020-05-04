@@ -1,7 +1,10 @@
 package fm.force.quiz.security.service
 
+import fm.force.quiz.core.exception.NotFoundException
 import fm.force.quiz.security.configuration.properties.JwtConfigurationProperties
 import fm.force.quiz.security.configuration.properties.PasswordConfigurationProperties
+import fm.force.quiz.security.dto.ActivateAccountDTO
+import fm.force.quiz.security.dto.ActivationSuccessDTO
 import fm.force.quiz.security.dto.JwtAccessTokenDTO
 import fm.force.quiz.security.dto.JwtResponseTokensDTO
 import fm.force.quiz.security.dto.LoginRequestDTO
@@ -9,9 +12,6 @@ import fm.force.quiz.security.dto.RegisterRequestDTO
 import fm.force.quiz.security.entity.User
 import fm.force.quiz.security.jwt.JwtUserDetails
 import fm.force.quiz.security.repository.UserRepository
-import javax.servlet.http.Cookie
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
 import org.springframework.security.authentication.AccountExpiredException
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.authentication.CredentialsExpiredException
@@ -20,7 +20,12 @@ import org.springframework.security.authentication.LockedException
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.support.TransactionTemplate
+import java.lang.IllegalStateException
+import javax.servlet.http.Cookie
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
 
 @Service
 class AuthService(
@@ -44,13 +49,17 @@ class AuthService(
 
     fun register(
         request: RegisterRequestDTO,
-        isActive: Boolean = passwordConfigurationProperties.userIsEnabledAfterCreation
+        // Applying of Transactional annotation to any method here
+        // probably wraps the whole class and breaks the evaluating of kotlin the default values.
+        // If isActive is set to passwordConfigurationProperties.userIsEnabledAfterCreation,
+        // it throws a NPE here. This is why null.
+        isActive: Boolean? = null
     ): User {
         val user = User(
             username = request.email,
             email = request.email,
             password = hashGeneratorService.encode(request.password),
-            isActive = isActive
+            isActive = isActive ?: passwordConfigurationProperties.userIsEnabledAfterCreation
         )
         return userRepository.save(user)
     }
@@ -76,8 +85,34 @@ class AuthService(
         return JwtResponseTokensDTO(accessToken = accessToken, refreshToken = refreshToken)
     }
 
+    @Transactional
+    fun activate(activateAccountDTO: ActivateAccountDTO): ActivationSuccessDTO {
+        val user = userRepository.findById(activateAccountDTO.userId).orElseThrow {
+            UsernameNotFoundException("User with id ${activateAccountDTO.userId} was not found!")
+        }
+
+        if (user.isActive) {
+            throw IllegalStateException("User has already been activated")
+        }
+
+        user.isActive = true
+        userRepository.save(user)
+        return ActivationSuccessDTO("User ${user.email} has been activated")
+    }
+
     fun setupRefreshTokenCookie(response: HttpServletResponse, token: String) =
         response.addCookie(getRefreshTokenCookie(token))
+
+    fun removeRefreshTokenCookie(response: HttpServletResponse) =
+        Cookie(conf.refreshTokenCookieName, null)
+            .apply {
+                path = conf.refreshTokenCookiePath
+                isHttpOnly = true
+                maxAge = 0
+            }
+            .let {
+                response.addCookie(it)
+            }
 
     internal fun activateUser(user: User) {
         transactionTemplate.execute {
