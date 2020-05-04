@@ -13,10 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.context.annotation.PropertySource
 import org.springframework.test.context.ContextConfiguration
+import org.springframework.transaction.support.TransactionTemplate
 
 @PropertySource("classpath:application-test.yaml", factory = YamlPropertyLoaderFactory::class)
 @ContextConfiguration(classes = [TestConfiguration::class])
 abstract class AbstractCRUDServiceTest : StringSpec() {
+
+    @Autowired
+    lateinit var transactionTemplate: TransactionTemplate
 
     @Autowired
     lateinit var testDataFactory: TestDataFactory

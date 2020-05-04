@@ -64,4 +64,9 @@ data class Quiz(
         result = 31 * result + (difficultyScale?.hashCode() ?: 0)
         return result
     }
+
+    override fun toString(): String {
+        return "Quiz(owner=$owner, title='$title', difficultyScale=$difficultyScale)"
+    }
+
 }

@@ -82,10 +82,5 @@ open class QuizServiceTest(
             patched.tags shouldHaveSize 0
             patched.topics shouldHaveSize 0
         }
-
-        "should delete" {
-            val q = testDataFactory.getQuizSession(owner = user)
-            quizService.delete(q.quiz!!.id)
-        }
     }
 }

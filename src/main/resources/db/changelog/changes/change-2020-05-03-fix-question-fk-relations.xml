@@ -1,0 +1,28 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="change-2020-05-03-fix-question-fk-relations.xml" author="night-crawler">
+        <dropForeignKeyConstraint
+                baseColumnNames="question_id" baseTableName="quizzes__questions"
+                constraintName="FK1tjn1gn4rv1twmqhfb41jwy1r"
+                referencedTableName="questions"
+        />
+        <addForeignKeyConstraint
+                baseColumnNames="question_id" baseTableName="quizzes__questions"
+                constraintName="FK1tjn1gn4rv1twmqhfb41jwy1r" deferrable="false" initiallyDeferred="false"
+                referencedColumnNames="id" referencedTableName="questions" validate="true" onDelete="CASCADE"
+        />
+
+        <dropForeignKeyConstraint
+                baseColumnNames="original_question_id" baseTableName="quiz_session_questions"
+                constraintName="FKogi5m9s15af0yndhs42yb7of8"
+                referencedColumnNames="id" referencedTableName="questions"
+        />
+        <addForeignKeyConstraint
+                baseColumnNames="original_question_id" baseTableName="quiz_session_questions"
+                constraintName="FKogi5m9s15af0yndhs42yb7of8" deferrable="false" initiallyDeferred="false"
+                referencedColumnNames="id" referencedTableName="questions" validate="true" onDelete="SET NULL"/>
+    </changeSet>
+</databaseChangeLog>

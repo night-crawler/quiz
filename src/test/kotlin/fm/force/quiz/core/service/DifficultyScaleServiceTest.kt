@@ -107,13 +107,5 @@ open class DifficultyScaleServiceTest(
             entity.updatedAt shouldNotBe scale.updatedAt
             entity.difficultyScaleRanges shouldHaveSize 1
         }
-
-        "should cascade delete" {
-            val quizSession = testDataFactory.getQuizSession(owner = user)
-            difficultyScaleService.delete(quizSession.difficultyScale!!.id)
-
-            val quiz = testDataFactory.getQuiz(owner = user)
-            difficultyScaleService.delete(quiz.difficultyScale!!.id)
-        }
     }
 }
