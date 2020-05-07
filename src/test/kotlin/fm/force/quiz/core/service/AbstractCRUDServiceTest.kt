@@ -1,7 +1,6 @@
 package fm.force.quiz.core.service
 
-import fm.force.quiz.TestConfiguration
-import fm.force.quiz.YamlPropertyLoaderFactory
+import fm.force.quiz.AbstractBootTest
 import fm.force.quiz.factory.TestDataFactory
 import fm.force.quiz.security.entity.User
 import fm.force.quiz.security.service.AuthenticationFacade
@@ -11,13 +10,9 @@ import io.kotlintest.specs.StringSpec
 import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.context.annotation.PropertySource
-import org.springframework.test.context.ContextConfiguration
 import org.springframework.transaction.support.TransactionTemplate
 
-@PropertySource("classpath:application-test.yaml", factory = YamlPropertyLoaderFactory::class)
-@ContextConfiguration(classes = [TestConfiguration::class])
-abstract class AbstractCRUDServiceTest : StringSpec() {
+abstract class AbstractCRUDServiceTest : AbstractBootTest, StringSpec() {
 
     @Autowired
     lateinit var transactionTemplate: TransactionTemplate

@@ -5,7 +5,7 @@ import fm.force.quiz.common.getRandomString
 import fm.force.quiz.util.expectOkOrPrint
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
-class TagControllerTest : AbstractControllerTest() {
+class TagControllerTest : AbstractQuizControllerTest() {
     init {
         "CRUD controllers" should {
             "/tags" {

@@ -1,12 +1,14 @@
 package fm.force.quiz.core.controller
 
 import fm.force.quiz.common.dto.PaginationQuery
+import fm.force.quiz.common.dto.QuizImportDTO
 import fm.force.quiz.common.dto.QuizQuestionFullDTO
 import fm.force.quiz.common.dto.QuizQuestionPatchDTO
 import fm.force.quiz.common.dto.QuizQuestionSearchDTO
 import fm.force.quiz.common.dto.QuizSessionPatchDTO
 import fm.force.quiz.common.dto.SortQuery
 import fm.force.quiz.common.mapper.toFullDTO
+import fm.force.quiz.core.service.QuizImportService
 import fm.force.quiz.core.service.QuizQuestionService
 import fm.force.quiz.core.service.QuizService
 import fm.force.quiz.core.service.QuizSessionService
@@ -26,7 +28,8 @@ import org.springframework.web.bind.annotation.RestController
 class QuizController(
     quizService: QuizService,
     private val quizQuestionService: QuizQuestionService,
-    private val quizSessionService: QuizSessionService
+    private val quizSessionService: QuizSessionService,
+    private val quizImportService: QuizImportService
 ) : QuizControllerType(quizService) {
 
     override val service: QuizService = quizService
@@ -82,5 +85,15 @@ class QuizController(
     @PostMapping("{quizId}/startSession")
     @ResponseStatus(HttpStatus.CREATED)
     fun startSession(@PathVariable quizId: Long) =
-        quizSessionService.serializeEntity(quizSessionService.create(QuizSessionPatchDTO(quizId)))
+        quizSessionService.create(QuizSessionPatchDTO(quizId)).let {
+            quizSessionService.serializeEntity(it)
+        }
+
+    @PostMapping("import")
+    @ResponseStatus(HttpStatus.CREATED)
+    fun import(@RequestBody quizImportDTO: QuizImportDTO) =
+         quizImportService.import(quizImportDTO.text)
+             .let {
+                 service.serializeEntity(it)
+             }
 }

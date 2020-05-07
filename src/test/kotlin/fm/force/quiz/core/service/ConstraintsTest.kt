@@ -1,11 +1,6 @@
-package io.kotlintest.provided.fm.force.quiz.core.service
+package fm.force.quiz.core.service
 
 import fm.force.quiz.core.repository.QuizRepository
-import fm.force.quiz.core.service.AbstractCRUDServiceTest
-import fm.force.quiz.core.service.DifficultyScaleService
-import fm.force.quiz.core.service.QuestionService
-import fm.force.quiz.core.service.QuizService
-import fm.force.quiz.core.service.QuizSessionService
 import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.matchers.numerics.shouldBeExactly
 import io.kotlintest.shouldNotBe

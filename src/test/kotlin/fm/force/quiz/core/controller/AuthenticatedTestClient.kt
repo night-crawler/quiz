@@ -1,6 +1,6 @@
 package fm.force.quiz.core.controller
 
-import io.kotlintest.provided.fm.force.quiz.util.JMapper
+import fm.force.quiz.util.JMapper
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders

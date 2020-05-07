@@ -1,0 +1,38 @@
+quiz:
+  title: sample title
+  tags:
+    - sample tag 1
+    - sample tag 2
+  topics:
+    - sample topic 1
+    - sample topic 2
+  questions:
+
+    - title: Sample question title 1
+      text: Sample question text 1
+      help: Sample question help 1
+      difficulty: 1
+      tags:
+        - sample tag 1
+      topics:
+        - sample topic 2
+      answers:
+        - text: sample answer 1
+          correct: true
+        - text: sample answer 2
+          correct: false
+
+    - title: Sample question title 2
+      text: Sample question text 2
+      help: Sample question help 2
+      answers:
+        - text: sample answer 1
+          correct: true
+        - text: sample answer 2
+
+    - title: Sample question title 3
+      text: Sample question text 3
+      answers:
+        - text: sample answer 1
+          correct: true
+        - text: sample answer 2

@@ -1,6 +1,5 @@
 package fm.force.quiz.util
 
-import io.kotlintest.provided.fm.force.quiz.util.JMapper
 import io.kotlintest.shouldBe
 import org.springframework.http.HttpStatus
 import org.springframework.mock.web.MockHttpServletResponse

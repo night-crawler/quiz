@@ -1,6 +1,6 @@
 package fm.force.quiz.security.service
 
-import fm.force.quiz.TestConfiguration
+import fm.force.quiz.AbstractBootTest
 import fm.force.quiz.security.configuration.properties.JwtConfigurationProperties
 import fm.force.quiz.security.configuration.properties.PasswordConfigurationProperties
 import fm.force.quiz.security.dto.LoginRequestDTO
@@ -13,21 +13,20 @@ import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.StringSpec
-import javax.servlet.http.Cookie
-import javax.validation.Validator
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.security.authentication.BadCredentialsException
-import org.springframework.test.context.ContextConfiguration
+import javax.servlet.http.Cookie
+import javax.validation.Validator
 
-@ContextConfiguration(classes = [TestConfiguration::class])
+
 open class AuthServiceTest(
     private val userRepository: UserRepository,
     private val service: AuthService,
     private val validator: Validator,
     private val conf: JwtConfigurationProperties,
     private val passwordConfigurationProperties: PasswordConfigurationProperties
-) : StringSpec() {
+) : AbstractBootTest, StringSpec() {
     init {
         // Actually this test does not seem to be a proper place to check validation errors
         "ensure empty values are not allowed" {

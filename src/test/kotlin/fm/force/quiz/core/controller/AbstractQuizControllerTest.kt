@@ -1,7 +1,6 @@
 package fm.force.quiz.core.controller
 
-import fm.force.quiz.TestConfiguration
-import fm.force.quiz.YamlPropertyLoaderFactory
+import fm.force.quiz.AbstractSprintBootControllerTest
 import fm.force.quiz.common.dto.DTOMarker
 import fm.force.quiz.common.getRandomString
 import fm.force.quiz.security.dto.LoginRequestDTO
@@ -11,22 +10,11 @@ import fm.force.quiz.security.service.AuthService
 import fm.force.quiz.util.entityId
 import fm.force.quiz.util.expectOkOrPrint
 import io.kotlintest.TestCase
-import io.kotlintest.specs.WordSpec
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.context.annotation.PropertySource
-import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
-@ContextConfiguration(classes = [TestConfiguration::class])
-@PropertySource("classpath:application-test.yaml", factory = YamlPropertyLoaderFactory::class)
-@ActiveProfiles("test")
-@AutoConfigureMockMvc
-abstract class AbstractControllerTest : WordSpec() {
+abstract class AbstractQuizControllerTest : AbstractSprintBootControllerTest() {
     @Autowired
     lateinit var mockMvc: MockMvc
 

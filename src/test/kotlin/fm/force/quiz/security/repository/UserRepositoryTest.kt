@@ -1,5 +1,6 @@
 package fm.force.quiz.security.repository
 
+import fm.force.quiz.AbstractBootTest
 import fm.force.quiz.TestConfiguration
 import fm.force.quiz.YamlPropertyLoaderFactory
 import fm.force.quiz.security.entity.Role
@@ -13,12 +14,10 @@ import io.kotlintest.specs.WordSpec
 import org.springframework.context.annotation.PropertySource
 import org.springframework.test.context.ContextConfiguration
 
-@PropertySource("classpath:application-test.yaml", factory = YamlPropertyLoaderFactory::class)
-@ContextConfiguration(classes = [TestConfiguration::class])
 open class UserRepositoryTest(
     private val userRepository: UserRepository,
     private val roleRepository: RoleRepository
-) : WordSpec() {
+) : AbstractBootTest, WordSpec() {
 
     private lateinit var adminRole: Role
     private lateinit var teacherRole: Role

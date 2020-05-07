@@ -12,7 +12,7 @@ class QuizSessionControllerTest(
     testDataFactory: TestDataFactory,
     private val quizSessionRepository: QuizSessionRepository,
     private val quizSessionQuestionRepository: QuizSessionQuestionRepository
-) : AbstractControllerTest() {
+) : AbstractQuizControllerTest() {
     init {
         "CRUD controllers" should {
             "/quizSessions" {

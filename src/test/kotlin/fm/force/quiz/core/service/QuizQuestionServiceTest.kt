@@ -1,11 +1,9 @@
-package io.kotlintest.provided.fm.force.quiz.core.service
+package fm.force.quiz.core.service
 
 import fm.force.quiz.common.dto.QuizQuestionPatchDTO
 import fm.force.quiz.core.entity.QuizQuestion
 import fm.force.quiz.core.exception.ValidationError
 import fm.force.quiz.core.repository.QuizQuestionRepository
-import fm.force.quiz.core.service.AbstractCRUDServiceTest
-import fm.force.quiz.core.service.QuizQuestionService
 import io.kotlintest.data.forall
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow

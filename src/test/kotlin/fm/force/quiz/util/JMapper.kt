@@ -1,4 +1,4 @@
-package io.kotlintest.provided.fm.force.quiz.util
+package fm.force.quiz.util
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper

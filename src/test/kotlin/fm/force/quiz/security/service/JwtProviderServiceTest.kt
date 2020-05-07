@@ -1,6 +1,6 @@
 package fm.force.quiz.security.service
 
-import fm.force.quiz.TestConfiguration
+import fm.force.quiz.AbstractBootTest
 import fm.force.quiz.common.getRandomString
 import fm.force.quiz.security.entity.Role
 import fm.force.quiz.security.entity.User
@@ -13,12 +13,10 @@ import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
 import io.kotlintest.specs.WordSpec
 import java.util.Date
-import org.springframework.test.context.ContextConfiguration
 
-@ContextConfiguration(classes = [TestConfiguration::class])
 open class JwtProviderServiceTest(
     private val jwtProviderService: JwtProviderService
-) : WordSpec() {
+) : AbstractBootTest, WordSpec() {
     private val jwtUserDetailsFactory = JwtUserDetailsMapper()
     private val randomUserDetails: JwtUserDetails get() = jwtUserDetailsFactory.of(randomUser)
     private val randomUser

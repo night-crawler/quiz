@@ -4,7 +4,7 @@ import fm.force.quiz.common.dto.DifficultyScalePatchDTO
 import fm.force.quiz.common.dto.DifficultyScaleRangePatchDTO
 import fm.force.quiz.factory.TestDataFactory
 
-class DifficultyScaleControllerTest(testDataFactory: TestDataFactory) : AbstractControllerTest() {
+class DifficultyScaleControllerTest(testDataFactory: TestDataFactory) : AbstractQuizControllerTest() {
     init {
         "CRUD controllers" should {
             "/difficultyScales" {
