@@ -1,6 +1,7 @@
 package fm.force.quiz.core.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.readValue
 import fm.force.quiz.common.dto.AnswerPatchDTO
 import fm.force.quiz.common.dto.QuestionPatchDTO
@@ -41,13 +42,16 @@ data class QuizYamlImportDTO(
 
 @Service
 class QuizImportService(
-    private val yamlObjectMapper: ObjectMapper,
     private val quizService: QuizService,
     private val questionService: QuestionService,
     private val topicService: TopicService,
     private val tagService: TagService,
     private val answerService: AnswerService
 ) {
+    private val yamlObjectMapper = ObjectMapper(YAMLFactory()).also {
+        it.findAndRegisterModules()
+    }
+
     @Transactional
     fun import(rawYaml: String): Quiz {
         val rawQuiz = yamlObjectMapper.readValue<QuizYamlImportDTO>(rawYaml).quiz
