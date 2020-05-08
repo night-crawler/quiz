@@ -39,6 +39,9 @@ force:
         - pattern: /**/api-docs/**
           authority: null
           anonymous: true
+        - pattern: /error**
+          authority: null
+          anonymous: true
     jwt:
       secret: IAmVeryRobustAndUniqueSecret!!!one
       accessTokenExpire: 1M

@@ -9,6 +9,7 @@ import fm.force.quiz.common.dto.QuizPatchDTO
 import fm.force.quiz.common.dto.TagPatchDTO
 import fm.force.quiz.common.dto.TopicPatchDTO
 import fm.force.quiz.core.entity.Quiz
+import fm.force.quiz.core.exception.QuizImportException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -54,7 +55,11 @@ class QuizImportService(
 
     @Transactional
     fun import(rawYaml: String): Quiz {
-        val rawQuiz = yamlObjectMapper.readValue<QuizYamlImportDTO>(rawYaml).quiz
+        val rawQuiz = try {
+            yamlObjectMapper.readValue<QuizYamlImportDTO>(rawYaml).quiz
+        } catch (exc: Exception) {
+            throw QuizImportException("Quiz import failed", exc)
+        }
         val topics = resolveTopics(rawQuiz)
         val tags = resolveTags(rawQuiz)
 
