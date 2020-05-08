@@ -5,6 +5,7 @@ import fm.force.quiz.common.mapper.of
 import fm.force.quiz.core.exception.ArbitraryFieldValidationError
 import fm.force.quiz.core.exception.NestedValidationError
 import fm.force.quiz.core.exception.NotFoundException
+import fm.force.quiz.core.exception.QuizImportException
 import fm.force.quiz.core.exception.ValidationError
 import org.hibernate.exception.ConstraintViolationException
 import org.springframework.dao.EmptyResultDataAccessException
@@ -59,6 +60,10 @@ class ExceptionHandler : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(NestedValidationError::class)
     fun handleValidationError(ex: NestedValidationError, request: WebRequest) =
+        ResponseEntity(ErrorResponse.of(ex), HttpStatus.BAD_REQUEST)
+
+    @ExceptionHandler(QuizImportException::class)
+    fun handleQuizImportException(ex: QuizImportException, request: WebRequest) =
         ResponseEntity(ErrorResponse.of(ex), HttpStatus.BAD_REQUEST)
 
     @ExceptionHandler(DisabledException::class)
