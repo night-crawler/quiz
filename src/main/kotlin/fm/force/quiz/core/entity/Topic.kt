@@ -13,5 +13,6 @@ import javax.persistence.UniqueConstraint
 )
 data class Topic(
     @ManyToOne val owner: User,
-    var title: String
+    var title: String,
+    var slug: String
 ) : BaseQuizEntity()

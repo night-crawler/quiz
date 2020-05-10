@@ -6,12 +6,14 @@ import fm.force.quiz.common.SpecificationBuilder
 import fm.force.quiz.common.dto.PageDTO
 import fm.force.quiz.common.dto.QuestionFullDTO
 import fm.force.quiz.common.dto.QuestionPatchDTO
-import fm.force.quiz.common.dto.SearchQueryDTO
+import fm.force.quiz.common.dto.QuestionSearchQueryDTO
 import fm.force.quiz.common.mapper.toDTO
 import fm.force.quiz.common.mapper.toFullDTO
 import fm.force.quiz.configuration.properties.QuestionValidationProperties
 import fm.force.quiz.core.entity.Question
 import fm.force.quiz.core.entity.Question_
+import fm.force.quiz.core.entity.Tag_
+import fm.force.quiz.core.entity.Topic_
 import fm.force.quiz.core.repository.AnswerRepository
 import fm.force.quiz.core.repository.QuestionRepository
 import fm.force.quiz.core.repository.TagRepository
@@ -21,6 +23,7 @@ import fm.force.quiz.core.validator.mandatory
 import fm.force.quiz.core.validator.optionalSubset
 import fm.force.quiz.core.validator.ownedFksConstraint
 import fm.force.quiz.core.validator.stringConstraint
+import org.slf4j.LoggerFactory
 import java.time.Instant
 import org.springframework.data.domain.Page
 import org.springframework.data.jpa.domain.Specification
@@ -115,16 +118,41 @@ class QuestionService(
         return repository.save(modifiedQuestion)
     }
 
-    override fun buildSearchSpec(search: SearchQueryDTO?): Specification<Question> {
-        val ownerEquals = SpecificationBuilder.fk(authenticationFacade::user, Question_.owner)
-        val needle = search?.query
-        if (needle.isNullOrEmpty()) return ownerEquals
+    override fun buildSearchSpec(search: QuestionSearchQueryDTO?): Specification<Question> {
+        var spec = SpecificationBuilder.fk(authenticationFacade::user, Question_.owner)
+        if (search == null) {
+            return spec
+        }
 
-        return ownerEquals.and(
-            SpecificationBuilder
-                .ciContains(needle, Question_.text)
-                .or(SpecificationBuilder.ciContains(needle, Question_.title))
-        )!!
+        if (!search.query.isNullOrEmpty()) {
+            spec = spec.and(
+                SpecificationBuilder
+                    .ciContains(search.query, Question_.text)
+                    .or(SpecificationBuilder.ciContains(search.query, Question_.title))
+            )!!
+        }
+
+        if (!search.tagSlugs.isNullOrEmpty()) {
+            val tagSlugs = search.tagSlugs.split(",").map { it.trim() }
+            val tagsSpec = Specification<Question> { root, query, _ ->
+                query.distinct(true)
+                val questionTag = root.join(Question_.tags)
+                questionTag.get(Tag_.slug).`in`(tagSlugs)
+            }
+            spec = spec.and(tagsSpec)!!
+        }
+
+        if (!search.topicSlugs.isNullOrEmpty()) {
+            val topicSlugs = search.topicSlugs.split(",").map { it.trim() }
+            val topicsSpec = Specification<Question> { root, query, _ ->
+                query.distinct(true)
+                val questionTopic = root.join(Question_.topics)
+                questionTopic.get(Topic_.slug).`in`(topicSlugs)
+            }
+            spec = spec.and(topicsSpec)!!
+        }
+
+        return spec
     }
 
     @Transactional(readOnly = true)

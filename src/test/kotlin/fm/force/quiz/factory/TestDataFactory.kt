@@ -95,8 +95,9 @@ class TestDataFactory(
     @Transactional
     fun getTopic(
         owner: User = getUser(),
-        title: String = getRandomString(16)
-    ) = topicRepository.save(Topic(owner = owner, title = title))
+        title: String = getRandomString(16),
+        slug: String = title
+    ) = topicRepository.save(Topic(owner = owner, title = title, slug = slug))
 
     @Transactional
     fun getQuestion(

@@ -25,12 +25,9 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class TagService(
     validationProps: TagValidationProperties,
-    private val tagRepository: TagRepository
+    private val tagRepository: TagRepository,
+    private val slugifyService: SlugifyService
 ) : TagServiceType(repository = tagRepository) {
-    companion object {
-        private val slugifier = Slugify()
-        fun slugify(text: String): String = slugifier.slugify(text)
-    }
 
     override fun buildSearchSpec(search: SearchQueryDTO?): Specification<Tag> {
         val ownerEquals = SpecificationBuilder.fk(authenticationFacade::user, Tag_.owner)
@@ -73,7 +70,7 @@ class TagService(
         val tag = Tag(
             owner = authenticationFacade.user,
             name = createDTO.name,
-            slug = slugify(createDTO.name)
+            slug = slugifyService.slugify(createDTO.name)
         )
         validateEntity(tag)
         return repository.save(tag)
@@ -83,7 +80,7 @@ class TagService(
     override fun patch(id: Long, patchDTO: TagPatchDTO): Tag {
         val tag = getOwnedEntity(id)
         tag.name = patchDTO.name
-        tag.slug = slugify(patchDTO.name)
+        tag.slug = slugifyService.slugify(patchDTO.name)
         tag.updatedAt = Instant.now()
         validateEntity(tag)
         return repository.save(tag)

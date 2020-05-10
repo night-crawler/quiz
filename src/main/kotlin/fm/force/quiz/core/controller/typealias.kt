@@ -1,24 +1,6 @@
 package fm.force.quiz.core.controller
 
-import fm.force.quiz.common.dto.AnswerFullDTO
-import fm.force.quiz.common.dto.AnswerPatchDTO
-import fm.force.quiz.common.dto.DifficultyScaleFullDTO
-import fm.force.quiz.common.dto.DifficultyScalePatchDTO
-import fm.force.quiz.common.dto.DifficultyScaleRangeFullDTO
-import fm.force.quiz.common.dto.DifficultyScaleRangePatchDTO
-import fm.force.quiz.common.dto.DifficultyScaleRangeSearchDTO
-import fm.force.quiz.common.dto.QuestionFullDTO
-import fm.force.quiz.common.dto.QuestionPatchDTO
-import fm.force.quiz.common.dto.QuizFullDTO
-import fm.force.quiz.common.dto.QuizPatchDTO
-import fm.force.quiz.common.dto.QuizSessionFullDTO
-import fm.force.quiz.common.dto.QuizSessionPatchDTO
-import fm.force.quiz.common.dto.QuizSessionSearchDTO
-import fm.force.quiz.common.dto.SearchQueryDTO
-import fm.force.quiz.common.dto.TagFullDTO
-import fm.force.quiz.common.dto.TagPatchDTO
-import fm.force.quiz.common.dto.TopicFullDTO
-import fm.force.quiz.common.dto.TopicPatchDTO
+import fm.force.quiz.common.dto.*
 import fm.force.quiz.core.entity.Answer
 import fm.force.quiz.core.entity.DifficultyScale
 import fm.force.quiz.core.entity.DifficultyScaleRange
@@ -50,7 +32,7 @@ typealias DifficultyScaleRangeControllerType = AbstractCRUDController<
     DifficultyScaleRangeSearchDTO>
 
 typealias QuestionControllerType = AbstractCRUDController<
-    Question, QuestionRepository, QuestionPatchDTO, QuestionFullDTO, SearchQueryDTO>
+    Question, QuestionRepository, QuestionPatchDTO, QuestionFullDTO, QuestionSearchQueryDTO>
 
 typealias QuizControllerType = AbstractCRUDController<
     Quiz, QuizRepository, QuizPatchDTO, QuizFullDTO, SearchQueryDTO>

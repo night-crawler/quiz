@@ -47,7 +47,7 @@ typealias QuizQuestionServiceType = AbstractPaginatedCRUDService<
     QuizQuestion, QuizQuestionRepository, QuizQuestionPatchDTO, QuizQuestionFullDTO, QuizQuestionSearchDTO>
 
 typealias QuestionServiceType = AbstractPaginatedCRUDService<
-    Question, QuestionRepository, QuestionPatchDTO, QuestionFullDTO, SearchQueryDTO>
+    Question, QuestionRepository, QuestionPatchDTO, QuestionFullDTO, QuestionSearchQueryDTO>
 
 typealias DifficultyScaleServiceType = AbstractPaginatedCRUDService<
     DifficultyScale, DifficultyScaleRepository, DifficultyScalePatchDTO, DifficultyScaleFullDTO, SearchQueryDTO>

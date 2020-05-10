@@ -9,6 +9,7 @@ data class TopicFullDTO(
     @ContextualSerialization
     val id: Long,
     val title: String,
+    val slug: String,
 
     @ContextualSerialization
     val createdAt: InstantAlias,
@@ -22,7 +23,8 @@ data class TopicRestrictedDTO(
     @ContextualSerialization
     val id: Long,
 
-    val title: String
+    val title: String,
+    val slug: String
 ) : DTORestrictedSerializationMarker
 
 @Serializable

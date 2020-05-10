@@ -23,7 +23,8 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class TopicService(
     validationProps: TopicValidationProperties,
-    private val topicRepository: TopicRepository
+    private val topicRepository: TopicRepository,
+    private val slugifyService: SlugifyService
 ) : TopicServiceType(repository = topicRepository) {
     override var entityValidator = ValidatorBuilder.of<Topic>()
         .stringConstraint(Topic::title, validationProps.minTitleLength..validationProps.maxTitleLength)
@@ -32,7 +33,8 @@ class TopicService(
     override fun create(createDTO: TopicPatchDTO): Topic {
         val topic = Topic(
             owner = authenticationFacade.user,
-            title = createDTO.title
+            title = createDTO.title,
+            slug = slugifyService.slugify(createDTO.title)
         )
         validateEntity(topic)
         return repository.save(topic)
@@ -49,9 +51,11 @@ class TopicService(
 
     @Transactional
     override fun patch(id: Long, patchDTO: TopicPatchDTO): Topic {
-        val topic = getOwnedEntity(id)
-        topic.title = patchDTO.title
-        topic.updatedAt = Instant.now()
+        val topic = getOwnedEntity(id).apply {
+            title = patchDTO.title
+            updatedAt = Instant.now()
+            slug = slugifyService.slugify(patchDTO.title)
+        }
         validateEntity(topic)
         return repository.save(topic)
     }

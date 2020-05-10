@@ -210,11 +210,16 @@ fun Tag.toRestrictedDTO() = TagRestrictedDTO(
 fun Topic.toFullDTO() = TopicFullDTO(
     id = id,
     title = title,
+    slug = slug,
     createdAt = createdAt,
     updatedAt = updatedAt
 )
 
-fun Topic.toRestrictedDTO() = TopicRestrictedDTO(id = id, title = title)
+fun Topic.toRestrictedDTO() = TopicRestrictedDTO(
+    id = id,
+    title = title,
+    slug = slug
+)
 
 fun Role.toFullDTO() = RoleFullDTO(
     id = id,

@@ -17,8 +17,6 @@ import javax.persistence.UniqueConstraint
 )
 data class Tag(
     @ManyToOne val owner: User,
-    @Column(length = 100, unique = true)
     var name: String,
-    @Column(length = 150, unique = true)
     var slug: String
 ) : BaseQuizEntity()
