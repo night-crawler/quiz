@@ -3,12 +3,14 @@ package fm.force.quiz.core.service
 import am.ik.yavi.builder.ValidatorBuilder
 import fm.force.quiz.common.SpecificationBuilder
 import fm.force.quiz.common.dto.PageDTO
-import fm.force.quiz.common.dto.SearchQueryDTO
 import fm.force.quiz.common.dto.TopicFullDTO
 import fm.force.quiz.common.dto.TopicPatchDTO
+import fm.force.quiz.common.dto.TopicSearchQueryDTO
 import fm.force.quiz.common.mapper.toDTO
 import fm.force.quiz.common.mapper.toFullDTO
 import fm.force.quiz.configuration.properties.TopicValidationProperties
+import fm.force.quiz.core.entity.Tag
+import fm.force.quiz.core.entity.Tag_
 import fm.force.quiz.core.entity.Topic
 import fm.force.quiz.core.entity.Topic_
 import fm.force.quiz.core.exception.NotFoundException
@@ -19,6 +21,13 @@ import org.springframework.data.domain.Page
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+
+val TopicSearchQueryDTO.cleanedSlugs: List<String>
+    get() = when {
+        slugs == null -> listOf()
+        slugs.size > 10 -> listOf()
+        else -> slugs.map { it.trim() }.filterNot { it.isEmpty() }
+    }
 
 @Service
 class TopicService(
@@ -40,13 +49,24 @@ class TopicService(
         return repository.save(topic)
     }
 
-    override fun buildSearchSpec(search: SearchQueryDTO?): Specification<Topic> {
-        val ownerEquals = SpecificationBuilder.fk(authenticationFacade::user, Topic_.owner)
-        val needle = search?.query
-        if (needle.isNullOrEmpty())
-            return ownerEquals
+    override fun buildSearchSpec(search: TopicSearchQueryDTO?): Specification<Topic> {
+        var spec = SpecificationBuilder.fk(authenticationFacade::user, Topic_.owner)
+        if (search == null)
+            return spec
 
-        return ownerEquals.and(SpecificationBuilder.ciContains(needle, Topic_.title))!!
+        if (!search.query.isNullOrEmpty()) {
+            spec = spec.and(SpecificationBuilder.ciContains(search.query, Topic_.title))!!
+        }
+
+        val cleanedSlugs = search.cleanedSlugs
+        if (cleanedSlugs.isNotEmpty()) {
+            val slugsSpec = Specification<Topic> { root, _, _ ->
+                root[Topic_.slug].`in`(cleanedSlugs.map { it.toLowerCase() })
+            }
+            spec = spec.and(slugsSpec)!!
+        }
+
+        return spec
     }
 
     @Transactional

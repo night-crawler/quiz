@@ -1,12 +1,11 @@
 package fm.force.quiz.core.service
 
 import am.ik.yavi.builder.ValidatorBuilder
-import com.github.slugify.Slugify
 import fm.force.quiz.common.SpecificationBuilder
 import fm.force.quiz.common.dto.PageDTO
-import fm.force.quiz.common.dto.SearchQueryDTO
 import fm.force.quiz.common.dto.TagFullDTO
 import fm.force.quiz.common.dto.TagPatchDTO
+import fm.force.quiz.common.dto.TagSearchQueryDTO
 import fm.force.quiz.common.mapper.toDTO
 import fm.force.quiz.common.mapper.toFullDTO
 import fm.force.quiz.configuration.properties.TagValidationProperties
@@ -22,6 +21,13 @@ import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
+val TagSearchQueryDTO.cleanedSlugs: List<String>
+    get() = when {
+        slugs == null -> listOf()
+        slugs.size > 10 -> listOf()
+        else -> slugs.map { it.trim() }.filterNot { it.isEmpty() }
+    }
+
 @Service
 class TagService(
     validationProps: TagValidationProperties,
@@ -29,16 +35,28 @@ class TagService(
     private val slugifyService: SlugifyService
 ) : TagServiceType(repository = tagRepository) {
 
-    override fun buildSearchSpec(search: SearchQueryDTO?): Specification<Tag> {
-        val ownerEquals = SpecificationBuilder.fk(authenticationFacade::user, Tag_.owner)
-        val needle = search?.query
-        if (needle.isNullOrEmpty()) return ownerEquals
+    override fun buildSearchSpec(search: TagSearchQueryDTO?): Specification<Tag> {
+        var spec = SpecificationBuilder.fk(authenticationFacade::user, Tag_.owner)
+        if (search == null) {
+            return spec
+        }
+        if (!search.query.isNullOrEmpty()) {
+            spec = spec.and(
+                SpecificationBuilder
+                    .ciEquals(search.query, Tag_.name)
+                    .or(SpecificationBuilder.ciStartsWith(search.query, Tag_.name))
+                    ?.or(SpecificationBuilder.ciEndsWith(search.query, Tag_.name))
+            )!!
+        }
 
-        return with(SpecificationBuilder) {
-            ownerEquals.and(
-                ciEquals(needle, Tag_.name).or(ciStartsWith(needle, Tag_.name))?.or(ciEndsWith(needle, Tag_.name))
-            )
-        }!!
+        val cleanedSlugs = search.cleanedSlugs
+        if (cleanedSlugs.isNotEmpty()) {
+            val slugsSpec = Specification<Tag> { root, _, _ ->
+                root[Tag_.slug].`in`(cleanedSlugs.map { it.toLowerCase() })
+            }
+            spec = spec.and(slugsSpec)!!
+        }
+        return spec
     }
 
     override var entityValidator = ValidatorBuilder.of<Tag>()

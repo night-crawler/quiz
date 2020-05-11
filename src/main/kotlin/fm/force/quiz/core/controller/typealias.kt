@@ -41,7 +41,7 @@ typealias QuizSessionControllerType = AbstractCRUDController<
     QuizSession, QuizSessionRepository, QuizSessionPatchDTO, QuizSessionFullDTO, QuizSessionSearchDTO>
 
 typealias TagControllerType = AbstractCRUDController<
-    Tag, TagRepository, TagPatchDTO, TagFullDTO, SearchQueryDTO>
+    Tag, TagRepository, TagPatchDTO, TagFullDTO, TagSearchQueryDTO>
 
 typealias TopicControllerType = AbstractCRUDController<
-    Topic, TopicRepository, TopicPatchDTO, TopicFullDTO, SearchQueryDTO>
+    Topic, TopicRepository, TopicPatchDTO, TopicFullDTO, TopicSearchQueryDTO>

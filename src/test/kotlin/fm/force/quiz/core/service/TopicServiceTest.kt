@@ -1,9 +1,9 @@
 package fm.force.quiz.core.service
 
 import fm.force.quiz.common.dto.PaginationQuery
-import fm.force.quiz.common.dto.SearchQueryDTO
 import fm.force.quiz.common.dto.SortQuery
 import fm.force.quiz.common.dto.TopicPatchDTO
+import fm.force.quiz.common.dto.TopicSearchQueryDTO
 import fm.force.quiz.common.getRandomString
 import fm.force.quiz.configuration.properties.TopicValidationProperties
 import fm.force.quiz.core.exception.NotFoundException
@@ -41,7 +41,7 @@ open class TopicServiceTest(
             val page = topicService.find(
                 PaginationQuery.default(),
                 SortQuery.byIdDesc(),
-                SearchQueryDTO("conT")
+                TopicSearchQueryDTO("conT")
             )
             page.content shouldHaveSize 5
         }
@@ -52,6 +52,19 @@ open class TopicServiceTest(
 
             val (_, dupCreated) = topicService.getOrCreate(TopicPatchDTO("random-100500"))
             dupCreated shouldBe false
+        }
+
+        "should find by slug" {
+            testDataFactory.getTopic(owner = user, title = "sample 666", slug = "sample-666")
+            testDataFactory.getTopic(owner = user, title = "sample 777", slug = "sample-777")
+            testDataFactory.getTopic(owner = user, title = "sample 888", slug = "sample-888")
+
+            val tagsPage = topicService.find(
+                PaginationQuery(null, null),
+                SortQuery(listOf("-id")),
+                TopicSearchQueryDTO(query = null, slugs = listOf("sample-777", "sample-888"))
+            )
+            tagsPage.content shouldHaveSize 2
         }
     }
 }

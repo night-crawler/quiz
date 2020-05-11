@@ -23,7 +23,6 @@ import fm.force.quiz.core.validator.mandatory
 import fm.force.quiz.core.validator.optionalSubset
 import fm.force.quiz.core.validator.ownedFksConstraint
 import fm.force.quiz.core.validator.stringConstraint
-import org.slf4j.LoggerFactory
 import java.time.Instant
 import org.springframework.data.domain.Page
 import org.springframework.data.jpa.domain.Specification
@@ -132,8 +131,8 @@ class QuestionService(
             )!!
         }
 
-        if (!search.tagSlugs.isNullOrEmpty()) {
-            val tagSlugs = search.tagSlugs.split(",").map { it.trim() }
+        if (!search.tags.isNullOrEmpty()) {
+            val tagSlugs = search.tags.split(",").map { it.trim() }
             val tagsSpec = Specification<Question> { root, query, _ ->
                 query.distinct(true)
                 val questionTag = root.join(Question_.tags)
@@ -142,8 +141,8 @@ class QuestionService(
             spec = spec.and(tagsSpec)!!
         }
 
-        if (!search.topicSlugs.isNullOrEmpty()) {
-            val topicSlugs = search.topicSlugs.split(",").map { it.trim() }
+        if (!search.topics.isNullOrEmpty()) {
+            val topicSlugs = search.topics.split(",").map { it.trim() }
             val topicsSpec = Specification<Question> { root, query, _ ->
                 query.distinct(true)
                 val questionTopic = root.join(Question_.topics)

@@ -150,23 +150,23 @@ open class QuestionServiceTest(questionService: QuestionService) : AbstractCRUDS
 
             forall(
                 // tags only
-                row(QuestionSearchQueryDTO(query = null, tagSlugs = tags1.tagsSlugs)),
-                row(QuestionSearchQueryDTO(query = null, tagSlugs = tags2.tagsSlugs)),
+                row(QuestionSearchQueryDTO(query = null, tags = tags1.tagsSlugs)),
+                row(QuestionSearchQueryDTO(query = null, tags = tags2.tagsSlugs)),
 
                 // topics only
-                row(QuestionSearchQueryDTO(query = null, topicSlugs = topics1.topicSlugs)),
-                row(QuestionSearchQueryDTO(query = null, topicSlugs = topics2.topicSlugs)),
+                row(QuestionSearchQueryDTO(query = null, topics = topics1.topicSlugs)),
+                row(QuestionSearchQueryDTO(query = null, topics = topics2.topicSlugs)),
 
                 // topics and slugs
                 row(QuestionSearchQueryDTO(
                     query = null,
-                    tagSlugs = tags1.tagsSlugs,
-                    topicSlugs = topics1.topicSlugs
+                    tags = tags1.tagsSlugs,
+                    topics = topics1.topicSlugs
                 )),
                 row(QuestionSearchQueryDTO(
                     query = null,
-                    tagSlugs = tags2.tagsSlugs,
-                    topicSlugs = topics2.topicSlugs
+                    tags = tags2.tagsSlugs,
+                    topics = topics2.topicSlugs
                 ))
             ) {
                 val page = questionService.find(

@@ -4,6 +4,7 @@ import fm.force.quiz.common.dto.PaginationQuery
 import fm.force.quiz.common.dto.SearchQueryDTO
 import fm.force.quiz.common.dto.SortQuery
 import fm.force.quiz.common.dto.TagPatchDTO
+import fm.force.quiz.common.dto.TagSearchQueryDTO
 import fm.force.quiz.common.getRandomString
 import fm.force.quiz.configuration.properties.TagValidationProperties
 import fm.force.quiz.core.entity.Tag
@@ -50,7 +51,7 @@ open class TagServiceTest(
                 )
             )
 
-            val spec = tagService.buildSearchSpec(SearchQueryDTO("prefix"))
+            val spec = tagService.buildSearchSpec(TagSearchQueryDTO("prefix"))
             val foundTags = tagRepository.findAll(spec)
             foundTags shouldHaveSize 1
         }
@@ -71,7 +72,7 @@ open class TagServiceTest(
             val p1 = tagService.find(
                 PaginationQuery(null, null),
                 SortQuery(listOf("-id")),
-                SearchQueryDTO("test-prefix")
+                TagSearchQueryDTO("test-prefix", slugs = listOf())
             )
             p1.content shouldHaveSize 5
         }
@@ -82,6 +83,19 @@ open class TagServiceTest(
 
             val (_, dupCreated) = tagService.getOrCreate(TagPatchDTO("random-100500"))
             dupCreated shouldBe false
+        }
+
+        "should find by slug" {
+            testDataFactory.getTag(owner = user, name = "sample 666", slug = "sample-666")
+            testDataFactory.getTag(owner = user, name = "sample 777", slug = "sample-777")
+            testDataFactory.getTag(owner = user, name = "sample 888", slug = "sample-888")
+
+            val tagsPage = tagService.find(
+                PaginationQuery(null, null),
+                SortQuery(listOf("-id")),
+                TagSearchQueryDTO(query = null, slugs = listOf("sample-777", "sample-888"))
+            )
+            tagsPage.content shouldHaveSize 2
         }
     }
 }

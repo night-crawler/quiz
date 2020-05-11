@@ -32,10 +32,10 @@ typealias QuizSessionAnswerServiceType = AbstractPaginatedCRUDService<
     QuizSessionAnswerSearchDTO>
 
 typealias TopicServiceType = AbstractPaginatedCRUDService<
-    Topic, TopicRepository, TopicPatchDTO, TopicFullDTO, SearchQueryDTO>
+    Topic, TopicRepository, TopicPatchDTO, TopicFullDTO, TopicSearchQueryDTO>
 
 typealias TagServiceType = AbstractPaginatedCRUDService<
-    Tag, TagRepository, TagPatchDTO, TagFullDTO, SearchQueryDTO>
+    Tag, TagRepository, TagPatchDTO, TagFullDTO, TagSearchQueryDTO>
 
 typealias QuizSessionServiceType = AbstractPaginatedCRUDService<
     QuizSession, QuizSessionRepository, QuizSessionPatchDTO, QuizSessionFullDTO, QuizSessionSearchDTO>
