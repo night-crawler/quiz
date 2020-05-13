@@ -1,6 +1,8 @@
 package fm.force.quiz.core.service
 
 import fm.force.quiz.core.repository.QuizRepository
+import fm.force.quiz.core.repository.TagRepository
+import fm.force.quiz.core.repository.TopicRepository
 import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.matchers.numerics.shouldBeExactly
 import io.kotlintest.shouldNotBe
@@ -10,7 +12,11 @@ open class ConstraintsTest(
     quizService: QuizService,
     questionService: QuestionService,
     quizSessionService: QuizSessionService,
-    quizRepository: QuizRepository
+    quizRepository: QuizRepository,
+    tagService: TagService,
+    tagRepository: TagRepository,
+    topicService: TopicService,
+    topicRepository: TopicRepository
 ) : AbstractCRUDServiceTest() {
     init {
 
@@ -47,6 +53,30 @@ open class ConstraintsTest(
 
             val quiz = testDataFactory.getQuiz(owner = user)
             difficultyScaleService.delete(quiz.difficultyScale!!.id)
+        }
+
+        "should delete tags" {
+            val quiz = testDataFactory.getQuiz(owner = user)
+            tagService.delete(quiz.tags.first().id)
+            tagRepository.findAll().map {
+                if (it.owner == user)
+                    tagService.delete(it.id)
+            }
+
+            quizService.getEntity(quiz.id)
+            questionService.getEntity(quiz.quizQuestions.first().question.id)
+        }
+
+        "should delete topics" {
+            val quiz = testDataFactory.getQuiz(owner = user)
+            topicService.delete(quiz.topics.first().id)
+            topicRepository.findAll().map {
+                if (it.owner == user)
+                    topicService.delete(it.id)
+            }
+
+            quizService.getEntity(quiz.id)
+            questionService.getEntity(quiz.quizQuestions.first().question.id)
         }
     }
 }
