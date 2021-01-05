@@ -42,6 +42,12 @@ force:
         - pattern: /error**
           authority: null
           anonymous: true
+        - pattern: /actuator/health/readiness
+          authority: null
+          anonymous: true
+        - pattern: /actuator/health/liveness
+          authority: null
+          anonymous: true
     jwt:
       secret: IAmVeryRobustAndUniqueSecret!!!one
       accessTokenExpire: 1M

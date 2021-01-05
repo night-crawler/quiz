@@ -1,9 +1,10 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
+import org.springframework.boot.gradle.tasks.bundling.BootJar
 import java.io.FileInputStream
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Properties
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 
 group = "fm.force"
 version = "0.0.1-SNAPSHOT"
@@ -210,4 +211,8 @@ jib {
         jvmFlags = listOf("-Xms512m")
         ports = listOf("8181")
     }
+}
+
+tasks.getByName<BootJar>("bootJar") {
+    isExcludeDevtools = true
 }
