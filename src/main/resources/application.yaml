@@ -42,10 +42,10 @@ force:
         - pattern: /error**
           authority: null
           anonymous: true
-        - pattern: /actuator/health/readiness
+        - pattern: /actuator/health
           authority: null
           anonymous: true
-        - pattern: /actuator/health/liveness
+        - pattern: /actuator/health/**
           authority: null
           anonymous: true
     jwt:
