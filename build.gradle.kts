@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter
 import java.util.Properties
 
 group = "fm.force"
-version = "0.0.1-SNAPSHOT"
+version = "0.0.2-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_11
 
 plugins {

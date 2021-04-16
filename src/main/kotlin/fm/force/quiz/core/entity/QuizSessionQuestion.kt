@@ -1,6 +1,8 @@
 package fm.force.quiz.core.entity
 
+import fm.force.quiz.configuration.BATCH_SIZE
 import fm.force.quiz.security.entity.User
+import org.hibernate.annotations.BatchSize
 import javax.persistence.CascadeType
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -14,12 +16,14 @@ import javax.persistence.UniqueConstraint
     name = "quiz_session_questions",
     uniqueConstraints = [UniqueConstraint(columnNames = ["quiz_session_id", "original_question_id"])]
 )
+@BatchSize(size = BATCH_SIZE)
 data class QuizSessionQuestion(
     @ManyToOne val owner: User,
     @ManyToOne val quizSession: QuizSession,
     @ManyToOne val originalQuestion: Question? = null,
 
     @OneToMany(mappedBy = "quizSessionQuestion", cascade = [CascadeType.ALL])
+    @BatchSize(size = BATCH_SIZE)
     val answers: List<QuizSessionQuestionAnswer> = listOf(),
 
     @Column(columnDefinition = "TEXT")

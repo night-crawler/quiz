@@ -1,6 +1,8 @@
 package fm.force.quiz.core.entity
 
+import fm.force.quiz.configuration.BATCH_SIZE
 import fm.force.quiz.security.entity.User
+import org.hibernate.annotations.BatchSize
 import javax.persistence.CascadeType
 import javax.persistence.Entity
 import javax.persistence.ManyToOne
@@ -13,6 +15,7 @@ import javax.persistence.UniqueConstraint
     name = "difficulty_scales",
     uniqueConstraints = [UniqueConstraint(columnNames = ["owner_id", "name"])]
 )
+@BatchSize(size = BATCH_SIZE)
 data class DifficultyScale(
     @ManyToOne val owner: User,
 
@@ -20,6 +23,7 @@ data class DifficultyScale(
     var max: Int = 9,
 
     @OneToMany(mappedBy = "difficultyScale", cascade = [CascadeType.ALL])
+    @BatchSize(size = BATCH_SIZE)
     var difficultyScaleRanges: MutableList<DifficultyScaleRange> = mutableListOf()
 ) : BaseQuizEntity() {
     override fun equals(other: Any?): Boolean {

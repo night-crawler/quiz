@@ -1,6 +1,8 @@
 package fm.force.quiz.core.entity
 
+import fm.force.quiz.configuration.BATCH_SIZE
 import fm.force.quiz.security.entity.User
+import org.hibernate.annotations.BatchSize
 import javax.persistence.Entity
 import javax.persistence.FetchType
 import javax.persistence.JoinColumn
@@ -13,6 +15,7 @@ import javax.persistence.Table
 
 @Entity
 @Table(name = "quizzes")
+@BatchSize(size = BATCH_SIZE)
 data class Quiz(
     @ManyToOne val owner: User,
 
@@ -20,6 +23,7 @@ data class Quiz(
 
     @OneToMany(mappedBy = "quiz")
     @OrderBy("seq ASC")
+    @BatchSize(size = BATCH_SIZE)
     var quizQuestions: MutableList<QuizQuestion> = mutableListOf(),
 
     @ManyToMany(targetEntity = Tag::class, fetch = FetchType.LAZY)
@@ -28,6 +32,7 @@ data class Quiz(
         joinColumns = [JoinColumn(name = "quiz_id")],
         inverseJoinColumns = [JoinColumn(name = "tag_id")]
     )
+    @BatchSize(size = BATCH_SIZE)
     var tags: MutableSet<Tag> = mutableSetOf(),
 
     @ManyToMany(targetEntity = Topic::class, fetch = FetchType.LAZY)
@@ -36,9 +41,11 @@ data class Quiz(
         joinColumns = [JoinColumn(name = "quiz_id")],
         inverseJoinColumns = [JoinColumn(name = "topic_id")]
     )
+    @BatchSize(size = BATCH_SIZE)
     var topics: MutableSet<Topic> = mutableSetOf(),
 
-    @ManyToOne var difficultyScale: DifficultyScale? = null
+    @ManyToOne
+    var difficultyScale: DifficultyScale? = null
 
 ) : BaseQuizEntity() {
     override fun equals(other: Any?): Boolean {

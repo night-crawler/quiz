@@ -1,6 +1,8 @@
 package fm.force.quiz.core.entity
 
+import fm.force.quiz.configuration.BATCH_SIZE
 import fm.force.quiz.security.entity.User
+import org.hibernate.annotations.BatchSize
 import javax.persistence.Entity
 import javax.persistence.FetchType
 import javax.persistence.JoinColumn
@@ -15,6 +17,7 @@ import javax.persistence.UniqueConstraint
     name = "quiz_session_answers",
     uniqueConstraints = [UniqueConstraint(columnNames = ["quiz_session_id", "quiz_session_question_id"])]
 )
+@BatchSize(size = BATCH_SIZE)
 data class QuizSessionAnswer(
     @ManyToOne val owner: User,
     @ManyToOne val quizSession: QuizSession,
@@ -26,6 +29,7 @@ data class QuizSessionAnswer(
         joinColumns = [JoinColumn(name = "quiz_session_answer_id")],
         inverseJoinColumns = [JoinColumn(name = "quiz_session_question_answer_id")]
     )
+    @BatchSize(size = BATCH_SIZE)
     val answers: Set<QuizSessionQuestionAnswer> = setOf(),
     val isCorrect: Boolean
 ) : BaseQuizEntity() {

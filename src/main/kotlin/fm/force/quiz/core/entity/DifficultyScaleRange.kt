@@ -1,6 +1,8 @@
 package fm.force.quiz.core.entity
 
+import fm.force.quiz.configuration.BATCH_SIZE
 import fm.force.quiz.security.entity.User
+import org.hibernate.annotations.BatchSize
 import javax.persistence.Entity
 import javax.persistence.ManyToOne
 import javax.persistence.Table
@@ -11,6 +13,7 @@ import javax.persistence.UniqueConstraint
     name = "difficulty_scale_ranges",
     uniqueConstraints = [UniqueConstraint(columnNames = ["difficulty_scale_id", "title"])]
 )
+@BatchSize(size = BATCH_SIZE)
 data class DifficultyScaleRange(
     @ManyToOne val owner: User,
     @ManyToOne val difficultyScale: DifficultyScale,
