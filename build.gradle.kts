@@ -216,3 +216,4 @@ jib {
 tasks.getByName<BootJar>("bootJar") {
     isExcludeDevtools = true
 }
+
