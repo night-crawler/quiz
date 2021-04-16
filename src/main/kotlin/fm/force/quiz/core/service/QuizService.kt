@@ -54,21 +54,11 @@ class QuizService(
         .build()
 
     override fun buildSearchSpec(search: SearchQueryDTO?): Specification<Quiz> {
-        val joiningSpec = Specification<Quiz> { root, query, builder ->
-            val clazz = query.resultType
-            if (clazz == Long::class.java || clazz == Long::class.javaPrimitiveType) {
-                null
-            } else {
-                root.join(Quiz_.owner)
-                root.join(Quiz_.difficultyScale)
-                builder.conjunction()
-            }
-        }
         val ownerEquals = SpecificationBuilder.fk(authenticationFacade::user, Quiz_.owner)
         val needle = search?.query
-        if (needle.isNullOrEmpty()) return ownerEquals.and(joiningSpec)!!
+        if (needle.isNullOrEmpty()) return ownerEquals
 
-        return ownerEquals.and(SpecificationBuilder.ciContains(needle, Quiz_.title))!!.and(joiningSpec)!!
+        return ownerEquals.and(SpecificationBuilder.ciContains(needle, Quiz_.title))!!
     }
 
     @Transactional(readOnly = true)
