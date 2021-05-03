@@ -91,7 +91,7 @@ class QuizImportService(
         return questionService.create(QuestionPatchDTO(
             title = rawQuestion.title.trim(),
             text = rawQuestion.text.trim(),
-            help = rawQuestion.text.trim(),
+            help = rawQuestion.help.trim(),
             difficulty = rawQuestion.difficulty,
             answers = answerIds.toSet(),
             correctAnswers = correctAnswerIds,
